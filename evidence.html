@@ -1510,15 +1510,15 @@
             reportSection.style.display = 'none';
             
             // 判断结局（修复逻辑运算符）
-            if (!hasLiYangEvidence && !hasCompensationEvidence) {
-                // 结局1：无声的悲鸣 - 两个关键证据都没有
-                showEnding(1, exploration);
+            if (hasLiYangEvidence && hasCompensationEvidence) {
+                // 结局3：
+                showEnding(3, exploration);
             } else if (hasCompensationEvidence && !hasLiYangEvidence) {
                 // 结局2：迟来的正义 - 只有赔偿协议，没有李阳证词
                 showEnding(2, exploration);
             } else {
-                // 结局3：光明的审判 - 有李阳证据（无论是否有赔偿协议）
-                showEnding(3, exploration);
+                // 结局1：
+                showEnding(1, exploration);
             }
         }
         
