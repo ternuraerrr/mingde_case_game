@@ -335,7 +335,6 @@
             <div class="user-info">
                 <div class="badge">警员</div>
                 <div class="user-name">岳月</div>
-                <div class="user-time" id="currentTime"></div>
             </div>
         </div>
     </nav>
@@ -420,37 +419,7 @@
         青州市公安局信息中心 | 内部系统，严禁外传 | 系统版本：v2.5.1
     </footer>
 
-    <script>
-        // 更新当前时间
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('zh-CN', { 
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            const dateString = now.toLocaleDateString('zh-CN', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-            document.getElementById('currentTime').textContent = `${dateString} ${timeString}`;
-        }
-        
-        // 初始更新时间
-        updateTime();
-        setInterval(updateTime, 60000); // 每分钟更新一次
-        
-        // 生成动态警号（后三位随机）
-        function generatePoliceNumber() {
-            const baseNumber = "0513";
-            const randomPart = Math.floor(Math.random() * 90 + 10); // 10-99
-            return baseNumber + randomPart;
-        }
-        
-        // 设置警号
-        document.getElementById('policeNumber').textContent = generatePoliceNumber();
-        
+    <script>        
         // 密码验证
         document.getElementById('submitPassword').addEventListener('click', function() {
             const passwordInput = document.getElementById('passwordInput');
@@ -517,10 +486,6 @@
         `;
         document.head.appendChild(style);
         
-        // 点击电脑电源按钮也可以触发密码输入框焦点
-        document.getElementById('powerButton').addEventListener('click', function() {
-            document.getElementById('passwordInput').focus();
-        });
     </script>
 </body>
 </html>
