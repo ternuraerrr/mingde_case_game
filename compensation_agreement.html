@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赔偿协议</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimSun", "宋体", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            background-color: #f8f8f8;
+            padding: 40px 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .protocol-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            padding: 60px 70px;
+            position: relative;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .protocol-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .protocol-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+        }
+        
+        .protocol-subtitle {
+            font-size: 16px;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        .protocol-content {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        .parties-section {
+            margin: 30px 0;
+        }
+        
+        .party-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4a6fa5;
+        }
+        
+        .party-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 17px;
+        }
+        
+        .party-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .detail-item {
+            margin-bottom: 5px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .agreement-number {
+            text-align: right;
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .clause {
+            margin: 25px 0;
+        }
+        
+        .clause-title {
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .clause-content {
+            text-indent: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-weight: bold;
+        }
+        
+        .signature-section {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .signature-box {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 180px;
+        }
+        
+        .signature-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 17px;
+        }
+        
+        .signature-line {
+            margin-top: 60px;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            text-align: center;
+        }
+        
+        .signature-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .signature-date {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .seal {
+            position: absolute;
+            right: 100px;
+            bottom: 100px;
+            width: 120px;
+            height: 120px;
+            border: 2px solid red;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: red;
+            font-weight: bold;
+            opacity: 0.7;
+            font-size: 16px;
+            transform: rotate(-15deg);
+        }
+        
+        .seal-text {
+            text-align: center;
+            line-height: 1.3;
+        }
+        
+        .footer-note {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .important-note {
+            background-color: #fff0f0;
+            border: 1px solid #ffcccc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .protocol-date {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 17px;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            
+            .protocol-container {
+                box-shadow: none;
+                border: none;
+                padding: 40px 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="protocol-container">
+        <div class="protocol-header">
+            <div class="protocol-title">赔偿协议书</div>
+            <div class="protocol-subtitle">（民事调解协议书）</div>
+        </div>
+        
+        <div class="agreement-number">协议编号：明德中学-调字(2023)第012号</div>
+        
+        <div class="parties-section">
+            <div class="party-info">
+                <div class="party-title">甲方（赔偿方）：</div>
+                <div class="party-details">
+                    <div class="detail-item"><span class="detail-label">姓名：</span>王建国</div>
+                    <div class="detail-item"><span class="detail-label">性别：</span>男</div>
+                    <div class="detail-item"><span class="detail-label">身份证号：</span>37**************18</div>
+                    <div class="detail-item"><span class="detail-label">联系电话：</span>138****5678</div>
+                    <div class="detail-item"><span class="detail-label">住址：</span>青州市金山区锦绣花园12栋301室</div>
+                    <div class="detail-item"><span class="detail-label">与学生关系：</span>父子（王浩之父）</div>
+                </div>
+            </div>
+            
+            <div class="party-info">
+                <div class="party-title">乙方（受偿方）：</div>
+                <div class="party-details">
+                    <div class="detail-item"><span class="detail-label">姓名：</span>李秀芳</div>
+                    <div class="detail-item"><span class="detail-label">性别：</span>女</div>
+                    <div class="detail-item"><span class="detail-label">身份证号：</span>37**************23</div>
+                    <div class="detail-item"><span class="detail-label">联系电话：</span>159****2345</div>
+                    <div class="detail-item"><span class="detail-label">住址：</span>青州市北区朝阳路78号院4单元502</div>
+                    <div class="detail-item"><span class="detail-label">与学生关系：</span>母女（江楠之母）</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="protocol-content">
+            <p>鉴于：甲方之子王浩（明德中学高三五班学生）与乙方之女江楠（明德中学高二三班学生）在校期间发生摩擦，导致江楠身心受到一定程度影响。为妥善解决此事，经明德中学调解委员会主持调解，双方在平等、自愿、协商一致的基础上达成如下协议：</p>
+            
+            <div class="clause">
+                <div class="clause-title">第一条 事实确认</div>
+                <div class="clause-content">双方确认，王浩与江楠在校期间因琐事发生摩擦，导致江楠情绪受到影响。经学校调查，此事属于同学间的一般矛盾，未发现校园欺凌行为。双方对上述事实无异议。</div>
+            </div>
+            
+            <div class="clause">
+                <div class="clause-title">第二条 赔偿金额及支付方式</div>
+                <div class="clause-content">1. 甲方自愿向乙方支付赔偿金共计人民币<span class="highlight">陆拾伍万元整（¥650,000.00）</span>，作为对江楠的精神抚慰及补偿。</div>
+                <div class="clause-content">2. 支付方式：本协议签订之日起三个工作日内，甲方通过银行转账方式一次性支付至乙方指定账户（开户行：中国青州银行明德分行，账号：6212********3456，户名：李秀芳）。</div>
+            </div>
+            
+            <div class="clause">
+                <div class="clause-title">第三条 乙方承诺与保证</div>
+                <div class="clause-content">1. 乙方收到上述全部赔偿款后，承诺<span class="highlight">不再以任何形式追究</span>王浩与江楠之间发生的摩擦打闹事件。</div>
+                <div class="clause-content">2. 乙方保证不向任何行政机关、司法机关、学校或媒体就该事件提出任何形式的投诉、举报、控告或曝光。</div>
+                <div class="clause-content">3. 乙方承诺不向王浩、王建国及其家庭成员主张任何其他权利。</div>
+                <div class="clause-content">4. 乙方承诺积极引导江楠正确看待此事，帮助其尽快恢复正常学习生活。</div>
+            </div>
+            
+            <div class="clause">
+                <div class="clause-title">第四条 甲方承诺与保证</div>
+                <div class="clause-content">1. 甲方保证按时足额支付本协议约定的赔偿金。</div>
+                <div class="clause-content">2. 甲方承诺加强对王浩的教育引导，避免类似情况再次发生。</div>
+                <div class="clause-content">3. 甲方承诺不以任何形式干扰乙方及江楠的正常生活。</div>
+            </div>
+            
+            <div class="clause">
+                <div class="clause-title">第五条 保密条款</div>
+                <div class="clause-content">1. 双方同意对本协议内容及事件相关细节予以保密，不得向任何第三方透露。</div>
+                <div class="clause-content">2. 未经对方书面同意，任何一方不得将本协议内容用于诉讼、仲裁或其他争议解决程序。</div>
+            </div>
+            
+            <div class="clause">
+                <div class="clause-title">第六条 协议的生效与解除</div>
+                <div class="clause-content">1. 本协议自双方签字或盖章之日起生效。</div>
+                <div class="clause-content">2. 本协议履行完毕后，双方就该事件的所有权利义务关系终结，互不追究。</div>
+                <div class="clause-content">3. 任何一方违反本协议约定，应承担违约责任，并向守约方支付赔偿金额20%的违约金。</div>
+            </div>
+            
+            <div class="important-note">
+                <p><strong>特别提示：</strong>本协议为双方真实意思表示，不存在欺诈、胁迫等情形。乙方确认已充分理解协议全部内容，特别是第三条关于"不再追究"的约定，知晓该约定的法律后果。双方均确认对本协议无任何异议。</p>
+            </div>
+            
+            <div class="protocol-date">本协议于 <strong>2025年12月10日</strong> 在明德中学调解室签订</div>
+            
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div class="signature-title">甲方（赔偿方）签字：</div>
+                    <div class="signature-line">
+                        <div class="signature-name">王建国</div>
+                        <div class="signature-date">2025年12月10日</div>
+                    </div>
+                </div>
+                
+                <div class="signature-box">
+                    <div class="signature-title">乙方（受偿方）签字：</div>
+                    <div class="signature-line">
+                        <div class="signature-name">李秀芳</div>
+                        <div class="signature-date">2025年12月10日</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="signature-box" style="grid-column: 1 / -1; margin-top: 20px;">
+                <div class="signature-title">调解单位（盖章）：明德中学调解委员会</div>
+                <div class="signature-line">
+                    <div class="signature-name">（学校公章）</div>
+                    <div class="signature-date">2025年12月10日</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="seal">
+            <div class="seal-text">明德中学<br>调解专用章</div>
+        </div>
+        
+        <div class="footer-note">
+            <p>本协议一式三份，甲、乙双方各执一份，明德中学备案一份，具有同等法律效力。</p>
+            <p>（以下无正文）</p>
+        </div>
+    </div>
+    
+    <script>
+        // 打印优化
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+        
+        // 添加一些交互效果
+        document.querySelectorAll('.highlight').forEach(item => {
+            item.addEventListener('mouseover', function() {
+                this.style.backgroundColor = '#ffeb3b';
+            });
+            item.addEventListener('mouseout', function() {
+                this.style.backgroundColor = '#fffacd';
+            });
+        });
+        
+        // 显示当前日期（作为示例）
+        const today = new Date();
+        const formattedDate = today.getFullYear() + '年' + 
+                              (today.getMonth() + 1) + '月' + 
+                              today.getDate() + '日';
+        console.log('协议查看日期：' + formattedDate);
+    </script>
+</body>
+</html>
