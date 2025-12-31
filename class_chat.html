@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高二(3)班群聊</title>
+    <style>
+        :root {
+            --wechat-color: #07C160;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; 
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 20%, #a1c4fd 60%, #c2e9fb 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 微信应用窗口 */
+        .wechat-app {
+            width: 1000px;
+            height: 700px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 应用头部 */
+        .app-header {
+            height: 45px;
+            background: rgba(255,255,255,0.9);
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            flex-shrink: 0;
+        }
+        
+        .window-controls { 
+            display: flex; 
+            gap: 8px; 
+            margin-right: 15px; 
+        }
+        
+        .dot { 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+        }
+        
+        .red { background: #FF5F56; } 
+        .yellow { background: #FFBD2E; } 
+        .green { background: #27C93F; }
+        
+        .app-title { 
+            font-size: 14px; 
+            font-weight: 500; 
+            color: #333; 
+            flex-grow: 1; 
+            text-align: center; 
+        }
+
+        /* 主内容区 */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #f7f7f7;
+        }
+
+        /* 聊天头部 */
+        .chat-header {
+            height: 55px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            flex-shrink: 0;
+        }
+        
+        .back-btn {
+            font-size: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .chat-info {
+            flex-grow: 1;
+        }
+        
+        .chat-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .chat-info p {
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            font-size: 18px;
+            color: #555;
+        }
+
+        /* 聊天消息区 */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 消息样式 */
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            max-width: 80%;
+        }
+        
+        .message.other {
+            align-self: flex-start;
+        }
+        
+        .message.self {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            background: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .other .avatar {
+            margin-right: 10px;
+        }
+        
+        .self .avatar {
+            margin-left: 10px;
+        }
+        
+        .message-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sender-name {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 3px;
+            margin-left: 5px;
+        }
+        
+        .self .sender-name {
+            text-align: right;
+            margin-right: 5px;
+        }
+        
+        .bubble {
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+        
+        .other .bubble {
+            background: #fff;
+            border: 1px solid #ddd;
+            color: #333;
+            border-top-left-radius: 4px;
+        }
+        
+        .self .bubble {
+            background: var(--wechat-color);
+            color: white;
+            border-top-right-radius: 4px;
+        }
+        
+        .time-stamp {
+            align-self: center;
+            font-size: 12px;
+            color: #999;
+            margin: 15px 0;
+            background: rgba(0,0,0,0.05);
+            padding: 3px 10px;
+            border-radius: 10px;
+        }
+        
+        .message-status {
+            font-size: 11px;
+            color: #999;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .self .message-status {
+            justify-content: flex-end;
+        }
+        
+        /* 系统消息样式 */
+        .system-notice {
+            align-self: center;
+            font-size: 12px;
+            color: #999;
+            margin: 10px 0;
+            background: rgba(0,0,0,0.05);
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-style: italic;
+        }
+        
+        .system-message {
+            align-self: center;
+            font-size: 12px;
+            color: #999;
+            margin: 10px 0;
+            background: rgba(0,0,0,0.05);
+            padding: 5px 15px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 70%;
+        }
+        
+        .exit-message {
+            align-self: center;
+            font-size: 12px;
+            color: #999;
+            margin: 10px 0;
+            background: rgba(255, 0, 0, 0.05);
+            padding: 5px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 0, 0, 0.1);
+            text-align: center;
+            max-width: 70%;
+        }
+        
+        /* 输入区域 */
+        .input-area {
+            height: 50px;
+            background: #fff;
+            border-top: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            flex-shrink: 0;
+        }
+        
+        .input-area input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            padding: 10px;
+            color: #999;
+        }
+        
+        .send-btn {
+            background: #ccc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: not-allowed;
+            margin-left: 10px;
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="wechat-app">
+        <div class="app-header">
+            <div class="window-controls">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="app-title">高二(3)班 相亲相爱一家人</div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="back-btn">‹</div>
+                <div class="chat-info">
+                    <h3>高二(3)班 相亲相爱一家人</h3>
+                    <p>37名成员</p>
+                </div>
+                <div class="header-actions">
+                    <span>⋮</span>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <!-- 9月份内容 -->
+                <div class="time-stamp">9月15日</div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">作业也太多了吧，数学两张卷子物理一张</div>
+                        <div class="message-status">晚上10:23</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #c8e6c9;">🍀</div>
+                    <div class="message-content">
+                        <div class="sender-name">李婷</div>
+                        <div class="bubble">+1，根本写不完，明天早自习继续</div>
+                        <div class="message-status">晚上10:35</div>
+                    </div>
+                </div>
+                
+                <div class="system-notice">9月25日 班主任张磊在群公告发布了国庆假期安排</div>
+                
+                <!-- 10月份内容 -->
+                <div class="time-stamp">10月8日</div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #dcedc8;">🍃</div>
+                    <div class="message-content">
+                        <div class="sender-name">孙晓</div>
+                        <div class="bubble">你们知道高三的李阳不？</div>
+                        <div class="message-status">下午5:20</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">好像听说过，以前生物竞赛班的吧，不过不是转学了吗？</div>
+                        <div class="message-status">下午5:22</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #f0f4c3;">🌻</div>
+                    <div class="message-content">
+                        <div class="sender-name">周宇</div>
+                        <div class="bubble">不对吧，李阳明明是作弊记大过，学校官网上还有记录呢</div>
+                        <div class="message-status">下午5:25</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #d1c4e9;">🌺</div>
+                    <div class="message-content">
+                        <div class="sender-name">王芳</div>
+                        <div class="bubble">我也听说了，李阳真被欺负了，本来要去的，后来退学消失不见了</div>
+                        <div class="message-status">下午5:28</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #b3e5fc;">🐬</div>
+                    <div class="message-content">
+                        <div class="sender-name">刘伟</div>
+                        <div class="bubble">我听高三的说，李阳是故意暴露的，和他作弊的就是王浩</div>
+                        <div class="message-status">下午5:30</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #fff9c4;">🌟</div>
+                    <div class="message-content">
+                        <div class="sender-name">赵亮</div>
+                        <div class="bubble">怎么可能，王浩生物竞赛都可以保送了吧，没必要作弊</div>
+                        <div class="message-status">下午5:32</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #e1bee7;">🌸</div>
+                    <div class="message-content">
+                        <div class="sender-name">陈思思</div>
+                        <div class="bubble">李阳是故意拖他下水吧，反正自己已经要被开除了</div>
+                        <div class="message-status">下午5:35</div>
+                    </div>
+                </div>
+                
+                <div class="time-stamp">10月15日</div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">老班又换新车了，这次是奔驰</div>
+                        <div class="message-status">中午12:15</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #dcedc8;">🍃</div>
+                    <div class="message-content">
+                        <div class="sender-name">孙晓</div>
+                        <div class="bubble">老班好有钱啊，这才半年又换一辆</div>
+                        <div class="message-status">中午12:18</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #c8e6c9;">🍀</div>
+                    <div class="message-content">
+                        <div class="sender-name">李婷</div>
+                        <div class="bubble">那还不是因为我们每个月都要补课</div>
+                        <div class="message-status">中午12:20</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #f0f4c3;">🌻</div>
+                    <div class="message-content">
+                        <div class="sender-name">周宇</div>
+                        <div class="bubble">哎但是人确实有实力呀，补完课感觉知识点掌握更好了</div>
+                        <div class="message-status">中午12:22</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #fff9c4;">🌟</div>
+                    <div class="message-content">
+                        <div class="sender-name">赵亮</div>
+                        <div class="bubble">不能不补，不然要被针对</div>
+                        <div class="message-status">中午12:25</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #d1c4e9;">🌺</div>
+                    <div class="message-content">
+                        <div class="sender-name">王芳</div>
+                        <div class="bubble">真的假的？老班会针对不补课的？</div>
+                        <div class="message-status">中午12:28</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #b3e5fc;">🐬</div>
+                    <div class="message-content">
+                        <div class="sender-name">刘伟</div>
+                        <div class="bubble">我觉得也是，不然他平时上课故意教很烂</div>
+                        <div class="message-status">中午12:30</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">别说了，等下老班看到聊天记录就完了</div>
+                        <div class="message-status">中午12:32</div>
+                    </div>
+                </div>
+                
+                <div class="time-stamp">10月25日</div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #f0f4c3;">🌻</div>
+                    <div class="message-content">
+                        <div class="sender-name">周宇</div>
+                        <div class="bubble">你们看到江楠手上的伤了吗？吓死人了</div>
+                        <div class="message-status">下午4:15</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #dcedc8;">🍃</div>
+                    <div class="message-content">
+                        <div class="sender-name">孙晓</div>
+                        <div class="bubble">江楠是不是有病啊？自残的人好可怕</div>
+                        <div class="message-status">下午4:18</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #d1c4e9;">🌺</div>
+                    <div class="message-content">
+                        <div class="sender-name">王芳</div>
+                        <div class="bubble">离她远点，感觉精神不太正常</div>
+                        <div class="message-status">下午4:20</div>
+                    </div>
+                </div>
+								
+				<!-- 江楠退出群聊的系统消息 -->
+				<div class="exit-message">"江楠"已退出群聊</div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #e1bee7;">🌸</div>
+                    <div class="message-content">
+                        <div class="sender-name">陈思思</div>
+                        <div class="bubble">你们别瞎说！那伤是我和江楠互相画着玩的！</div>
+                        <div class="message-status">下午4:22</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #e1bee7;">🌸</div>
+                    <div class="message-content">
+                        <div class="sender-name">陈思思</div>
+                        <div class="bubble">大家不准再说这件事情了！</div>
+                        <div class="message-status">下午4:23</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #c8e6c9;">🍀</div>
+                    <div class="message-content">
+                        <div class="sender-name">李婷</div>
+                        <div class="bubble">好吧...我们不说了</div>
+                        <div class="message-status">下午4:25</div>
+                    </div>
+                </div>
+                                
+                <!-- 11月份内容 -->
+                <div class="time-stamp">11月1日</div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">期中考试成绩出来了，我凉了</div>
+                        <div class="message-status">晚上8:30</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #c8e6c9;">🍀</div>
+                    <div class="message-content">
+                        <div class="sender-name">李婷</div>
+                        <div class="bubble">我也是...数学才68分</div>
+                        <div class="message-status">晚上8:32</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #fff9c4;">🌟</div>
+                    <div class="message-content">
+                        <div class="sender-name">赵亮</div>
+                        <div class="bubble">下学期要文理分班了，你们选啥？</div>
+                        <div class="message-status">晚上8:35</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #b3e5fc;">🐬</div>
+                    <div class="message-content">
+                        <div class="sender-name">刘伟</div>
+                        <div class="bubble">我肯定选理，文科背不下来</div>
+                        <div class="message-status">晚上8:38</div>
+                    </div>
+                </div>
+                
+                <div class="time-stamp">11月11日</div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #d1c4e9;">🌺</div>
+                    <div class="message-content">
+                        <div class="sender-name">王芳</div>
+                        <div class="bubble">光棍节快乐！虽然我还是单身😂</div>
+                        <div class="message-status">晚上9:11</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">同乐同乐，一起单身到毕业</div>
+                        <div class="message-status">晚上9:15</div>
+                    </div>
+                </div>
+                
+                <!-- 12月份内容（原有部分） -->
+                <div class="time-stamp">12月10日</div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">你们听说了吗？江楠妈妈今天来学校了</div>
+                        <div class="message-status">下午3:20</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #c8e6c9;">🍀</div>
+                    <div class="message-content">
+                        <div class="sender-name">李婷</div>
+                        <div class="bubble">听说了，好像来和王浩爸爸签赔偿协议的</div>
+                        <div class="message-status">下午3:22</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #b3e5fc;">🐬</div>
+                    <div class="message-content">
+                        <div class="sender-name">刘伟</div>
+                        <div class="bubble">唉，江楠太可怜了，被王浩欺负那么久</div>
+                        <div class="message-status">下午3:25</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #e1bee7;">🌸</div>
+                    <div class="message-content">
+                        <div class="sender-name">陈思思</div>
+                        <div class="bubble">我们要是站出来举报就好了</div>
+                        <div class="message-status">下午3:28</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #fff9c4;">🌟</div>
+                    <div class="message-content">
+                        <div class="sender-name">赵亮</div>
+                        <div class="bubble">谁敢举报啊，王浩他爸是校董，举报了也没用</div>
+                        <div class="message-status">下午3:30</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">记得上次李阳的事吗？不也是这样</div>
+                        <div class="message-status">下午3:32</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #dcedc8;">🍃</div>
+                    <div class="message-content">
+                        <div class="sender-name">孙晓</div>
+                        <div class="bubble">李阳那事不一样吧，他不是被保送了吗？</div>
+                        <div class="message-status">下午3:35</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">什么保送啊，我听我朋友说是退学</div>
+                        <div class="message-status">下午3:38</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #f0f4c3;">🌻</div>
+                    <div class="message-content">
+                        <div class="sender-name">周宇</div>
+                        <div class="bubble">真的假的？</div>
+                        <div class="message-status">下午3:40</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #d1c4e9;">🌺</div>
+                    <div class="message-content">
+                        <div class="sender-name">王芳</div>
+                        <div class="bubble">李阳妈妈好像还来学校闹过</div>
+                        <div class="message-status">下午3:42</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">听说李阳本来要去考少年班的，后来直接消失了</div>
+                        <div class="message-status">下午3:45</div>
+                    </div>
+                </div>
+                
+                <!-- 12月25日内容 -->
+                <div class="time-stamp">12月25日 今天</div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #b3e5fc;">🐬</div>
+                    <div class="message-content">
+                        <div class="sender-name">刘伟</div>
+                        <div class="bubble">今天真不想上早自习，困死了</div>
+                        <div class="message-status">上午7:02</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">+1，这鬼天气冷得要命</div>
+                        <div class="message-status">上午7:15</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #c8e6c9;">🍀</div>
+                    <div class="message-content">
+                        <div class="sender-name">李婷</div>
+                        <div class="bubble">你们听到了吗？好像有人？？</div>
+                        <div class="message-status">上午8:00</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #f0f4c3;">🌻</div>
+                    <div class="message-content">
+                        <div class="sender-name">周宇</div>
+                        <div class="bubble">听到了，好像是楼顶的声音？</div>
+                        <div class="message-status">上午8:05</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #dcedc8;">🍃</div>
+                    <div class="message-content">
+                        <div class="sender-name">孙晓</div>
+                        <div class="bubble">我怎么看到好多老师往教学楼那边跑</div>
+                        <div class="message-status">上午8:08</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #ffccbc;">🍊</div>
+                    <div class="message-content">
+                        <div class="sender-name">张明</div>
+                        <div class="bubble">卧槽！好像是江楠！</div>
+                        <div class="message-status">上午8:10</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #d1c4e9;">🌺</div>
+                    <div class="message-content">
+                        <div class="sender-name">王芳</div>
+                        <div class="bubble">天啊...救护车来了</div>
+                        <div class="message-status">上午8:12</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #e1bee7;">🌸</div>
+                    <div class="message-content">
+                        <div class="sender-name">陈思思</div>
+                        <div class="bubble">为什么会这样...我们是不是也有责任</div>
+                        <div class="message-status">上午8:15</div>
+                    </div>
+                </div>
+                
+                <div class="message other">
+                    <div class="avatar" style="background: #fff9c4;">🌟</div>
+                    <div class="message-content">
+                        <div class="sender-name">赵亮</div>
+                        <div class="bubble">别说了，我现在手都在抖</div>
+                        <div class="message-status">上午8:16</div>
+                    </div>
+                </div>
+
+                <div class="message other">
+                    <div class="avatar" style="background: #b3e5fc;">🐬</div>
+                    <div class="message-content">
+                        <div class="sender-name">刘伟</div>
+                        <div class="bubble">老师进教室了，先不说了</div>
+                        <div class="message-status">上午8:18</div>
+                    </div>
+                </div>
+                
+                <div class="system-message">群主"张明"开启了"全员禁言"</div>
+                
+            </div>
+            
+            <div class="input-area">
+                <input type="text" placeholder="当前群聊已被禁言" disabled>
+                <button class="send-btn" disabled>发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 自动滚动到底部
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // 模拟新消息到达（禁言通知）
+            setTimeout(() => {
+                const newMessage = document.createElement('div');
+                newMessage.className = 'system-message';
+                newMessage.textContent = '管理员已开启全员禁言，暂时无法发言';
+                chatMessages.appendChild(newMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 2000);
+            
+            // 模拟群公告
+            setTimeout(() => {
+                const newMessage = document.createElement('div');
+                newMessage.className = 'system-message';
+                newMessage.innerHTML = '<strong>群公告：</strong>请各位同学保持冷静，不要传播不实信息，学校正在处理相关事宜。';
+                chatMessages.appendChild(newMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 4000);
+        });
+    </script>
+</body>
+</html>

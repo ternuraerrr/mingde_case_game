@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青州市公安局 - 案件记录 | 明德中学学生坠楼案</title>
+    <style>
+        :root {
+            --police-blue: #1a365d;
+            --police-dark: #2d3748;
+            --police-red: #c53030;
+            --police-gray: #718096;
+            --police-light: #f7fafc;
+            --police-border: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: linear-gradient(to bottom, #e8eff5 0%, #f0f2f5 100%);
+        }
+        
+        /* 警方头部 */
+        .police-header {
+            background-color: var(--police-blue);
+            color: white;
+            padding: 20px 0;
+            border-bottom: 5px solid var(--police-red);
+            position: relative;
+        }
+        
+        .police-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--police-red), #ff6b6b, var(--police-red));
+        }
+        
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .police-title {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .police-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .police-badge {
+            background-color: var(--police-red);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 1000px;
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+        
+        /* 案件信息卡片 */
+        .case-card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid var(--police-border);
+            border-top: 4px solid var(--police-blue);
+        }
+        
+        .case-header {
+            background-color: #f8fafc;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--police-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .case-title {
+            font-size: 22px;
+            color: var(--police-blue);
+            font-weight: bold;
+        }
+        
+        .case-number {
+            font-size: 16px;
+            color: var(--police-gray);
+            font-family: monospace;
+            background-color: #edf2f7;
+            padding: 5px 10px;
+            border-radius: 3px;
+            border: 1px solid #cbd5e0;
+        }
+        
+        .case-body {
+            padding: 25px;
+            position: relative;
+        }
+        
+        /* 信息表格 */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px;
+            font-size: 15px;
+        }
+        
+        .info-table th {
+            background-color: #edf2f7;
+            color: var(--police-dark);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--police-border);
+            width: 30%;
+        }
+        
+        .info-table td {
+            padding: 12px 15px;
+            border: 1px solid var(--police-border);
+            color: #4a5568;
+        }
+        
+        .info-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+        
+        /* 笔录内容 */
+        .record-content {
+            line-height: 1.8;
+            color: #4a5568;
+        }
+        
+        .record-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .record-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--police-blue);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--police-border);
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background-color: var(--police-red);
+        }
+        
+        /* 重点标记 */
+        .key-info {
+            background-color: #fff5f5;
+            border-left: 4px solid var(--police-red);
+            padding: 15px 20px;
+            margin: 20px 0;
+            color: #742a2a;
+        }
+        
+        .key-info strong {
+            color: var(--police-red);
+        }
+        
+        .evidence-item {
+            background-color: #f0fff4;
+            border: 1px solid #c6f6d5;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .evidence-title {
+            color: #22543d;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .evidence-title::before {
+            content: '📄';
+            margin-right: 8px;
+        }
+        
+        /* 时间线 */
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+        
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--police-blue);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid var(--police-blue);
+        }
+        
+        .timeline-time {
+            font-weight: bold;
+            color: var(--police-blue);
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        
+        .timeline-content {
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        /* 印章样式 - 移到右下角 */
+        .stamp-container {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            text-align: center;
+        }
+        
+        .police-stamp {
+            display: inline-block;
+            border: 3px solid var(--police-red);
+            border-radius: 50%;
+            width: 160px;
+            height: 160px;
+            position: relative;
+            color: var(--police-red);
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.4;
+            padding-top: 55px;
+            font-size: 16px;
+            letter-spacing: 1px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(197, 48, 48, 0.2);
+        }
+        
+        .stamp-text {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stamp-text::before {
+            content: '★';
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+        }
+        
+        /* 签名区域 */
+        .signature-area {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--police-border);
+            text-align: right;
+            padding-right: 200px;
+            position: relative;
+        }
+        
+        .signature-line {
+            display: inline-block;
+            width: 200px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 5px;
+        }
+        
+        .signature-text {
+            font-size: 14px;
+            color: var(--police-gray);
+        }
+        
+        /* 页脚 */
+        .police-footer {
+            background-color: var(--police-dark);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-notice {
+            color: #a0aec0;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .main-container {
+                padding: 0 15px;
+            }
+            
+            .case-body {
+                padding: 20px 15px;
+            }
+            
+            .info-table th, .info-table td {
+                padding: 10px;
+                display: block;
+                width: 100%;
+            }
+            
+            .info-table tr {
+                margin-bottom: 10px;
+                display: block;
+                border: 1px solid var(--police-border);
+            }
+            
+            .info-table th {
+                border-bottom: none;
+            }
+            
+            .police-stamp {
+                width: 130px;
+                height: 130px;
+                padding-top: 45px;
+                font-size: 14px;
+            }
+            
+            .stamp-container {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                margin: 30px 0;
+            }
+            
+            .signature-area {
+                padding-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 警方头部 -->
+    <header class="police-header">
+        <div class="header-content">
+            <div>
+                <div class="police-title">青州市公安局</div>
+                <div class="police-subtitle">刑事侦查支队 - 案件记录系统</div>
+            </div>
+            <div class="police-badge">内部文件</div>
+        </div>
+    </header>
+    
+    <!-- 主内容区域 -->
+    <main class="main-container">
+        <!-- 案件信息卡片 -->
+        <div class="case-card">
+            <div class="case-header">
+                <div class="case-title">明德中学学生坠楼案</div>
+                <div class="case-number">案卷编号：QZGA-20251225-001</div>
+            </div>
+            
+            <div class="case-body">
+                <!-- 基本信息 -->
+                <div class="record-section">
+                    <h3 class="section-title">一、案件基本信息</h3>
+                    <table class="info-table">
+                        <tr>
+                            <th>案件名称</th>
+                            <td>明德中学学生坠楼案</td>
+                        </tr>
+                        <tr>
+                            <th>接警时间</th>
+                            <td>2025年12月25日 07:42</td>
+                        </tr>
+                        <tr>
+                            <th>接警单位</th>
+                            <td>青州市公安局天云分局明德派出所</td>
+                        </tr>
+                        <tr>
+                            <th>报案人</th>
+                            <td>王志强（明德中学保安队长）</td>
+                        </tr>
+                        <tr>
+                            <th>死者信息</th>
+                            <td>江楠，女，17岁，明德中学高二（3）班学生，学号20230315</td>
+                        </tr>
+                        <tr>
+                            <th>案件状态</th>
+                            <td>调查中（初步排除他杀）</td>
+                        </tr>
+                        <tr>
+                            <th>办案人员</th>
+                            <td>张宏刚（主办刑警，警号：051287）、岳月（主办刑警，警号：051383）、陈亚菲（主办刑警，警号：051296）、曹康（技术科，警号：051302）、赵盈嫚（主检法医师，警号：FJ0512）</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- 现场勘查记录 -->
+                <div class="record-section">
+                    <h3 class="section-title">二、现场勘查记录</h3>
+                    <div class="record-content">
+                        <p>2025年12月25日07时42分，明德派出所接报警称：明德中学教学楼发生学生坠楼事件。值班民警张宏刚、岳月立即赶赴现场，于18时50分到达。</p>
+                        
+                        <div class="key-info">
+                            <strong>现场概况：</strong>坠楼地点位于明德中学主教学楼北侧地面，死者仰卧于水泥地面上，周围有血迹。教学楼为5层建筑，死者坠落位置对应4楼高二（3）班教室窗外。
+                        </div>
+                        
+                        <p><strong>勘查时间：</strong>2025年12月25日08:00-10:30</p>
+                        <p><strong>勘查人员：</strong>张宏刚、岳月、陈亚菲、赵盈嫚、曹康</p>
+                        <p><strong>天气情况：</strong>阴，气温-2℃，无降水，东北风3级</p>
+                        
+                        <div class="timeline-container">
+                            <div class="timeline-item">
+                                <div class="timeline-time">07:30（估计）</div>
+                                <div class="timeline-content">死者江楠从教学楼4楼坠下</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">07:35</div>
+                                <div class="timeline-content">学校保安巡逻时发现异常，立即报告</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">07:42</div>
+                                <div class="timeline-content">保安队长王志强拨打110报警</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">08:00</div>
+                                <div class="timeline-content">民警到达现场，设置警戒区</div>
+                            </div>
+                        </div>
+                        
+                        <p><strong>现场环境：</strong>正值早自习前的空档时间（07:30-08:00），校园内人员较少。教学楼大部分教室灯光明亮，但走廊和楼梯间照明正常。4楼高二（3）班教室位于走廊尽头，相对僻静。</p>
+                        
+                        <div class="key-info">
+                            <strong>重要发现：</strong>现场勘查显示，<strong>教学楼4楼高二（3）班教室窗户呈打开状态</strong>，窗台高度1.2米，窗户完好无破损。教室内桌椅整齐，<strong>无打斗痕迹</strong>，地面干净。教室门锁完好，无撬压痕迹。
+                        </div>
+                        
+                        <p><strong>死者状态：</strong>死者衣着整齐，身着明德中学校服（冬季款），脚穿白色运动鞋。随身物品包括学生证、钥匙、少量现金（85元）以及一部处于关机状态的智能手机。</p>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-title">关键物证发现</div>
+                            <p>在勘查死者遗留在教室的书包时，发现其书包内有一个被揉皱的<strong>纸团</strong>，已作为重要物证封存（证物编号：MD-20251225-01）。</p>
+                            <p>另在死者课桌抽屉内发现一把<strong>美工刀</strong>（证物编号：MD-20251225-02）。经调查，该美工刀系死者于案发前25天（2025年11月31日）在校门口"学友文具店"购买，购买时有监控记录。</p>
+                        </div>
+                        
+                        <p><strong>监控调取：</strong>教学楼各楼层均安装有监控摄像头。监控显示，死者于07:15独自进入教学楼，07:22出现在3楼楼梯间，之后未在有效监控范围内出现。</p>
+                    </div>
+                </div>
+                
+                <!-- 法医鉴定 -->
+                <div class="record-section">
+                    <h3 class="section-title">三、法医学检验报告</h3>
+                    <div class="record-content">
+                        <p><strong>检验时间：</strong>2025年12月25日10:00-13:30</p>
+                        <p><strong>检验地点：</strong>青州市公安局法医鉴定中心</p>
+                        <p><strong>检验法医：</strong>赵盈嫚（主检法医师，法医编号：FJ0512）</p>
+                        
+                        <table class="info-table">
+                            <tr>
+                                <th>死亡原因</th>
+                                <td>高坠致多脏器损伤死亡</td>
+                            </tr>
+                            <tr>
+                                <th>死亡时间</th>
+                                <td>2025年12月25日07:25-07:35之间</td>
+                            </tr>
+                            <tr>
+                                <th>损伤特征</th>
+                                <td>颅骨粉碎性骨折、胸腔脏器破裂、多处肋骨骨折、四肢多发性骨折</td>
+                            </tr>
+                            <tr>
+                                <th>损伤形态</th>
+                                <td>损伤符合高坠特征，着力点位于身体右侧</td>
+                            </tr>
+                            <tr>
+                                <th>生前伤/死后伤</th>
+                                <td>所有损伤均为生前形成</td>
+                            </tr>
+                            <tr>
+                                <th>毒物检测</th>
+                                <td>血液中未检出常见毒物、麻醉药品及酒精成分</td>
+                            </tr>
+                            <tr>
+                                <th>抵抗伤</th>
+                                <td>体表未见抵抗伤、约束伤，指甲内无异物</td>
+                            </tr>
+                        </table>
+                        
+                        <div class="key-info">
+                            <strong>法医意见：</strong>根据尸体检验，死者损伤符合高坠损伤特征，损伤程度与从4楼（高度约12米）坠落相符。体表未见抵抗伤、搏斗伤，<strong>初步排除他杀可能</strong>。具体死因需结合现场勘查和调查情况综合分析。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 调查访问 -->
+                <div class="record-section">
+                    <h3 class="section-title">四、相关人员询问笔录摘要</h3>
+                    <div class="record-content">
+                        <p><strong>询问时间：</strong>2025年12月25日08:30-10:00</p>
+                        <p><strong>询问人员：</strong>张宏刚、岳月、陈亚菲</p>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-title">1. 王志强（保安队长，46岁）</div>
+                            <p>"我是07:35巡逻到教学楼北侧时发现的。当时天已经黑了，我看到地上躺着一个人，穿着校服，一动不动。我马上用对讲机呼叫值班室，然后跑近查看，发现是学生，已经没有了呼吸。我立即拨打了110和120。"</p>
+                            <p>"最近学校监控系统刚刚升级。晚自习前这段时间，教学楼人比较少，大部分学生去食堂吃饭了。"</p>
+                        </div>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-title">2. 张磊（高二3班班主任，38岁）</div>
+                            <p>"江楠是我班的学生，平时比较内向，不太爱说话。今天下午放学时她情绪看起来正常，说明天要交的作业已经完成了。她最近学习压力可能有点大，成绩有些下滑。"</p>
+                            <p>"大概两周前，我注意到她手腕上有一些划痕，问她怎么回事，她说是被课桌划的。我建议她去心理辅导室聊聊，但她拒绝了。"</p>
+                        </div>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-title">3. 钱万铭（高二3班学生，17岁）</div>
+                            <p>"江楠坐在我后面，今天下午放学时她是一个人走的。她最近好像心情不太好，经常一个人发呆。"</p>
+                            <p>"晚自习前我一般会在操场打篮球，今天没看到江楠。我们班有些男生喜欢开她玩笑，说她太孤僻。"</p>
+                        </div>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-title">4. 赵晓梅（学校心理咨询师，42岁）</div>
+                            <p>"江楠同学在10月到12月期间来过心理辅导室4次。她主要反映学习压力大、睡眠不好，但对人际关系问题回避谈论。"</p>
+                            <p>"最后一次咨询是12月10日，她几乎没怎么说话，状态比之前更差。我建议她定期咨询，但她没有再预约。"</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 初步结论 -->
+                <div class="record-section">
+                    <h3 class="section-title">五、案件初步分析</h3>
+                    <div class="record-content">
+                        <p>综合现场勘查、法医检验和调查访问情况，初步分析如下：</p>
+                        
+                        <div class="key-info">
+                            <strong>1. 案件性质：</strong>初步认定为<strong>自杀</strong>，依据如下：
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>现场无打斗痕迹，门窗完好</li>
+                                <li>死者衣着整齐，随身物品无缺失</li>
+                                <li>体表未见抵抗伤、约束伤</li>
+                                <li>坠楼时间点选择在人员较少的时段</li>
+                                <li>书包内发现纸团</li>
+                                <li>课桌内发现近期购买的美工刀</li>
+                            </ul>
+                        </div>
+                        
+                        <p><strong>2. 坠楼过程重建：</strong>死者于07:15左右进入教学楼，07:22出现在3楼，随后独自前往4楼本班教室。07:30左右，从教室窗户跳下，坠落至教学楼北侧地面。</p>
+                        
+                        <p><strong>3. 动机分析：</strong>可能因素包括学习压力过大、人际关系问题、心理健康问题、家庭因素等。</p>
+                    </div>
+                </div>
+                
+                <!-- 印章 -->
+                <div class="stamp-container">
+                    <div class="police-stamp">
+                        <div class="stamp-text">
+                            青州市公安局<br>
+                            刑事侦查支队<br>
+                            案件已受理
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 签名 -->
+                <div class="signature-area">
+                    <div class="signature-line"></div>
+                    <div class="signature-text">
+                        主办民警：张宏刚 &nbsp;&nbsp;&nbsp;&nbsp; 警号：051287<br>
+                        日期：2025年12月25日
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="police-footer">
+        <div class="footer-content">
+            <p>青州市公安局刑事侦查支队 · 案件管理系统</p>
+            <p class="footer-notice">
+                本文件属公安机关内部工作记录，未经许可不得复制、传播<br>
+                保密等级：内部 · 案件编号：QZGA-20251225-001 · 存档日期：2025-12-25
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加打印样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    body {
+                        background-color: white;
+                    }
+                    .case-card {
+                        box-shadow: none;
+                        border: 1px solid #ccc;
+                    }
+                    .police-header, .police-footer {
+                        background-color: white;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                    .police-badge {
+                        background-color: #eee;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 时间线动画
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 300);
+            });
+            
+            // 证据卡片动画
+            const evidenceItems = document.querySelectorAll('.evidence-item');
+            evidenceItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 600);
+            });
+            
+            // 表格行动画
+            const tableRows = document.querySelectorAll('.info-table tr');
+            tableRows.forEach((row, index) => {
+                row.style.opacity = '0';
+                
+                setTimeout(() => {
+                    row.style.transition = `opacity 0.3s ease ${index * 0.05}s`;
+                    row.style.opacity = '1';
+                }, 800);
+            });
+            
+            // 印章动画
+            const stamp = document.querySelector('.police-stamp');
+            stamp.style.transform = 'scale(0)';
+            
+            setTimeout(() => {
+                stamp.style.transition = 'transform 0.5s ease-out';
+                stamp.style.transform = 'scale(1)';
+            }, 1200);
+        });
+        
+        // 添加打印功能（如果需要）
+        function printDocument() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

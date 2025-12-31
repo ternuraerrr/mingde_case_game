@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明德中学心理咨询室 - 学生心理健康管理系统</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --warning-color: #fbbc05;
+            --dark-color: #202124;
+            --light-color: #f8f9fa;
+            --border-color: #dadce0;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* 顶部导航栏 */
+        .browser-header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: background-color 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .address-bar {
+            flex-grow: 1;
+            height: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 0 15px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            background-color: #f1f3f4;
+        }
+        
+        .address-bar input {
+            border: none;
+            background: none;
+            flex-grow: 1;
+            font-size: 15px;
+            outline: none;
+            color: var(--text-primary);
+        }
+        
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-btn:hover {
+            background-color: #0d62d9;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .system-page {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        /* 系统登录界面 */
+        .login-section {
+            display: none;
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            margin: 50px auto;
+        }
+        
+        .login-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--dark-color);
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .form-input {
+            height: 48px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 0 15px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+        
+        .login-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            background-color: #0d62d9;
+        }
+        
+        .login-error {
+            color: var(--danger-color);
+            font-size: 14px;
+            text-align: center;
+            display: none;
+            margin-top: 10px;
+        }
+        
+        /* 预约表格 */
+        .appointment-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .admin-login-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .admin-login-btn:hover {
+            background-color: #e8f0fe;
+        }
+        
+        .appointment-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        .appointment-table th {
+            background-color: #f8f9fa;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .appointment-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+        
+        .appointment-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* 状态标签 */
+        .status-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-scheduled {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+        }
+        
+        .status-completed {
+            background-color: #e6f4ea;
+            color: #137333;
+        }
+        
+        .status-cancelled {
+            background-color: #fce8e6;
+            color: #c5221f;
+        }
+        
+        /* 详情记录部分 */
+        .record-section {
+            margin-bottom: 40px;
+        }
+        
+        .record-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .record-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .record-card.danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .record-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .record-date {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .record-content {
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .record-content p {
+            margin-bottom: 10px;
+        }
+        
+        /* 系统信息 */
+        .system-info {
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        .info-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .info-content {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        /* 辅导老师信息 */
+        .counselor-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .counselor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .counselor-info {
+            flex-grow: 1;
+        }
+        
+        .counselor-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+        
+        .counselor-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* 预警提示 */
+        .warning-alert {
+            background-color: #fff8e1;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .warning-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #b06000;
+            display: flex;
+            align-items: center;
+        }
+        
+        .warning-title:before {
+            content: "⚠️";
+            margin-right: 10px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+            
+            .system-page {
+                padding: 20px;
+            }
+            
+            .browser-header {
+                padding: 10px;
+            }
+            
+            .nav-btn {
+                display: none;
+            }
+            
+            .appointment-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .record-header {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .login-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="browser-header">
+        <button class="nav-btn" onclick="history.back()">←</button>
+        <button class="nav-btn" onclick="history.forward()">→</button>
+        <button class="nav-btn" onclick="location.reload()">↻</button>
+        
+        <div class="address-bar">
+            <span style="color: var(--text-secondary); margin-right: 5px;">🔒</span>
+            <input type="text" value="counseling://明德中学心理咨询室/学生预约系统" readonly>
+        </div>
+        
+    </div>
+    
+    <!-- 登录界面 -->
+    <div class="login-section" id="loginSection">
+        <h2 class="login-title">心理咨询室后台登录</h2>
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label class="form-label">用户名</label>
+                <input type="text" class="form-input" id="username" value="赵晓梅" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <input type="password" class="form-input" id="password" placeholder="请输入密码">
+            </div>
+            
+            <button type="submit" class="login-btn">登录后台</button>
+            <div class="login-error" id="loginError">密码错误，请重新输入</div>
+        </form>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="main-container">
+        <div class="system-page" id="systemPage">
+            <h1 class="page-title">明德中学心理咨询室</h1>
+            <p class="page-subtitle">学生心理健康管理与预约系统</p>
+            
+            <!-- 辅导老师信息 -->
+            <div class="counselor-section">
+                <div class="counselor-avatar">赵</div>
+                <div class="counselor-info">
+                    <div class="counselor-name">赵晓梅 老师</div>
+                    <div class="counselor-title">国家二级心理咨询师 | 明德中学专职心理辅导员</div>
+                </div>
+            </div>
+            
+            <!-- 预警提示 -->
+            <div class="warning-alert">
+                <div class="warning-title">系统使用提醒</div>
+                <div class="info-content">
+                    根据《中小学心理健康教育指导纲要》，对于存在严重心理问题的学生，心理咨询师有义务向学校主管部门报告。但本系统记录显示，部分高危学生的情况未被及时上报。
+                </div>
+            </div>
+            
+            <!-- 预约表格 -->
+            <div class="appointment-section">
+                <div class="section-title">
+                    <span>学生心理咨询预约记录</span>
+                    <button class="admin-login-btn" id="adminLoginBtn">辅导员后台登录</button>
+                </div>
+                
+                <table class="appointment-table">
+                    <thead>
+                        <tr>
+                            <th width="15%">预约日期</th>
+                            <th width="15%">学生姓名</th>
+                            <th width="15%">班级</th>
+                            <th width="15%">学号</th>
+                            <th width="20%">预约事由</th>
+                            <th width="10%">状态</th>
+                            <th width="10%">辅导老师</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentTableBody">
+                        <!-- 数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 心理辅导记录（默认隐藏，登录后显示） -->
+            <div class="record-section" id="recordSection" style="display: none;">
+                <div class="section-title">详细心理辅导记录</div>
+                
+                <!-- 江楠的记录 -->
+                <div class="record-card danger">
+                    <div class="record-header">
+                        <div class="record-title">江楠 - 高二(3)班 - 学号: 20230315</div>
+                        <div class="record-date">最近辅导: 2025年11月20日</div>
+                    </div>
+                    <div class="record-content">
+                        <p><strong>辅导记录摘要：</strong></p>
+                        <p>该生自2025年9月起共进行6次心理咨询。首次咨询时表现出明显的焦虑和抑郁症状，自述长期受到学长王浩等人的欺凌，包括言语侮辱、孤立和财物损坏。</p>
+                        <p><strong>关键对话记录：</strong></p>
+                        <p>学生哭着请求："林老师，求您不要告诉学校和班主任，王浩说他爸爸是校董，如果我告状，他会让我在学校待不下去的。"</p>
+                        <p>学生提到："我只有写日记的时候才能把心里的痛苦说出来，日记是我唯一的朋友。"</p>
+                        <p><strong>心理评估：</strong></p>
+                        <p>中度抑郁倾向，伴有焦虑症状。有明显的自杀意念，但表示"不会真的去做，因为还有爸妈需要我"。</p>
+                        <p><strong>处理措施：</strong></p>
+                        <p>1. 建议学生写日记排解情绪<br>
+                        2. 教授简单的情绪调节技巧<br>
+                        3. 未按学校规定上报学生受欺凌情况<br>
+                        4. 未通知班主任和家长</p>
+                        <p><strong>辅导员备注：</strong> <span style="color: #c5221f;">"学生强烈要求保密，考虑到王浩父亲的身份，暂缓上报。继续观察。"</span></p>
+                    </div>
+                </div>
+                
+                <!-- 其他学生记录 -->
+                <div class="record-card">
+                    <div class="record-header">
+                        <div class="record-title">李阳 - 高三(5)班 - 学号: 20220322</div>
+                        <div class="record-date">最近辅导: 2024年11月15日</div>
+                    </div>
+                    <div class="record-content">
+                        <p><strong>辅导记录摘要：</strong></p>
+                        <p>该生因受欺凌产生心理压力，出现失眠、注意力不集中等症状。对学校环境感到不安，担心成为下一个被欺凌对象。</p>
+                        <p><strong>处理措施：</strong></p>
+                        <p>1. 提供心理支持，建立安全感<br>
+                        2. 建议适当减少与王浩等人的接触<br>
+                        3. 教授压力管理技巧</p>
+                    </div>
+                </div>
+                
+                <div class="record-card">
+                    <div class="record-header">
+                        <div class="record-title">王浩 - 高二(3)班 - 学号: 20230308</div>
+                        <div class="record-date">最近辅导: 2025年10月10日</div>
+                    </div>
+                    <div class="record-content">
+                        <p><strong>辅导记录摘要：</strong></p>
+                        <p>班主任张磊老师推荐进行心理评估。学生表现出攻击性倾向，缺乏同理心，对欺凌行为不以为然，认为"只是开个玩笑"。</p>
+                        <p><strong>学生自述：</strong></p>
+                        <p>"江楠太敏感了，我就是跟她玩玩，她怎么就当真了。我爸说在学校里不能被人欺负，要强势一点。"</p>
+                        <p><strong>处理措施：</strong></p>
+                        <p>1. 进行同理心训练<br>
+                        2. 提供情绪管理指导<br>
+                        3. 建议班主任加强监督</p>
+                        <p><strong>辅导员备注：</strong> "学生态度不配合，父亲王建国曾来电要求简化心理评估流程。"</p>
+                    </div>
+                </div>
+                
+                <div class="record-card warning">
+                    <div class="record-header">
+                        <div class="record-title">张小雨 - 高一(1)班 - 学号: 20240112</div>
+                        <div class="record-date">最近辅导: 2025年12月5日</div>
+                    </div>
+                    <div class="record-content">
+                        <p><strong>辅导记录摘要：</strong></p>
+                        <p>因学业压力大出现焦虑症状，考试前有呕吐、手抖等躯体化表现。父母期望值过高，学生感到无法达到要求。</p>
+                        <p><strong>处理措施：</strong></p>
+                        <p>1. 认知行为疗法调整不合理信念<br>
+                        2. 放松训练和压力管理技巧<br>
+                        3. 与家长沟通调整期望值</p>
+                    </div>
+                </div>
+                
+                <div class="record-card">
+                    <div class="record-header">
+                        <div class="record-title">刘明 - 高三(2)班 - 学号: 20220228</div>
+                        <div class="record-date">最近辅导: 2025年11月28日</div>
+                    </div>
+                    <div class="record-content">
+                        <p><strong>辅导记录摘要：</strong></p>
+                        <p>高考压力导致的焦虑情绪，睡眠质量差，学习效率下降。有轻微的强迫症状，反复检查作业。</p>
+                        <p><strong>处理措施：</strong></p>
+                        <p>1. 制定合理的学习计划<br>
+                        2. 睡眠卫生指导<br>
+                        3. 正念冥想训练</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 系统信息 -->
+            <div class="system-info">
+                <div class="info-title">心理咨询室工作原则</div>
+                <div class="info-content">
+                    <p>1. 保密原则：心理咨询内容保密，但以下情况除外：学生有自伤或伤人风险、涉及法律问题时。</p>
+                    <p>2. 及时报告：发现学生存在严重心理问题或有受欺凌情况时，应及时向学校主管部门报告。</p>
+                    <p>3. 记录完整：每次心理咨询后应详细记录，包括学生状态、谈话内容、评估结果和处理建议。</p>
+                    <p style="color: #c5221f; font-weight: 500; margin-top: 10px;">注：本系统记录显示，江楠同学的受欺凌情况及抑郁倾向未按学校规定上报，违反了工作原则第2条。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 预约数据
+        const appointments = [
+            { date: "2025-11-20", name: "江楠", class: "高二(3)班", studentId: "20230315", reason: "情绪低落，人际关系问题", status: "completed", counselor: "赵晓梅" },
+            { date: "2025-11-28", name: "刘明", class: "高三(2)班", studentId: "20220228", reason: "高考压力，睡眠问题", status: "completed", counselor: "赵晓梅" },
+            { date: "2025-12-05", name: "张小雨", class: "高一(1)班", studentId: "20240112", reason: "考试焦虑，学习压力", status: "scheduled", counselor: "陈飞龙" },
+            { date: "2024-11-15", name: "李阳", class: "高三(5)班", studentId: "20220322", reason: "人际关系问题，心理压力", status: "completed", counselor: "赵晓梅" },
+            { date: "2025-12-10", name: "陈悦", class: "高二(1)班", studentId: "20230105", reason: "家庭变故适应", status: "scheduled", counselor: "林伟" },
+            { date: "2025-10-10", name: "王浩", class: "高二(3)班", studentId: "20230308", reason: "班主任推荐评估", status: "completed", counselor: "赵晓梅" },
+            { date: "2025-11-25", name: "赵婷婷", class: "高一(3)班", studentId: "20240318", reason: "社交焦虑，融入困难", status: "completed", counselor: "林伟" },
+            { date: "2025-12-12", name: "孙浩然", class: "高三(1)班", studentId: "20220122", reason: "职业规划迷茫", status: "scheduled", counselor: "赵晓梅" },
+            { date: "2025-11-10", name: "周琳", class: "高二(2)班", studentId: "20230214", reason: "情感问题咨询", status: "cancelled", counselor: "赵晓梅" },
+            { date: "2025-12-08", name: "吴昊", class: "高一(2)班", studentId: "20240208", reason: "网络成瘾倾向", status: "scheduled", counselor: "陈飞龙" }
+        ];
+        
+        // DOM元素
+        const loginSection = document.getElementById('loginSection');
+        const systemPage = document.getElementById('systemPage');
+        const appointmentTableBody = document.getElementById('appointmentTableBody');
+        const recordSection = document.getElementById('recordSection');
+        const loginForm = document.getElementById('loginForm');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const loginError = document.getElementById('loginError');
+        
+        // 正确的登录密码
+        const CORRECT_PASSWORD = "zhaoxiaomei";
+        
+        // 生成预约表格行
+        function generateAppointmentTable() {
+            appointmentTableBody.innerHTML = '';
+            
+            appointments.forEach(appointment => {
+                const row = document.createElement('tr');
+                
+                // 确定状态标签
+                let statusClass, statusText;
+                switch(appointment.status) {
+                    case 'scheduled':
+                        statusClass = 'status-scheduled';
+                        statusText = '已预约';
+                        break;
+                    case 'completed':
+                        statusClass = 'status-completed';
+                        statusText = '已完成';
+                        break;
+                    case 'cancelled':
+                        statusClass = 'status-cancelled';
+                        statusText = '已取消';
+                        break;
+                }
+                
+                // 如果是江楠，添加特殊标记
+                const specialMark = appointment.name === "江楠" ? '<span style="color: #c5221f; margin-left: 5px;">⚠️</span>' : '';
+                
+                row.innerHTML = `
+                    <td>${appointment.date}</td>
+                    <td>${appointment.name} ${specialMark}</td>
+                    <td>${appointment.class}</td>
+                    <td>${appointment.studentId}</td>
+                    <td>${appointment.reason}</td>
+                    <td><span class="status-tag ${statusClass}">${statusText}</span></td>
+                    <td>${appointment.counselor}</td>
+                `;
+                
+                appointmentTableBody.appendChild(row);
+            });
+        }
+        
+        // 显示登录界面
+        function showLogin() {
+            systemPage.style.display = 'none';
+            loginSection.style.display = 'block';
+        }
+        
+        // 显示系统界面
+        function showSystem() {
+            loginSection.style.display = 'none';
+            systemPage.style.display = 'block';
+        }
+        
+        // 显示详细记录（登录后）
+        function showRecords() {
+            recordSection.style.display = 'block';
+        }
+        
+        // 处理登录
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const passwordInput = document.getElementById('password');
+            const password = passwordInput.value;
+            
+            if (password === CORRECT_PASSWORD) {
+                // 登录成功
+                showSystem();
+                showRecords();
+                loginError.style.display = 'none';
+                passwordInput.value = '';
+                
+                // 显示成功提示
+                alert("登录成功！已解锁详细心理辅导记录。");
+            } else {
+                // 登录失败
+                loginError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            generateAppointmentTable();
+            
+            // 默认显示系统页面（预约表格）
+            showSystem();
+            
+            // 登录按钮事件
+            adminLoginBtn.addEventListener('click', showLogin);
+            
+            // 登录表单提交事件
+            loginForm.addEventListener('submit', handleLogin);
+            
+            // 返回按钮事件
+            document.querySelector('.search-btn').addEventListener('click', function() {
+                // 清空密码输入
+                document.getElementById('password').value = '';
+                loginError.style.display = 'none';
+                showSystem();
+                recordSection.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

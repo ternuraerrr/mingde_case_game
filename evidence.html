@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>证据检索系统 - 明德中学坠楼案</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --warning-color: #fbbc05;
+            --dark-color: #202124;
+            --light-color: #f8f9fa;
+            --border-color: #dadce0;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* 顶部导航栏 */
+        .browser-header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: background-color 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .address-bar {
+            flex-grow: 1;
+            height: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 0 15px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            background-color: #f1f3f4;
+        }
+        
+        .address-bar input {
+            border: none;
+            background: none;
+            flex-grow: 1;
+            font-size: 15px;
+            outline: none;
+            color: var(--text-primary);
+        }
+        
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-btn:hover {
+            background-color: #0d62d9;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .search-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        .search-input-container {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .search-input {
+            width: 100%;
+            height: 56px;
+            border-radius: 28px;
+            border: 1px solid var(--border-color);
+            padding: 0 60px 0 24px;
+            font-size: 16px;
+            outline: none;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+        
+        .search-tips {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            padding-left: 5px;
+        }
+        
+        /* 搜索结果区域 */
+        .results-section {
+            display: none;
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .results-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .results-count {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .evidence-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .evidence-item {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .evidence-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .evidence-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        
+        .evidence-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .evidence-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .evidence-type {
+            background-color: #f1f3f4;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        
+        /* 搜索历史 */
+        .history-section {
+            display: none;
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .history-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .history-item {
+            background-color: #f8f9fa;
+            border-radius: 16px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .history-item:hover {
+            background-color: #e8eaed;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        /* 分类标签 */
+        .category-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        
+        .category-1 { background-color: #e8f0fe; color: #1a73e8; }
+        .category-2 { background-color: #e6f4ea; color: #137333; }
+        .category-3 { background-color: #fce8e6; color: #c5221f; }
+        .category-4 { background-color: #fef7e0; color: #b06000; }
+        
+        /* 初始提示 */
+        .initial-hint {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .hint-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+        
+        .hint-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .hint-text {
+            color: var(--text-secondary);
+            font-size: 15px;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            line-height: 1.6;
+        }
+        
+        /* 案件报告模块 */
+        .report-section {
+            display: none;
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .report-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .report-description {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .evidence-select-container {
+            margin-bottom: 30px;
+        }
+        
+        .evidence-select-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .evidence-select-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        
+        .evidence-select-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .evidence-select-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .evidence-select-item.selected {
+            border-color: var(--primary-color);
+            background-color: #e8f0fe;
+        }
+        
+        .evidence-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .evidence-select-label {
+            font-size: 15px;
+            cursor: pointer;
+        }
+        
+        .submit-report-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .submit-report-btn:hover {
+            background-color: #0d62d9;
+        }
+        
+        .submit-report-btn:disabled {
+            background-color: #dadce0;
+            cursor: not-allowed;
+        }
+        
+        .report-progress {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .progress-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            flex-grow: 1;
+            height: 8px;
+            background-color: #e8eaed;
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        /* 结局页面样式 */
+        .ending-page {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 40px auto;
+            display: none;
+        }
+        
+        .ending-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            text-align: center;
+        }
+        
+        .ending-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .ending-content {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        
+        .news-article {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            background-color: #f9f9f9;
+        }
+        
+        .news-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        
+        .news-content {
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .chat-interface {
+            background-color: #f0f2f5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .chat-message {
+            background-color: white;
+            border-radius: 18px;
+            padding: 12px 18px;
+            margin-bottom: 15px;
+            max-width: 80%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .chat-message.sender {
+            background-color: #0084ff;
+            color: white;
+            margin-left: auto;
+        }
+        
+        .final-text {
+            text-align: center;
+            font-size: 20px;
+            font-style: italic;
+            margin: 40px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .game-over {
+            text-align: center;
+            padding: 30px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .restart-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 20px;
+        }
+        
+        .restart-btn:hover {
+            background-color: #0d62d9;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+            
+            .search-section, .results-section, .history-section, .initial-hint, .report-section, .ending-page {
+                padding: 20px;
+            }
+            
+            .browser-header {
+                padding: 10px;
+            }
+            
+            .nav-btn {
+                display: none;
+            }
+            
+            .evidence-select-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .ending-title {
+                font-size: 24px;
+            }
+        }
+		.news-container {
+		            background-color: white;
+		            border-radius: 8px;
+		            padding: 30px;
+		            margin: 20px 0;
+		            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+		            font-family: "SimSun", "STSong", serif;
+		        }
+		        
+		        .news-header {
+		            text-align: center;
+		            margin-bottom: 25px;
+		            border-bottom: 1px solid #eee;
+		            padding-bottom: 15px;
+		        }
+		        
+		        .news-title {
+		            font-size: 24px;
+		            font-weight: bold;
+		            color: #222;
+		            margin-bottom: 8px;
+		        }
+		        
+		        .news-subtitle {
+		            font-size: 14px;
+		            color: #666;
+		        }
+		        
+		        .news-content {
+		            line-height: 1.8;
+		            font-size: 16px;
+		            color: #333;
+		        }
+		        
+		        .news-content p {
+		            margin-bottom: 15px;
+		            text-indent: 2em;
+		        }
+		        
+		        .news-footer {
+		            margin-top: 25px;
+		            padding-top: 15px;
+		            border-top: 1px solid #eee;
+		            font-size: 14px;
+		            color: #666;
+		        }
+		        
+		        .memo-container {
+		            background-color: #f9f9f9;
+		            border: 1px solid #ddd;
+		            border-radius: 8px;
+		            padding: 25px;
+		            margin: 20px 0;
+		            font-family: "KaiTi", "STKaiti", cursive;
+		        }
+		        
+		        .memo-date {
+		            color: #999;
+		            font-size: 14px;
+		            margin-bottom: 10px;
+		        }
+		        
+		        .memo-content {
+		            line-height: 1.6;
+		            color: #444;
+		        }
+		        
+		        .police-report {
+		            background-color: #f0f7ff;
+		            border-left: 4px solid #1a73e8;
+		            border-radius: 4px;
+		            padding: 25px;
+		            margin: 20px 0;
+		        }
+		        
+		        .report-title {
+		            font-size: 20px;
+		            font-weight: bold;
+		            color: #1a365d;
+		            margin-bottom: 15px;
+		        }
+		        
+		        .report-content {
+		            line-height: 1.7;
+		            color: #333;
+		        }
+		        
+		        .testimony {
+		            background-color: #fff8e1;
+		            border: 1px solid #ffd54f;
+		            border-radius: 8px;
+		            padding: 20px;
+		            margin: 20px 0;
+		            font-style: italic;
+		        }
+		        
+		        .testimony-author {
+		            text-align: right;
+		            margin-top: 10px;
+		            color: #e65100;
+		            font-weight: bold;
+		        }
+		        
+		        .final-message {
+		            text-align: center;
+		            font-size: 18px;
+		            margin: 40px 0;
+		            padding: 25px;
+		            background: linear-gradient(to right, #f5f5f5, #fff);
+		            border-radius: 8px;
+		            border-left: 5px solid #e74c3c;
+		            font-weight: 500;
+		        }
+		        
+		        .game-over-message {
+		            text-align: center;
+		            padding: 20px;
+		            background-color: #f8f9fa;
+		            border-radius: 8px;
+		            margin-top: 30px;
+		            border: 2px dashed #ccc;
+		        }
+		        
+		        .hidden-evidence-hint {
+		            background-color: #fff3cd;
+		            border: 1px solid #ffecb5;
+		            border-radius: 8px;
+		            padding: 15px;
+		            margin: 20px 0;
+		            font-size: 14px;
+		            color: #856404;
+		        }
+		        
+		        /* 评论区域样式 */
+		        .comments-section {
+		            margin-top: 30px;
+		            padding: 20px;
+		            background-color: #f8f9fa;
+		            border-radius: 8px;
+		        }
+		        
+		        .comment {
+		            background-color: white;
+		            border-radius: 6px;
+		            padding: 15px;
+		            margin-bottom: 10px;
+		            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+		        }
+		        
+		        .comment-content {
+		            margin-bottom: 5px;
+		        }
+		        
+		        .comment-meta {
+		            display: flex;
+		            justify-content: space-between;
+		            font-size: 12px;
+		            color: #999;
+		        }
+		        
+		        /* 响应式调整 */
+		        @media (max-width: 768px) {
+		            .news-title {
+		                font-size: 20px;
+		            }
+		            
+		            .news-content {
+		                font-size: 15px;
+		            }
+		            
+		            .final-message {
+		                font-size: 16px;
+		                padding: 20px 15px;
+		            }
+		        }
+		   
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="browser-header">
+        <button class="nav-btn" id="backBtn">←</button>
+        <button class="nav-btn" id="forwardBtn">→</button>
+        <button class="nav-btn" id="refreshBtn">↻</button>
+        
+        <div class="address-bar">
+            <span style="color: var(--text-secondary); margin-right: 5px;">🔒</span>
+            <input type="text" value="evidence://检索系统/明德中学学生坠楼案" id="addressInput" readonly>
+        </div>
+        
+        <button class="search-btn" id="searchBtn">搜索</button>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="main-container">
+        <!-- 搜索区域 -->
+        <div class="search-section" id="searchSection">
+            <h1 class="page-title">证据检索系统</h1>
+            <p class="page-subtitle">明德中学学生坠楼案相关证据材料检索平台</p>
+            
+            <div class="search-input-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="输入关键词检索证据材料..." autocomplete="off">
+                <div class="search-icon">🔍</div>
+            </div>
+            
+            <div class="search-tips">
+                提示：输入完整的关键词后回车进行精确搜索，例如：明德中学学生坠楼案
+            </div>
+            
+            <button class="submit-report-btn" id="openReportBtn" style="margin-top: 20px;">提交案件报告</button>
+        </div>
+        
+        <!-- 初始提示区域 -->
+        <div class="initial-hint" id="initialHint">
+            <div class="hint-icon">🔍</div>
+            <div class="hint-title">请输入关键词开始搜索</div>
+            <div class="hint-text">
+                本系统支持对明德中学坠楼案相关证据材料进行检索。请输入完整的关键词进行精确匹配搜索。
+                收集足够证据后，可以点击"提交案件报告"按钮整理并提交你的调查结果。
+            </div>
+        </div>
+        
+        <!-- 搜索结果区域 -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <div class="results-title">检索结果</div>
+                <div class="results-count">找到 <span id="resultsCount">0</span> 条相关证据</div>
+            </div>
+            
+            <div class="evidence-list" id="evidenceList">
+                <!-- 搜索结果将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 案件报告区域 -->
+        <div class="report-section" id="reportSection">
+            <div class="report-title">提交案件调查报告</div>
+            <div class="report-description">
+                请从你已发现的证据中选择相关材料，系统将根据你提供的证据生成最终调查报告。
+                不同的证据组合可能导致不同的调查结论，请谨慎选择。
+            </div>
+            
+            <div class="report-progress">
+                <div class="progress-text">调查进度</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressPercent">0%</div>
+            </div>
+            
+            <div class="evidence-select-container">
+                <div class="evidence-select-title">已发现证据（请选择关键证据）</div>
+                <div class="evidence-select-list" id="evidenceSelectList">
+                    <!-- 证据选择项将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <button class="submit-report-btn" id="submitReportBtn">提交最终报告</button>
+        </div>
+        
+        <!-- 搜索历史区域 -->
+        <div class="history-section" id="historySection">
+            <div class="history-title">最近搜索</div>
+            <div class="history-list" id="historyList">
+                <!-- 搜索历史将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 结局1：无声的悲鸣 -->
+        <div class="ending-page" id="ending1">
+            <h1 class="ending-title">无声的悲鸣</h1>
+            <div class="ending-subtitle">探索度 <span id="ending1Exploration">0</span>% - 未找到关键证据</div>
+            
+            <div class="ending-content">
+                        <div class="news-container">
+                            <div class="news-header">
+                                <div class="news-title">明德中学一女生坠楼身亡，警方：排除他杀，系心理压力过大导致</div>
+                                <div class="news-subtitle">青州日报 2025年12月30日 记者 张晓</div>
+                            </div>
+                            
+                            <div class="news-content">
+                                <p>本报讯 昨日下午，明德中学发生一起学生坠楼事件。该校高二学生江楠从教学楼4楼坠落，经送医抢救无效身亡。警方第一时间介入调查，调取校内监控、询问相关师生后确认，江楠长期存在情绪低落、失眠等情况，自述"学习压力大，和同学相处不愉快"，未发现遭受外力侵害或他杀痕迹，最终认定为自行坠楼。</p>
+                                
+                                <p>据警方通报，江楠同学性格内向，近期学业压力较大，曾多次向班主任反映心理困扰。学校心理咨询记录显示，她在本学期曾进行过四次心理咨询，主要反映学习压力大、人际关系紧张等问题。</p>
+                                
+                                <p>校方回应称，已对江楠家属进行安抚并达成和解，后续将加强全校学生心理健康教育与疏导，定期开展心理讲座、开设心理咨询室，严防类似事件发生。明德中学校长王建国在记者会上表示："我们对江楠同学的不幸离世深感痛心，学校将以此为契机，全面加强学生心理健康工作。"</p>
+                                
+                                <p>教育部门已介入调查，要求全市各学校加强学生心理健康排查，完善校园安全管理制度。</p>
+                            </div>
+                            
+                            <div class="news-footer">
+                                责任编辑：李伟 | 校对：王晓 | 签发：陈明
+                            </div>
+                        </div>
+                        
+                        <div class="comments-section">
+                            <div class="comment">
+                                <div class="comment-content">现在的孩子心理太脆弱了，一点压力都承受不了。</div>
+                                <div class="comment-meta">
+                                    <span>网友A</span>
+                                    <span>👍 1.2万</span>
+                                </div>
+                            </div>
+                            
+                            <div class="comment">
+                                <div class="comment-content">学校的心理疏导要跟上啊，不能只抓成绩。</div>
+                                <div class="comment-meta">
+                                    <span>家长B</span>
+                                    <span>👍 8.6千</span>
+                                </div>
+                            </div>
+                            
+                            <div class="comment">
+                                <div class="comment-content">是不是被欺负了？之前听说这个学校有霸凌现象。</div>
+                                <div class="comment-meta">
+                                    <span>网友C</span>
+                                    <span>👍 234</span>
+                                </div>
+                            </div>
+                            
+                            <div class="comment">
+                                <div class="comment-content">楼上别乱说，警方都调查清楚了，就是心理问题。</div>
+                                <div class="comment-meta">
+                                    <span>网友D</span>
+                                    <span>👍 1.5万</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="final-message">
+                            霸凌的拳头落在身上时无人听见，她的求救被当作青春期的矫情。那笔65万的交易，和班主任的沉默一起，成了永远的秘密。
+                        </div>
+                        
+                        <div class="game-over-message">
+                            <p style="font-weight: 600; margin-bottom: 10px;">游戏结束</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 20px;">你看到的只是被包装好的"意外"，那些被刻意抹去的痕迹，正藏在你未曾触及的角落。</p>
+                         </div>
+                    </div>
+                </div>
+        
+        <!-- 结局2：迟来的正义 -->
+        <div class="ending-page" id="ending2">
+            <h1 class="ending-title">迟来的正义</h1>
+            <div class="ending-subtitle">探索度 <span id="ending2Exploration">0</span>% - 找到了关键线索，但无法伸张正义</div>
+            
+            <div class="ending-content">
+                        <div class="memo-container">
+                            <div class="memo-date">2025年12月10日 22:47</div>
+                            <div class="memo-content">
+                                今天王建国又来找我了，还是在那个茶室。他说只要签了协议，王浩就不会再欺负楠楠了。65万，能补上孩他爸的机器赔款窟窿，能给肚子里的儿子攒下奶粉钱。我看着他的眼睛，想说"不"，但想到家里欠的债，话到嘴边又咽了回去。
+                            </div>
+                        </div>
+                        
+                        <div class="memo-container">
+                            <div class="memo-date">2025年12月12日 19:15</div>
+                            <div class="memo-content">
+                                楠楠今天回家眼睛又红又肿，问她怎么了也不说。晚饭后她突然抱住我，哭着说："妈，王浩他们又欺负我，张老师明明看到了，却装作没看见..." 我的心像被刀割一样。但我能怎么办？协议已经签了，钱也收了，王家我们得罪不起。我只能抱着她，一遍遍说："再忍忍，等高三毕业就好了..."
+                            </div>
+                        </div>
+                        
+                        <div class="memo-container">
+                            <div class="memo-date">2025年12月18日 21:33</div>
+                            <div class="memo-content">
+                                今天去学校接楠楠，看到她和王浩在楼梯口说话。王浩的表情让我害怕。回家路上，楠楠一直很沉默。晚上我发现她手腕上有新的伤痕，问她怎么回事，她说是不小心划的。我知道她在说谎。那65万像一块石头压在我心上，我当初为什么要签那个协议？
+                            </div>
+                        </div>
+                        
+                        <div class="memo-container">
+                            <div class="memo-date">2025年12月25日 07:45</div>
+                            <div class="memo-content">
+                                楠楠今天出门前回头看了我一眼，那眼神我这辈子都忘不了。她什么都没说，但我知道她想说什么。我是不是错了？用女儿的尊严换了钱，我不配当妈。
+                            </div>
+                        </div>
+                                                
+                        <div class="final-message">
+                            一纸协议，买断了一个女孩的求救声，也压垮了一个母亲的良知。没有证人，这份染血的协议，终究难以撼动王家的势力。
+                        </div>
+                        
+                        <div class="game-over-message">
+                            <p style="font-weight: 600; margin-bottom: 10px;">游戏结束</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 20px;">你找到了所有真相，但正义的实现，还需要最后一步。</p>
+                            <div class="hidden-evidence-hint">
+                                💡 提示：你已发现"赔偿协议"关键证据，但缺少"？？"的证词。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+        <!-- 结局3：光明的审判 -->
+        <div class="ending-page" id="ending3">
+            <h1 class="ending-title">光明的审判</h1>
+            <div class="ending-subtitle">探索度 <span id="ending3Exploration">0</span>% - 真相大白，正义得到伸张</div>
+            
+            <div class="ending-content">
+                        <div class="police-report">
+                            <div class="report-title">青州市公安局关于明德中学江楠坠亡案的警情通报</div>
+                            <div class="report-content">
+                                <p>近日，我局接群众实名举报并提交完整证据链，对明德中学江楠坠亡案重启调查，现已查明全部事实：</p>
+                                
+                                <p><strong>一、案件基本情况</strong><br>
+                                2025年12月25日，明德中学高二学生江楠坠楼身亡。经查，江楠长期遭受该校学生王浩等人的校园霸凌，导致严重心理创伤。</p>
+                                
+                                <p><strong>二、主要违法犯罪事实</strong><br>
+                                1. 王浩父亲王建国为掩盖儿子恶行，与江楠母亲李秀芳达成65万赔偿协议，意图私了；<br>
+                                2. 江楠的班主任张磊收受王建国财物共计30万元，对王浩的霸凌行为视而不见，甚至在江楠求助时以"同学间小矛盾"敷衍，变相纵容霸凌持续；<br>
+                                3. 案发后，张磊利用权限删除记录霸凌过程的监控录像，涉嫌破坏证据；<br>
+                                
+                                <p><strong>三、处理结果</strong><br>
+                                1. 犯罪嫌疑人王建国因涉嫌妨害作证罪被依法逮捕；<br>
+                                2. 张磊被开除公职，因涉嫌受贿罪、包庇罪被依法逮捕；<br>
+                                3. 王浩等霸凌学生因未成年，已被送入专门矫治教育机构接受矫治；<br>
+                                4. 李秀芳已主动退还65万非法所得，并配合警方完成调查；<br>
+                                5. 明德中学被责令全面整改，校董会改组。</p>
+                                
+                                <p><strong>四、案件启示</strong><br>
+                                此案暴露出校园安全管理、师德师风建设等方面存在的问题。教育部门将对全市学校开展校园安全专项检查，坚决杜绝类似事件发生。</p>
+                                
+                                <p style="text-align: right; margin-top: 20px;">青州市公安局<br>2026年1月1日</p>
+                            </div>
+                        </div>
+                        
+                        <div class="testimony">
+                            <p>"我曾害怕报复，所以一直保持沉默。但江楠的日记里写着'想要永远的平安'，我不能让她白死。那天我在图书馆消防通道听到他们的争吵，用手机录了音。王浩威胁她不准告诉任何人，否则会让她'后悔一辈子'。张老师明明知道这一切，却装作不知道。今天我站在这里，说出真相，希望这样的悲剧不再发生。"</p>
+                            <div class="testimony-author">—— L（某学生）</div>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 40px 0;">
+                            <div style="width: 100%; height: 250px; background: linear-gradient(to right, #e3f2fd, #f3e5f5); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; flex-direction: column;">
+                                <div style="font-size: 24px; font-weight: bold; color: #2c3e50; margin-bottom: 15px;">校园反霸凌专项治理行动</div>
+                                <div style="color: #666; max-width: 600px; padding: 0 20px;">
+                                    青州市教育局即日起在全市范围内开展校园反霸凌专项治理行动，设立24小时举报热线，建立学生心理预警机制，坚决对校园霸凌"零容忍"。
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="final-message" style="background: linear-gradient(to right, #e8f5e9, #f1f8e9); border-left: 5px solid #4caf50;">
+                            霸凌者终受惩戒，包庇者难逃法网，染血的协议被撕碎在阳光下。她的呐喊，终于被听见了。
+                        </div>
+                        
+                        <div class="game-over-message" style="border: 2px solid #4caf50;">
+                            <p style="font-weight: 600; margin-bottom: 10px; color: #2e7d32;">✓ 调查完成</p>
+                            <p style="color: #388e3c; margin-bottom: 20px;">你拼凑起了破碎的真相，也为逝者讨回了迟来的正义。愿校园里再无霸凌，再无沉默的旁观者。</p>
+                        </div>
+                    </div>
+        </div>
+    </div>
+
+    <script>
+        // 证据数据库 - 添加李阳证据
+        const EVIDENCE_DATABASE = {
+            "江楠": {
+                title: "江楠 - 坠楼学生基本信息",
+                description: "明德中学高二(3)班学生，于2025年12月25日坠楼身亡。家庭背景、在校表现、心理健康记录等详细信息。",
+                type: "个人信息",
+                category: 1,
+                file: "jiangnan.html",
+                keyEvidence: false
+            },
+            "明德中学": {
+                title: "明德中学 - 信息简介",
+                description: "明德中学基本信息，包括学校历史、师资力量、校园环境等。",
+                type: "学校信息",
+                category: 1,
+                file: "mingde.html",
+                keyEvidence: false
+            },
+            "明德中学学生坠楼案": {
+                title: "明德中学学生坠楼案 - 案件概述",
+                description: "2025年12月25日发生在明德中学的学生坠楼事件完整记录，包括时间线、现场情况、初步调查结果。",
+                type: "案件档案",
+                category: 1,
+                file: "mingde_case.html",
+                keyEvidence: false
+            },
+            "纸团": {
+                title: "疑似证据",
+                description: "在江楠课桌内发现的纸团，内容只有一句话。",
+                type: "物证",
+                category: 2,
+                file: "note.html",
+                keyEvidence: false
+            },
+            "王浩": {
+                title: "王浩 - 纸团主人信息",
+                description: "明德中学高三(5)班学生。",
+                type: "相关人员信息",
+                category: 1,
+                file: "wanghao.html",
+                keyEvidence: false
+            },
+            "张磊": {
+                title: "张磊 - 班主任谈话记录",
+                description: "江楠的班主任张磊老师的档案，包含个人信息以及曾获荣誉。",
+                type: "相关人员信息",
+                category: 1,
+                file: "zhanglei.html",
+                keyEvidence: false
+            },
+            "补课费": {
+                title: "工资账户流水记录",
+                description: "受害人班主任张磊的银行流水。",
+                type: "财务记录",
+                category: 4,
+                file: "account_records.html",
+                keyEvidence: false
+            },
+            "工作日志": {
+                title: "张磊工作日志",
+                description: "班主任张磊的工作日志，包含对学生情况的记录、多年以来的教学方式方法等内容。",
+                type: "工作记录",
+                category: 3,
+                file: "work_logs.html",
+                keyEvidence: true
+            },
+            "日记": {
+                title: "江楠个人日记摘录",
+                description: "从江楠住所发现的个人日记，记录了其近期的心理状态、校园生活及人际关系情况。",
+                type: "个人记录",
+                category: 2,
+                file: "diary.html",
+                keyEvidence: true
+            },
+            "班级群聊": {
+                title: "相关班级群聊天记录",
+                description: "从学生手机中提取的高二(3)班微信群聊天记录，包含与案件相关的对话内容。",
+                type: "电子证据",
+                category: 2,
+                file: "class_chat.html",
+                keyEvidence: false
+            },
+            "监控": {
+                title: "监控记录",
+                description: "案发当天校园各处的监控记录。",
+                type: "电子证据",
+                category: 2,
+                file: "monitoring.html",
+                keyEvidence: false
+            },
+            "心理咨询室": {
+                title: "学校心理咨询室记录",
+                description: "学校心理咨询室的相关记录，包括预约、评估及建议。",
+                type: "财务记录",
+                category: 4,
+                file: "counseling_records.html",
+                keyEvidence: false
+            },
+            "赔偿协议": {
+                title: "赔偿协议",
+                description: "在明德中学调解委员会的见证下拟定的赔偿协议。",
+                type: "法律文件",
+                category: 4,
+                file: "compensation_agreement.html",
+                keyEvidence: false
+            },
+            "李阳": {
+                title: "李阳 - 关键证人信息",
+                description: "明德中学高三(5)班学生，掌握关键证据。",
+                type: "证人证言",
+                category: 2,
+                file: "liyang.html",
+                keyEvidence: true
+            }
+        };
+        
+        // 关键证据列表
+        const KEY_EVIDENCES = ["工作日志", "日记", "心理辅导记录", "王浩处分记录", "李阳"];
+        
+        // 全局变量
+        let searchHistory = [];
+        let discoveredEvidences = []; // 玩家已发现的证据
+        let selectedEvidences = []; // 玩家选择的证据
+        
+        // DOM元素
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const openReportBtn = document.getElementById('openReportBtn');
+        const submitReportBtn = document.getElementById('submitReportBtn');
+        const initialHint = document.getElementById('initialHint');
+        const resultsSection = document.getElementById('resultsSection');
+        const evidenceList = document.getElementById('evidenceList');
+        const resultsCount = document.getElementById('resultsCount');
+        const historySection = document.getElementById('historySection');
+        const historyList = document.getElementById('historyList');
+        const reportSection = document.getElementById('reportSection');
+        const evidenceSelectList = document.getElementById('evidenceSelectList');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const ending1 = document.getElementById('ending1');
+        const ending2 = document.getElementById('ending2');
+        const ending3 = document.getElementById('ending3');
+        const searchSection = document.getElementById('searchSection'); // 新增：获取搜索区域
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 从sessionStorage恢复已发现的证据
+            const savedEvidences = sessionStorage.getItem('discoveredEvidences');
+            if (savedEvidences) {
+                discoveredEvidences = JSON.parse(savedEvidences);
+                updateProgress();
+            }
+            
+            // 搜索按钮点击事件
+            searchBtn.addEventListener('click', () => {
+                const query = searchInput.value.trim();
+                if (query) {
+                    performSearch(query);
+                }
+            });
+            
+            // 搜索框回车事件
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        performSearch(query);
+                    }
+                }
+            });
+            
+            // 打开报告按钮
+            openReportBtn.addEventListener('click', openReportSection);
+            
+            // 提交报告按钮
+            submitReportBtn.addEventListener('click', submitReport);
+            
+            // 导航按钮
+            document.getElementById('backBtn').addEventListener('click', () => {
+                alert('返回上一页');
+            });
+            
+            document.getElementById('forwardBtn').addEventListener('click', () => {
+                alert('前进一页');
+            });
+            
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                location.reload();
+            });
+            
+            // 更新打开报告按钮文本
+            updateOpenReportButton();
+        });
+        
+        // 更新打开报告按钮文本
+        function updateOpenReportButton() {
+            const discoveredCount = discoveredEvidences.length;
+            if (discoveredCount > 0) {
+                openReportBtn.textContent = `提交案件报告 (已发现 ${discoveredCount} 个证据)`;
+            } else {
+                openReportBtn.textContent = '提交案件报告';
+            }
+        }
+        
+        // 执行搜索 - 仅完全匹配关键词
+        function performSearch(query) {
+            // 隐藏初始提示
+            initialHint.style.display = 'none';
+            
+            // 显示搜索结果区域
+            resultsSection.style.display = 'block';
+            
+            // 添加到搜索历史（当前会话）
+            if (!searchHistory.includes(query)) {
+                searchHistory.unshift(query);
+                if (searchHistory.length > 10) {
+                    searchHistory = searchHistory.slice(0, 10);
+                }
+                updateSearchHistory();
+            }
+            
+            // 显示搜索历史区域
+            if (searchHistory.length > 0) {
+                historySection.style.display = 'block';
+            }
+            
+            // 搜索逻辑 - 仅完全匹配
+            const results = [];
+            const queryLower = query.toLowerCase().trim();
+            
+            // 完全匹配关键词（不区分大小写）
+            for (const keyword in EVIDENCE_DATABASE) {
+                if (keyword.toLowerCase() === queryLower) {
+                    results.push({keyword, ...EVIDENCE_DATABASE[keyword]});
+                    
+                    // 记录已发现的证据
+                    if (!discoveredEvidences.includes(keyword)) {
+                        discoveredEvidences.push(keyword);
+                        sessionStorage.setItem('discoveredEvidences', JSON.stringify(discoveredEvidences));
+                        updateProgress();
+                        updateOpenReportButton();
+                    }
+                    break; // 找到完全匹配项后停止搜索
+                }
+            }
+            
+            // 显示结果
+            displayResults(results, query);
+        }
+        
+        // 显示搜索结果
+        function displayResults(results, query) {
+            resultsCount.textContent = results.length;
+            
+            if (results.length === 0) {
+                evidenceList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">❌</div>
+                        <h3>未找到匹配的证据</h3>
+                        <p>没有找到完全匹配"${query}"的证据材料。</p>
+                        <p style="margin-top: 10px; font-size: 14px;">请检查关键词是否完全正确，或尝试其他关键词。</p>
+                    </div>
+                `;
+            } else {
+                evidenceList.innerHTML = '';
+                
+                results.forEach(evidence => {
+                    const item = document.createElement('a');
+                    item.className = 'evidence-item';
+                    item.href = '#';
+                    item.onclick = (e) => {
+                        e.preventDefault();
+                        alert(`正在打开: ${evidence.title}\n\n${evidence.description}`);
+						window.open(evidence.file)
+                    };
+                    
+                    // 高亮搜索词（由于是完全匹配，整个标题都是匹配的）
+                    const highlightedTitle = evidence.title.replace(
+                        new RegExp(`(${query})`, 'gi'),
+                        '<mark>$1</mark>'
+                    );
+                    
+                    const categoryClass = `category-${evidence.category}`;
+                    const categoryText = ["案件信息", "证据材料", "人员记录", "内部文件"][evidence.category - 1];
+                    
+                    // 添加关键证据标识
+                    const keyEvidenceBadge = evidence.keyEvidence ? '<span style="background-color: #fce8e6; color: #c5221f; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-left: 8px;">关键证据</span>' : '';
+                    
+                    item.innerHTML = `
+                        <div class="evidence-title">${highlightedTitle} ${keyEvidenceBadge}</div>
+                        <div class="evidence-description">${evidence.description}</div>
+                        <div class="evidence-meta">
+                            <span class="evidence-type">${evidence.type}</span>
+                            <span class="category-tag ${categoryClass}">${categoryText}</span>
+                            <span>关键词: ${evidence.keyword}</span>
+                        </div>
+                    `;
+                    
+                    evidenceList.appendChild(item);
+                });
+            }
+            
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // 更新搜索历史
+        function updateSearchHistory() {
+            historyList.innerHTML = '';
+            
+            if (searchHistory.length === 0) {
+                historySection.style.display = 'none';
+                return;
+            }
+            
+            searchHistory.forEach(term => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.textContent = term;
+                item.addEventListener('click', () => {
+                    searchInput.value = term;
+                    performSearch(term);
+                });
+                historyList.appendChild(item);
+            });
+        }
+        
+        // 打开报告提交界面
+        function openReportSection() {
+            // 隐藏其他部分
+            searchSection.style.display = 'none';
+            initialHint.style.display = 'none';
+            resultsSection.style.display = 'none';
+            historySection.style.display = 'none';
+            
+            // 显示报告部分
+            reportSection.style.display = 'block';
+            
+            // 更新证据选择列表
+            updateEvidenceSelectList();
+            
+            // 更新进度
+            updateProgress();
+        }
+        
+        // 更新证据选择列表
+        function updateEvidenceSelectList() {
+            evidenceSelectList.innerHTML = '';
+            
+            if (discoveredEvidences.length === 0) {
+                evidenceSelectList.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1; padding: 20px;">
+                        <div class="empty-icon">📁</div>
+                        <h3>尚未发现任何证据</h3>
+                        <p>请先使用搜索功能查找证据材料。</p>
+                    </div>
+                `;
+                submitReportBtn.disabled = true;
+                return;
+            }
+            
+            submitReportBtn.disabled = false;
+            
+            discoveredEvidences.forEach(keyword => {
+                const evidence = EVIDENCE_DATABASE[keyword];
+                if (!evidence) return;
+                
+                const item = document.createElement('div');
+                item.className = 'evidence-select-item';
+                item.dataset.keyword = keyword;
+                
+                const isSelected = selectedEvidences.includes(keyword);
+                if (isSelected) {
+                    item.classList.add('selected');
+                }
+                
+                item.innerHTML = `
+                    <input type="checkbox" class="evidence-checkbox" id="evidence_${keyword}" ${isSelected ? 'checked' : ''}>
+                    <label class="evidence-select-label" for="evidence_${keyword}">${evidence.title}</label>
+                `;
+                
+                // 添加点击事件
+                item.addEventListener('click', (e) => {
+                    if (e.target.type === 'checkbox') return;
+                    
+                    const checkbox = item.querySelector('.evidence-checkbox');
+                    checkbox.checked = !checkbox.checked;
+                    
+                    if (checkbox.checked) {
+                        item.classList.add('selected');
+                        if (!selectedEvidences.includes(keyword)) {
+                            selectedEvidences.push(keyword);
+                        }
+                    } else {
+                        item.classList.remove('selected');
+                        selectedEvidences = selectedEvidences.filter(k => k !== keyword);
+                    }
+                });
+                
+                // 复选框点击事件
+                const checkbox = item.querySelector('.evidence-checkbox');
+                checkbox.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    if (checkbox.checked) {
+                        item.classList.add('selected');
+                        if (!selectedEvidences.includes(keyword)) {
+                            selectedEvidences.push(keyword);
+                        }
+                    } else {
+                        item.classList.remove('selected');
+                        selectedEvidences = selectedEvidences.filter(k => k !== keyword);
+                    }
+                });
+                
+                evidenceSelectList.appendChild(item);
+            });
+        }
+        
+        // 更新调查进度
+        function updateProgress() {
+            const totalEvidences = Object.keys(EVIDENCE_DATABASE).length;
+            const discoveredCount = discoveredEvidences.length;
+            const progress = Math.min(100, Math.round((discoveredCount / totalEvidences) * 100));
+            
+            progressFill.style.width = `${progress}%`;
+            progressPercent.textContent = `${progress}%`;
+        }
+        
+        function submitReport() {
+            if (selectedEvidences.length === 0) {
+                alert('请至少选择一个证据作为调查依据。');
+                return;
+            }
+            
+            // 计算探索度
+            const totalEvidences = Object.keys(EVIDENCE_DATABASE).length;
+            const discoveredCount = discoveredEvidences.length;
+            const exploration = Math.round((discoveredCount / totalEvidences) * 100);
+            
+            // 检查是否包含关键证据
+            const hasLiYangEvidence = selectedEvidences.includes("李阳");
+            const hasCompensationEvidence = selectedEvidences.includes("赔偿协议");
+            
+            // 隐藏报告部分
+            reportSection.style.display = 'none';
+            
+            // 判断结局（修复逻辑运算符）
+            if (!hasLiYangEvidence && !hasCompensationEvidence) {
+                // 结局1：无声的悲鸣 - 两个关键证据都没有
+                showEnding(1, exploration);
+            } else if (hasCompensationEvidence && !hasLiYangEvidence) {
+                // 结局2：迟来的正义 - 只有赔偿协议，没有李阳证词
+                showEnding(2, exploration);
+            } else {
+                // 结局3：光明的审判 - 有李阳证据（无论是否有赔偿协议）
+                showEnding(3, exploration);
+            }
+        }
+        
+        // 在 showEnding 函数后添加重新开始按钮功能
+        // 修改 showEnding 函数，确保添加重新开始按钮
+        function showEnding(endingNumber, exploration) {
+            // 隐藏所有其他部分
+            document.querySelectorAll('.search-section, .results-section, .history-section, .initial-hint, .report-section').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // 隐藏其他结局
+            ending1.style.display = 'none';
+            ending2.style.display = 'none';
+            ending3.style.display = 'none';
+            
+            // 显示对应的结局
+            const endingElement = document.getElementById(`ending${endingNumber}`);
+            endingElement.style.display = 'block';
+            
+            // 更新探索度显示
+            document.getElementById(`ending${endingNumber}Exploration`).textContent = exploration;
+            
+            // 确保每个结局页面都有重新开始按钮
+            const gameOverDivs = endingElement.querySelectorAll('.game-over-message');
+            gameOverDivs.forEach(div => {
+                // 检查是否已经存在重新开始按钮
+                if (!div.querySelector('.restart-btn')) {
+                    const restartBtn = document.createElement('button');
+                    restartBtn.className = 'restart-btn';
+                    restartBtn.textContent = '重新开始调查';
+                    restartBtn.onclick = restartGame;
+                    div.appendChild(restartBtn);
+                }
+            });
+            
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+        
+        // 在 DOMContentLoaded 事件监听器末尾添加重新开始按钮的初始设置
+        document.addEventListener('DOMContentLoaded', function() {
+            // ... 之前的初始化代码 ...
+            
+            // 确保每个结局页面都有重新开始按钮
+            [ending1, ending2, ending3].forEach((endingElement, index) => {
+                const gameOverDivs = endingElement.querySelectorAll('.game-over-message');
+                gameOverDivs.forEach(div => {
+                    if (!div.querySelector('.restart-btn')) {
+                        const restartBtn = document.createElement('button');
+                        restartBtn.className = 'restart-btn';
+                        restartBtn.textContent = '重新开始调查';
+                        restartBtn.onclick = restartGame;
+                        div.appendChild(restartBtn);
+                    }
+                });
+            });
+        });
+        
+        // 确保 restartGame 函数正确重置所有状态
+        function restartGame() {
+            // 清除存储的数据
+            sessionStorage.removeItem('discoveredEvidences');
+            discoveredEvidences = [];
+            selectedEvidences = [];
+            searchHistory = [];
+            
+            // 重置显示
+            ending1.style.display = 'none';
+            ending2.style.display = 'none';
+            ending3.style.display = 'none';
+            reportSection.style.display = 'none';
+            resultsSection.style.display = 'none';
+            historySection.style.display = 'none';
+            initialHint.style.display = 'none';
+            
+            // 显示初始界面
+            searchSection.style.display = 'block';
+            initialHint.style.display = 'block';
+            
+            // 重置表单
+            searchInput.value = '';
+            updateProgress();
+            updateOpenReportButton();
+            
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

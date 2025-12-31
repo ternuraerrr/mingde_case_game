@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>江楠的日记 - 明德中学坠楼案证据</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --warning-color: #fbbc05;
+            --dark-color: #202124;
+            --light-color: #f8f9fa;
+            --border-color: #dadce0;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* 顶部导航栏 */
+        .browser-header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: background-color 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .address-bar {
+            flex-grow: 1;
+            height: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 0 15px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            background-color: #f1f3f4;
+        }
+        
+        .address-bar input {
+            border: none;
+            background: none;
+            flex-grow: 1;
+            font-size: 15px;
+            outline: none;
+            color: var(--text-primary);
+        }
+        
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-btn:hover {
+            background-color: #0d62d9;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .diary-page {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        /* 登录界面 */
+        .login-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .login-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+        
+        .login-description {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark-color);
+            text-align: left;
+        }
+        
+        .form-input {
+            height: 48px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 0 15px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+        
+        .login-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            background-color: #0d62d9;
+        }
+        
+        .login-error {
+            color: var(--danger-color);
+            font-size: 14px;
+            text-align: center;
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .hint-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        /* 日记内容 */
+        .diary-content {
+            display: none;
+        }
+        
+        .diary-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .diary-owner {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .diary-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .diary-entries {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .diary-entry {
+            border-left: 3px solid #e8f0fe;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .diary-entry.danger {
+            border-left-color: var(--danger-color);
+            background-color: #fff8f8;
+            padding: 15px 15px 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-left: -20px;
+        }
+        
+        .diary-entry.warning {
+            border-left-color: var(--warning-color);
+            background-color: #fff8e1;
+            padding: 15px 15px 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-left: -20px;
+        }
+        
+        .diary-entry.sad {
+            border-left-color: #9c27b0;
+            background-color: #f3e5f5;
+            padding: 15px 15px 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-left: -20px;
+        }
+        
+        .entry-date {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .entry-date:before {
+            content: "📅";
+            margin-right: 8px;
+            font-size: 12px;
+        }
+        
+        .entry-content {
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+        
+        .entry-content p {
+            margin-bottom: 15px;
+        }
+        
+        .entry-content strong {
+            color: var(--dark-color);
+        }
+        
+        .entry-mood {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .entry-mood:before {
+            content: "💭";
+            margin-right: 5px;
+        }
+        
+        .highlight {
+            background-color: #fff8e1;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-weight: 500;
+        }
+        
+        .danger-text {
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+        
+        .warning-text {
+            color: #b06000;
+            font-weight: 500;
+        }
+        
+        /* 分析总结 */
+        .analysis-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 40px;
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .analysis-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .analysis-title:before {
+            content: "🔍";
+            margin-right: 10px;
+        }
+        
+        .analysis-content {
+            color: var(--text-primary);
+        }
+        
+        .analysis-content ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .analysis-content li {
+            margin-bottom: 8px;
+        }
+        
+        /* 时间线 */
+        .timeline-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        
+        .timeline-item {
+            background-color: #f1f3f4;
+            border-radius: 16px;
+            padding: 8px 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .timeline-item.danger {
+            background-color: #fce8e6;
+            color: #c5221f;
+        }
+        
+        .timeline-item.warning {
+            background-color: #fef7e0;
+            color: #b06000;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+            
+            .diary-page {
+                padding: 20px;
+            }
+            
+            .browser-header {
+                padding: 10px;
+            }
+            
+            .nav-btn {
+                display: none;
+            }
+            
+            .diary-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .login-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="browser-header">
+        <button class="nav-btn" onclick="history.back()">←</button>
+        <button class="nav-btn" onclick="history.forward()">→</button>
+        <button class="nav-btn" onclick="location.reload()">↻</button>
+        
+        <div class="address-bar">
+            <span style="color: var(--text-secondary); margin-right: 5px;">🔒</span>
+            <input type="text" value="evidence://个人日记/江楠日记记录" readonly>
+        </div>
+        
+        <button class="search-btn" onclick="window.location.href='index.html'">返回检索系统</button>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="main-container">
+        <div class="diary-page">
+            <!-- 登录界面 -->
+            <div class="login-section" id="loginSection">
+                <h2 class="login-title">江楠的日记</h2>
+                <p class="login-description">
+                    这本日记属于明德中学高二(3)班学生江楠。日记记录了她在坠楼前三个月的心路历程，包含校园生活、家庭变故以及她所遭受的欺凌。
+                    <br><br>
+                    请输入密码解锁查看完整日记内容。
+                </p>
+                
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">日记所有者</label>
+                        <input type="text" class="form-input" value="江楠" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">访问密码</label>
+                        <input type="password" class="form-input" id="password" placeholder="请输入访问密码">
+                    </div>
+                    
+                    <button type="submit" class="login-btn">解锁日记</button>
+                    <div class="login-error" id="loginError">密码错误，请重新输入</div>
+                    <div class="hint-text">提示：密码可能是江楠的生日</div>
+                </form>
+            </div>
+            
+            <!-- 日记内容 -->
+            <div class="diary-content" id="diaryContent">
+                <!-- 日记元信息 -->
+                <div class="diary-meta">
+                    <div class="diary-owner">江楠的个人日记</div>
+                    <div class="diary-info">时间范围：2025年9月 - 2025年12月 | 共37篇日记</div>
+                </div>
+                
+                <!-- 时间线摘要 -->
+                <div class="timeline-summary">
+                    <div class="timeline-item">2025年9月：新学期开始</div>
+                    <div class="timeline-item warning">2025年10月：欺凌开始加剧</div>
+                    <div class="timeline-item danger">2025年11月：发现家庭秘密</div>
+                    <div class="timeline-item danger">2025年12月：绝望与终结</div>
+                </div>
+                
+                <!-- 日记条目 -->
+                <div class="diary-entries">
+                    <!-- 9月日记 -->
+                    <div class="diary-entry">
+                        <div class="entry-date">2025年9月15日 星期一 晴</div>
+                        <div class="entry-content">
+                            <p>新学期开始了，高二的生活比想象中要紧张。今天妈妈做了我最爱吃的糖醋排骨，爸爸还特意早点下班回来陪我吃饭。妈妈说高二很关键，让我一定要跟上，不行的话就找老师补课。</p>
+                            <p>陈思思说有个叫李阳的学长想加我微信，她还和我挤眉弄眼说学长可能是要追我，但我没什么心情，还是拒绝了。</p>
+							<p>说到补课，张老师今天又提醒了那几个没交补课费的同学，我赶紧低下了头，我们家这个月确实有点紧张，爸爸的项目好像出了问题。但是爸爸承诺下个月就能补上。<span class="highlight">今天认识了一个学长王浩，他也是生物竞赛的，听说成绩很好，可能会保送青州大学，好崇拜他。</span></p>
+                        </div>
+                        <div class="entry-mood">心情：有点不安</div>
+                    </div>
+                    
+                    <div class="diary-entry warning">
+                        <div class="entry-date">2025年9月28日 星期日 阴</div>
+                        <div class="entry-content">
+                            <p><span class="warning-text">今天王浩把我堵在楼梯间了。</span>他说："江楠，你们家是不是交不起补课费啊？张老师说了，不交钱的同学以后作业都不认真批改。"</p>
+                            <p>我没想到学长竟然是这样的人，我好害怕，小声说："我...我们家下个月就交。"</p>
+                            <p>他笑得很奇怪："那你这个月怎么办？这样吧，你给我200块钱，我帮你跟张老师说说情。"</p>
+                            <p>我身上只有妈妈给的午饭钱50块，全被他拿走了。他说剩下的下周一再给。<strong>这是我第一次给别人钱，手一直在抖。</strong></p>
+                        </div>
+                        <div class="entry-mood">心情：害怕、委屈</div>
+                    </div>
+                    
+                    <!-- 10月日记 -->
+					<div class="diary-entry warning">
+					    <div class="entry-date">2025年10月1日 星期三 阴</div>
+					    <div class="entry-content">
+					        <p><span class="danger-text">家里出事了。</span>爸爸本来答应我的补课费交不起，我一直问才知道原来爸爸的工作时操作失误把厂里的机器弄坏了。</p>
+					        <p>家里要赔80万，可是钱从哪里来？不给的话他们就天天上门泼油漆撒狗血......</p>
+					        <p><strong>我该怎么办？</strong>妈妈最近也在抱怨家里的各项开支太多，不愿意再拿补课费了。</p>
+					        <p>如果当时我不是因为生物成绩好签了协议不用交学费，是不是妈妈也会让我退学打工？</p>
+					    </div>
+					    <div class="entry-mood">心情：迷茫</div>
+					</div>
+					
+                    <div class="diary-entry warning">
+                        <div class="entry-date">2025年10月8日 星期三 小雨</div>
+                        <div class="entry-content">
+                            <p><span class="danger-text">王浩变本加厉了。</span>现在不只是要钱，开始在班上给我起外号。"穷鬼楠"、"补课费都交不起的废物"，同学们都跟着笑。</p>
+                            <p>今天鼓起勇气去找了张老师，我说王浩找我要钱还骂我。张老师看了我一眼，说："同学之间开玩笑而已，你不要太敏感。王浩同学家里条件好，不会在乎你那点钱的。"</p>
+                            <p><strong>他根本不在乎我说什么。</strong>我说的是真的啊！为什么没有人相信我？</p>
+                            <p>晚上回家，手臂上又多了几道划痕。看到血珠渗出来的时候，反而觉得心里舒服了一点。</p>
+                        </div>
+                        <div class="entry-mood">心情：绝望、不被理解</div>
+                    </div>
+                    
+                    <div class="diary-entry">
+                        <div class="entry-date">2025年10月20日 星期一 多云</div>
+                        <div class="entry-content">
+                            <p>妈妈最近很奇怪，总是心神不宁的。以前她每天都会来接我放学，现在一个星期有三天让我自己回家。</p>
+                            <p>问她怎么了，她就说家里有事情。可是她出门前还会让我帮她煮东西，说回来要吃。我今天又迟到了，<span class="highlight">这个月已经第四次了</span>，张老师在班上点名批评我。</p>
+                            <p>王浩在下面小声说："穷人家的孩子就是没规矩。"全班都在笑。</p>
+                            <p>放学后去看了心理老师赵晓梅，她让我写日记，说把不开心的事写出来会好受点。可是写完还是很难过。</p>
+                        </div>
+                        <div class="entry-mood">心情：困惑、孤独</div>
+                    </div>
+                    
+                    <div class="diary-entry warning">
+                        <div class="entry-date">2025年10月25日 星期六 阴</div>
+                        <div class="entry-content">
+                            <p><span class="danger-text">班级群聊炸了。</span>不知道谁拍了我手臂上划痕的照片发到了群里，现在所有人都在讨论我。</p>
+                            <p>"江楠是不是有病啊？""自残的人好可怕""离她远点"</p>
+                            <p>我退了群，可是陈思思私聊我说："楠楠，你别在意，他们就是无聊。"</p>
+                            <p>只有陈思思还愿意跟我说话。可是王浩今天警告陈思思不许再跟我走近，不然连他一起整。</p>
+                            <p><strong>我是不是真的不该存在？</strong>如果没有我，妈妈就不用那么辛苦，爸爸也不会天天叹气，同学们也不用面对一个"有病"的人。</p>
+                        </div>
+                        <div class="entry-mood">心情：崩溃、想消失</div>
+                    </div>
+                    
+                    <!-- 11月日记 -->
+                    <div class="diary-entry sad">
+                        <div class="entry-date">2025年11月5日 星期三 晴</div>
+                        <div class="entry-content">
+                            <p>今天帮妈妈收拾房间的时候，<span class="highlight">在抽屉最里面发现了一张医院检查单。</span></p>
+                            <p><strong>早孕，8周。</strong>妈妈的名字，日期是上个月。上面还写着“神婆看了肚子，这次一定是男孩！”</p>
+                            <p>我愣了好久。妈妈怀孕了？她今年42岁了，这是高龄产妇啊。而且为什么要瞒着我？是怀疑我会做什么吗？</p>
+                            <p>突然明白她最近为什么总是累，为什么让我自己回家。可是...<strong>她为什么不告诉我呢？</strong>我是她的女儿啊。</p>
+                            <p>晚饭时我问她最近是不是身体不舒服，她愣了一下，然后笑着说没有啊。她在骗我。</p>
+                        </div>
+                        <div class="entry-mood">心情：被欺骗、失落</div>
+                    </div>
+                    
+                    <div class="diary-entry danger">
+                        <div class="entry-date">2025年11月18日 星期二 雨</div>
+                        <div class="entry-content">
+                            <p><span class="danger-text">一切都联系起来了。</span>妈妈怀孕了，家里经济压力更大，所以我的补课费一直拖着没交。张老师对我不满意，王浩觉得可以随便欺负我。</p>
+                            <p>今天王浩把我的作业本扔进了垃圾桶，说："反正你这种人也考不上大学，写什么作业。"张老师看见了，什么都没说。</p>
+                            <p>我去办公室问张老师为什么不制止，他说："江楠，你要学会处理同学关系，不要什么事都找老师。王浩同学就是调皮了点。"</p>
+                            <p><strong>调皮？他抢我的钱，撕我的书，在全班面前侮辱我，这叫调皮？</strong></p>
+                            <p>晚上看着手腕上的伤痕，突然觉得如果割深一点，是不是就什么都感觉不到了。</p>
+                        </div>
+                        <div class="entry-mood">心情：愤怒、无助</div>
+                    </div>
+                    
+                    <!-- 12月日记 -->
+                    <div class="diary-entry danger">
+                        <div class="entry-date">2025年12月3日 星期三 阴</div>
+                        <div class="entry-content">
+                            <p>终于忍不住跟妈妈说了学校的事。我说王浩欺负我，张老师不管，我很难受。</p>
+                            <p>妈妈的反应让我心凉了半截。她说："学校不是宣传心理辅导很强吗？你经常去老师没给你建议吃什么药缓解吗？我要去投诉！"</p>
+                            <p><strong>她完全不懂。</strong>她要去投诉赵老师？赵老师是唯一一个愿意听我说话的人啊！她还帮我瞒着病情，没告诉学校我自残的事。</p>
+                            <p>我哭着求妈妈不要去，她说："你这孩子怎么回事？被人欺负了还不让说？"</p>
+                            <p>她不懂，她什么都不懂。<span class="highlight">如果她去投诉，赵老师也会讨厌我的。</span>到时候我真的一个可以说话的人都没有了。</p>
+                        </div>
+                        <div class="entry-mood">心情：彻底绝望</div>
+                    </div>
+                    
+					<div class="diary-entry danger">
+					    <div class="entry-date">2025年12月12日 星期五 阴</div>
+					    <div class="entry-content">
+					        <p>陈思思告诉我妈妈私下和王建国和解了。</p>
+							<p><strong>我不明白</strong>，妈妈为什么要这样做，为什么要原谅一个欺负我的人？</p>
+					        <p>明明这学期开始还是好好的，怎么一下子都变了？妈妈到底是爱我还是不爱我了？</p>
+					        <p>看来我还是有一点作用的，还能为家里换一笔钱......呵呵</p>
+					    </div>
+					    <div class="entry-mood">心情：冰冷、麻木</div>
+					</div>
+					
+                    <div class="diary-entry danger">
+                        <div class="entry-date">2025年12月15日 星期一 雪</div>
+                        <div class="entry-content">
+                            <p>今天下雪了，很冷。王浩把雪塞进我脖子里，全班都在笑。我浑身湿透，冷得发抖。</p>
+							<p>不知道为什么，<strong>感觉家里最近添置了很多东西</strong>，但是这些都和我没有关系。</p>
+                            <p>又去找张老师，他这次很不耐烦："江楠，你怎么又来？同学之间玩闹而已。你要学会忍，忍一忍就过去了。"</p>
+                            <p><strong>忍？我已经忍了三个月了。</strong>我还要忍多久？忍到毕业？忍到王浩玩腻了？</p>
+                            <p>陈思思偷偷给我递了纸巾，小声说："楠楠，再坚持一下，快放假了。"可是放假之后呢？下学期呢？</p>
+                            <p>赵老师今天请假了，没见到她。唯一的光也没了。是不是因为上次妈妈举报她的事情，我好难过，我该怎么办？</p>
+                        </div>
+                        <div class="entry-mood">心情：冰冷、麻木</div>
+                    </div>
+                    
+                    <div class="diary-entry danger">
+                        <div class="entry-date">2025年12月24日 星期三 晴</div>
+                        <div class="entry-content">
+                            <p><span class="danger-text">今天是平安夜。</span>为什么我没有平平安安的？</p>
+                            <p>王浩又来了。他说："平安夜礼物呢？不给我礼物，明年你可不好过。"</p>
+                            <p>我把身上最后100块钱给他了，那是妈妈给我买参考书的钱。</p>
+                            <p>路过办公室，听到张老师在打电话："您放心，王浩在学校很好...江楠？那孩子就是有点敏感，同学之间的小摩擦..."</p>
+                            <p><strong>原来他一直都知道。</strong>他知道王浩在欺负我，他知道一切。他只是不在乎。</p>
+                            <p>因为他收着王浩爸爸的钱，收着其他家长的"补课费"。而我们家，连补课费都交不起。</p>
+                            <p>平安夜，大家都在庆祝。班级群里在发聚会照片，没有一个人叫我。</p>
+                            <p><strong>妈妈又在给未出生的宝宝织毛衣了。</strong>她笑得很温柔，那种笑容好久没对我展露过了。是不是我真的很糟糕？</p>
+                            <p>也许有了新宝宝，他们就不会为失去我而太难过了吧。</p>
+                            <p>张老师说忍，赵老师说写日记，妈妈说投诉。可是没有人真的帮我。</p>
+                            <p><strong>如果今晚从教学楼顶楼跳下去，是不是就能平安了？</strong></p>
+                            <p>永远的平安。</p>
+                        </div>
+                        <div class="entry-mood">心情：绝望</div>
+                    </div>
+										
+                </div>
+                
+                <!-- 分析总结 -->
+                <div class="analysis-section">
+                    <div class="analysis-title">日记内容分析</div>
+                    <div class="analysis-content">
+                        <p>根据江楠的日记记录，可以整理出以下关键信息：</p>
+                        <ul>
+                            <li><strong>校园霸凌：</strong>王浩自2025年9月起持续对江楠实施欺凌，包括索要钱财、言语侮辱、肢体骚扰等。</li>
+                            <li><strong>教师失职：</strong>班主任张磊多次知晓江楠被欺凌的情况，但选择无视甚至偏袒施暴者王浩。</li>
+                            <li><strong>心理问题：</strong>江楠因长期受欺凌出现抑郁倾向，有自残行为（划伤手臂）。</li>
+                            <li><strong>家庭变故：</strong>母亲怀孕且隐瞒事实，家庭经济压力导致无法缴纳"补课费"，可能成为被针对的原因。</li>
+                            <li><strong>求助失败：</strong>向母亲求助反而导致更大压力，担心心理咨询师林薇因此受牵连。</li>
+                            <li><strong>社交孤立：</strong>在班级群聊中被排挤讨论，唯一的朋友陈思思也因王浩的威胁只能私下往来。</li>
+                            <li><strong>绝望累积：</strong>日记记录了从不安、困惑到绝望、麻木，最终产生轻生态度的完整心理变化过程。</li>
+                        </ul>
+                        <p style="margin-top: 15px; font-weight: 500; color: var(--danger-color);">
+                            最后一篇日记写于2025年12月24日（平安夜），江楠在日记中明确表达了轻生态头。第二天（12月25日）发生了坠楼事件。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM元素
+        const loginSection = document.getElementById('loginSection');
+        const diaryContent = document.getElementById('diaryContent');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        
+        // 正确的密码
+        const CORRECT_PASSWORD = "20070315";
+        
+        // 处理登录
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const passwordInput = document.getElementById('password');
+            const password = passwordInput.value;
+            
+            if (password === CORRECT_PASSWORD) {
+                // 登录成功
+                loginSection.style.display = 'none';
+                diaryContent.style.display = 'block';
+                loginError.style.display = 'none';
+                
+                // 显示成功提示
+                setTimeout(() => {
+                    alert("日记解锁成功！请仔细阅读江楠的心路历程。\n\n提示：最后一篇日记写于2025年12月24日，第二天发生了坠楼事件。");
+                }, 300);
+            } else {
+                // 登录失败
+                loginError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // 震动效果
+                passwordInput.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    passwordInput.style.animation = '';
+                }, 500);
+            }
+        }
+        
+        // 添加震动动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 登录表单提交事件
+            loginForm.addEventListener('submit', handleLogin);
+            
+            // 返回按钮事件
+            document.querySelector('.search-btn').addEventListener('click', function() {
+                // 如果已登录，返回时重置到登录界面
+                if (diaryContent.style.display === 'block') {
+                    diaryContent.style.display = 'none';
+                    loginSection.style.display = 'block';
+                    document.getElementById('password').value = '';
+                    loginError.style.display = 'none';
+                }
+            });
+            
+            // 输入框回车事件
+            document.getElementById('password').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    loginForm.requestSubmit();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

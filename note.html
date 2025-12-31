@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青州市公安局 - 证物记录 | 明德中学坠楼案纸团物证</title>
+    <style>
+        :root {
+            --police-blue: #1a365d;
+            --police-dark: #2d3748;
+            --police-red: #c53030;
+            --police-gray: #718096;
+            --police-light: #f7fafc;
+            --police-border: #e2e8f0;
+            --evidence-green: #2f855a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: linear-gradient(to bottom, #e8eff5 0%, #f0f2f5 100%);
+        }
+        
+        /* 警方头部 */
+        .police-header {
+            background-color: var(--police-blue);
+            color: white;
+            padding: 20px 0;
+            border-bottom: 5px solid var(--police-red);
+            position: relative;
+        }
+        
+        .police-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--police-red), #ff6b6b, var(--police-red));
+        }
+        
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .police-title {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .police-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .police-badge {
+            background-color: var(--evidence-green);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 1000px;
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+        
+        /* 证物信息卡片 */
+        .evidence-card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid var(--police-border);
+            border-top: 4px solid var(--evidence-green);
+        }
+        
+        .evidence-header {
+            background-color: #f8fafc;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--police-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .evidence-title {
+            font-size: 22px;
+            color: var(--police-blue);
+            font-weight: bold;
+        }
+        
+        .evidence-number {
+            font-size: 16px;
+            color: var(--police-gray);
+            font-family: monospace;
+            background-color: #edf2f7;
+            padding: 5px 10px;
+            border-radius: 3px;
+            border: 1px solid #cbd5e0;
+        }
+        
+        .evidence-body {
+            padding: 25px;
+        }
+        
+        /* 信息表格 */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px;
+            font-size: 15px;
+        }
+        
+        .info-table th {
+            background-color: #edf2f7;
+            color: var(--police-dark);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--police-border);
+            width: 30%;
+        }
+        
+        .info-table td {
+            padding: 12px 15px;
+            border: 1px solid var(--police-border);
+            color: #4a5568;
+        }
+        
+        .info-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+        
+        /* 证物内容 */
+        .evidence-content {
+            line-height: 1.8;
+            color: #4a5568;
+        }
+        
+        .evidence-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .evidence-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--evidence-green);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--police-border);
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background-color: var(--evidence-green);
+        }
+        
+        /* 重点标记 */
+        .key-info {
+            background-color: #f0fff4;
+            border-left: 4px solid var(--evidence-green);
+            padding: 15px 20px;
+            margin: 20px 0;
+            color: #22543d;
+        }
+        
+        .key-info strong {
+            color: var(--evidence-green);
+        }
+        
+        /* 纸条模拟 */
+        .note-container {
+            background-color: #fffaf0;
+            border: 1px solid #ecc94b;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 25px 0;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .note-content {
+            font-size: 18px;
+            color: #5d4037;
+            line-height: 1.8;
+            text-align: center;
+            padding: 20px;
+            border: 2px dashed #d69e2e;
+            border-radius: 5px;
+            background-color: #fffdf6;
+            font-family: "KaiTi", "STKaiti", serif;
+            position: relative;
+        }
+        
+        .note-tear {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 15px;
+            height: 15px;
+            background-color: #fffaf0;
+            border: 1px solid #d69e2e;
+            border-radius: 50%;
+        }
+        
+        .note-tear:nth-child(2) {
+            top: -5px;
+            right: -5px;
+            left: auto;
+        }
+        
+        .note-tear:nth-child(3) {
+            bottom: -5px;
+            left: -5px;
+            top: auto;
+        }
+        
+        .note-tear:nth-child(4) {
+            bottom: -5px;
+            right: -5px;
+            top: auto;
+            left: auto;
+        }
+        
+        .note-text {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+        
+        .note-signature {
+            text-align: right;
+            margin-top: 25px;
+            font-size: 20px;
+            color: #4a5568;
+            font-style: italic;
+        }
+        
+        /* 时间线 */
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+        
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--evidence-green);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid var(--evidence-green);
+        }
+        
+        .timeline-time {
+            font-weight: bold;
+            color: var(--evidence-green);
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        
+        .timeline-content {
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        /* 鉴定报告 */
+        .report-box {
+            background-color: #f8fafc;
+            border: 1px solid var(--police-border);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .report-title {
+            font-weight: bold;
+            color: var(--police-blue);
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .report-title::before {
+            content: '🔍';
+            margin-right: 8px;
+        }
+        
+        /* 匹配结果 */
+        .match-result {
+            background-color: #ebf8ff;
+            border: 1px solid #90cdf4;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .match-title {
+            font-weight: bold;
+            color: #2c5282;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        /* 签名区域 */
+        .signature-area {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--police-border);
+            text-align: right;
+        }
+        
+        .signature-line {
+            display: inline-block;
+            width: 200px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 5px;
+        }
+        
+        .signature-text {
+            font-size: 14px;
+            color: var(--police-gray);
+        }
+        
+        /* 页脚 */
+        .police-footer {
+            background-color: var(--police-dark);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-notice {
+            color: #a0aec0;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .main-container {
+                padding: 0 15px;
+            }
+            
+            .evidence-body {
+                padding: 20px 15px;
+            }
+            
+            .info-table th, .info-table td {
+                padding: 10px;
+                display: block;
+                width: 100%;
+            }
+            
+            .info-table tr {
+                margin-bottom: 10px;
+                display: block;
+                border: 1px solid var(--police-border);
+            }
+            
+            .info-table th {
+                border-bottom: none;
+            }
+            
+            .note-container {
+                padding: 20px 15px;
+            }
+            
+            .note-text {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 警方头部 -->
+    <header class="police-header">
+        <div class="header-content">
+            <div>
+                <div class="police-title">青州市公安局</div>
+                <div class="police-subtitle">刑事侦查支队 - 证物管理系统</div>
+            </div>
+            <div class="police-badge">物证档案</div>
+        </div>
+    </header>
+    
+    <!-- 主内容区域 -->
+    <main class="main-container">
+        <!-- 证物信息卡片 -->
+        <div class="evidence-card">
+            <div class="evidence-header">
+                <div class="evidence-title">纸团物证记录</div>
+                <div class="evidence-number">证物编号：MD-20251225-01</div>
+            </div>
+            
+            <div class="evidence-body">
+                <!-- 基本信息 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">一、证物基本信息</h3>
+                    <table class="info-table">
+                        <tr>
+                            <th>证物名称</th>
+                            <td>匿名纸条（纸团）</td>
+                        </tr>
+                        <tr>
+                            <th>发现时间</th>
+                            <td>2025年12月25日 10:15</td>
+                        </tr>
+                        <tr>
+                            <th>发现地点</th>
+                            <td>明德中学教学楼4楼高二（3）班教室<br>死者江楠书包侧袋内</td>
+                        </tr>
+                        <tr>
+                            <th>提取人员</th>
+                            <td>张宏刚（主办民警）、曹康（技术科）</td>
+                        </tr>
+                        <tr>
+                            <th>提取方式</th>
+                            <td>戴手套提取，放入证物袋密封</td>
+                        </tr>
+                        <tr>
+                            <th>保存状态</th>
+                            <td>证物室3号柜，湿度50%，温度20℃</td>
+                        </tr>
+                        <tr>
+                            <th>关联案件</th>
+                            <td>明德中学学生坠楼案（案卷号：QZGA-20251225-001）</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- 证物描述 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">二、证物物理特征</h3>
+                    <div class="evidence-content">
+                        <p>该证物为一张被揉皱的纸条，展开后尺寸约为8cm×12cm，材质为普通学生作业本纸张。</p>
+                        
+                        <div class="key-info">
+                            <strong>物理特征：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>纸张来源：普通横线作业本纸，页眉有"明德中学作业本"印刷字样</li>
+                                <li>撕裂痕迹：纸条上边缘有明显撕裂痕迹，系从作业本上撕下</li>
+                                <li>折叠状态：被发现时为揉皱状态，有多次折叠痕迹</li>
+                                <li>保存状况：纸张有轻微污渍，边缘有磨损</li>
+                                <li>特殊发现：背面有被擦除的字迹痕迹，紫外灯下可见模糊笔迹</li>
+                            </ul>
+                        </div>
+                        
+                        <p><strong>提取记录：</strong>2025年12月25日10:15，在对死者江楠书包进行勘查时，在书包侧袋内发现该纸团。提取时使用镊子夹取，放入编号证物袋，避免污染。</p>
+                        
+                        <div class="timeline-container">
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.12.25 10:15</div>
+                                <div class="timeline-content">现场勘查时在死者书包内发现纸团</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.12.25 11:30</div>
+                                <div class="timeline-content">技术科对纸团进行初步检验</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.12.26 09:00</div>
+                                <div class="timeline-content">文检鉴定室对字迹进行比对分析</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.12.26 14:30</div>
+                                <div class="timeline-content">完成字迹比对，出具鉴定报告</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 纸条内容 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">三、纸条内容记录</h3>
+                    <div class="evidence-content">
+                        <p>纸条展开后，内容为手写文字，具体如下：</p>
+                        
+                        <!-- 纸条模拟 -->
+                        <div class="note-container">
+                            <div class="note-tear"></div>
+                            <div class="note-tear"></div>
+                            <div class="note-tear"></div>
+                            <div class="note-tear"></div>
+                            <div class="note-content">
+                                <div class="note-text">放学老地方见</div>
+                                <div class="note-signature">h</div>
+                            </div>
+                        </div>
+                        
+                        <div class="key-info">
+                            <strong>文字特征：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>书写工具：蓝色圆珠笔</li>
+                                <li>字迹特点：书写急促，笔画有力，有连笔习惯</li>
+                                <li>落款特征：字母"h"为小写，笔迹与正文一致</li>
+                                <li>纸张背面：紫外灯下可见被擦除的字迹，内容无法完全辨认</li>
+                            </ul>
+                        </div>
+                        
+                        <p><strong>"老地方"调查结果：</strong>经询问多名学生得知，"老地方"指学校图书馆4楼东侧的消防通道。该位置较为隐蔽，是学生私下约定见面的常用地点，平时很少有人经过。</p>
+                        
+                        <div class="report-box">
+                            <div class="report-title">现场勘查补充记录</div>
+                            <p>图书馆4楼消防通道勘查发现：</p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>通道内发现多处学生涂鸦</li>
+                                <li>地面有近期活动痕迹</li>
+                                <li>墙角发现少量烟蒂（已提取作为比对样本）</li>
+                                <li>该位置无监控摄像头覆盖</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 鉴定报告 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">四、文检鉴定报告</h3>
+                    <div class="evidence-content">
+                        <p><strong>鉴定时间：</strong>2025年12月26日 09:00-14:30</p>
+                        <p><strong>鉴定地点：</strong>青州市公安局文检鉴定室</p>
+                        <p><strong>鉴定人员：</strong>曹康（技术科文检工程师）</p>
+                        
+                        <div class="match-result">
+                            <div class="match-title">字迹比对结果</div>
+                            <p>将纸条字迹与以下样本进行比对：</p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>江楠的作业本、笔记本（5份样本）</li>
+                                <li>初一全体学生作业样本（150份）</li>
+								<li>初二全体学生作业样本（110份）</li>
+								<li>初三全体学生作业样本（122份）</li>
+								<li>高一全体学生作业样本（135份）</li>
+								<li>高二全体学生作业样本（125份）</li>
+								<li>高三全体学生作业样本（148份）</li>
+                                <li>明德中学教师书写样本（12份）</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="key-info">
+                            <strong>鉴定结论：</strong>纸条字迹与高三（5）班学生<strong>王浩</strong>的作业本笔迹高度匹配。
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>书写习惯一致：连笔方式、起笔收笔特征相同</li>
+                                <li>字体结构一致：字母"h"的写法具有独特性</li>
+                                <li>笔压特征一致：书写力度和笔画粗细特征相符</li>
+                                <li>匹配度评估：相似度达到92%，可认定为同一人书写</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="report-box">
+                            <div class="report-title">比对特征点摘要</div>
+                            <p>1. 字母"h"的弯曲弧度与王浩作业中的签名一致</p>
+                            <p>2. "放"字的撇捺角度与王浩字迹特征相符</p>
+                            <p>3. "学"字的连笔方式与样本中的书写习惯相同</p>
+                            <p>4. 整体书写倾斜角度为15°，与王浩作业笔迹一致</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 案件关联分析 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">五、案件关联分析</h3>
+                    <div class="evidence-content">
+                        <div class="key-info">
+                            <strong>纸条与案件关联性分析：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>纸条发现于死者江楠的书包内，系其随身物品</li>
+                                <li>字迹鉴定指向高三（5）班学生王浩</li>
+                                <li>王浩与江楠近期有过接触记录</li>
+                                <li>"老地方"（图书馆消防通道）为隐蔽场所，适合私下见面</li>
+                                <li>纸条内容简短，具有约定性质，可能涉及未公开的接触</li>
+                            </ul>
+                        </div>
+                        
+                        <p><strong>时间线关联：</strong>纸条未注明具体日期，但根据纸张新旧程度和笔迹油墨扩散情况，初步判断书写时间在案发前1-3天内。</p>
+                        
+                    </div>
+                </div>
+                
+                <!-- 签名 -->
+                <div class="signature-area">
+                    <div class="signature-line"></div>
+                    <div class="signature-text">
+                        技术科鉴定员：曹康 &nbsp;&nbsp;&nbsp;&nbsp; 编号：JS-0325<br>
+                        日期：2025年12月26日
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="police-footer">
+        <div class="footer-content">
+            <p>青州市公安局刑事侦查支队 · 证物管理系统</p>
+            <p class="footer-notice">
+                本文件属公安机关内部工作记录，未经许可不得复制、传播<br>
+                保密等级：内部 · 证物编号：MD-20251225-01 · 存档日期：2025-12-26
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加打印样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    body {
+                        background-color: white;
+                    }
+                    .evidence-card {
+                        box-shadow: none;
+                        border: 1px solid #ccc;
+                    }
+                    .police-header, .police-footer {
+                        background-color: white;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                    .police-badge {
+                        background-color: #eee;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 时间线动画
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 300);
+            });
+            
+            // 纸条动画
+            const noteContainer = document.querySelector('.note-container');
+            noteContainer.style.opacity = '0';
+            noteContainer.style.transform = 'scale(0.8)';
+            
+            setTimeout(() => {
+                noteContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                noteContainer.style.opacity = '1';
+                noteContainer.style.transform = 'scale(1)';
+            }, 600);
+            
+            // 重点信息框动画
+            const keyInfoBoxes = document.querySelectorAll('.key-info');
+            keyInfoBoxes.forEach((box, index) => {
+                box.style.opacity = '0';
+                box.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    box.style.transition = `opacity 0.5s ease ${index * 0.2}s, transform 0.5s ease ${index * 0.2}s`;
+                    box.style.opacity = '1';
+                    box.style.transform = 'translateY(0)';
+                }, 800 + index * 200);
+            });
+            
+            // 报告框动画
+            const reportBoxes = document.querySelectorAll('.report-box, .match-result');
+            reportBoxes.forEach((box, index) => {
+                box.style.opacity = '0';
+                
+                setTimeout(() => {
+                    box.style.transition = `opacity 0.4s ease ${index * 0.1}s`;
+                    box.style.opacity = '1';
+                }, 1000 + index * 100);
+            });
+        });
+        
+        // 添加打印功能
+        function printDocument() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

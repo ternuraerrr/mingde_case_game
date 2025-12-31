@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 桌面 - 明德中学悬案调查系统</title>
+    <style>
+        :root {
+            --windows-blue: #0078d7;
+            --wechat-green: #07c160;
+            --monitor-red: #e53935;
+            --evidence-blue: #4285f4;
+            --note-yellow: #ffeb3b;
+            --desktop-icon-color: #fff;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif; 
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            /* 更换为亮色渐变背景 */
+            background: 
+                linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6)),
+                linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #ff9a9e 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: block;
+            user-select: none;
+            position: relative;
+        }
+
+        /* 添加壁纸文字 */
+        body::before {
+            content: "保佑顺利下班 千万别有案子";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: 300;
+            color: rgba(0, 0, 0, 0.15);
+            text-align: center;
+            z-index: 0;
+            pointer-events: none;
+            letter-spacing: 2px;
+            line-height: 1.4;
+            max-width: 80%;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Windows 任务栏 (底部) --- */
+        .windows-taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            background: rgba(32, 32, 32, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            z-index: 999;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .start-button {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(to bottom, #5aa2e8, #0078d7);
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 22px;
+            margin-right: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .start-button:hover {
+            background: linear-gradient(to bottom, #6ab2f8, #1088e7);
+            transform: scale(1.05);
+        }
+
+        .taskbar-apps {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .taskbar-app {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+
+        .taskbar-app:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .taskbar-app.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-bottom: 3px solid var(--windows-blue);
+        }
+
+        .taskbar-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .system-tray {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            font-size: 13px;
+            padding-right: 15px;
+        }
+
+        .taskbar-time {
+            font-size: 14px;
+            font-weight: 500;
+            min-width: 120px;
+            text-align: right;
+        }
+
+        /* --- 桌面图标区域 --- */
+        .desktop-icons {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            z-index: 100;
+        }
+
+        .desktop-icon {
+            width: 90px;
+            height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            padding: 12px 5px;
+            border-radius: 8px;
+        }
+
+        .desktop-icon:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .desktop-icon:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0.98);
+        }
+
+        .icon-image {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 微信图标改回绿底白字 */
+        .wechat-icon {
+            background: var(--wechat-green);
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .icon-label {
+            font-size: 12px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+            padding: 3px 6px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            max-width: 100%;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+
+        /* --- 进度指示器 --- */
+        .progress-indicator {
+            position: fixed;
+            bottom: 55px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: "Consolas", monospace;
+            font-size: 0.9rem;
+            z-index: 998;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- 桌面提示 --- */
+        .desktop-hint {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            z-index: 100;
+            max-width: 200px;
+            text-align: center;
+        }
+
+        /* ====== 备忘录窗口样式 ====== */
+        .notepad-window {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 500px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            resize: both;
+            min-width: 400px;
+            min-height: 300px;
+            border: 1px solid #ccc;
+        }
+
+        .notepad-title-bar {
+            height: 30px;
+            background: linear-gradient(to bottom, #5aa2e8, #0078d7);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            color: white;
+            cursor: move;
+            user-select: none;
+            border-bottom: 1px solid #0078d7;
+        }
+
+        .notepad-window-title {
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notepad-window-title::before {
+            content: "📝";
+            font-size: 16px;
+        }
+
+        .notepad-window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .notepad-window-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .notepad-window-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .notepad-window-btn.close:hover {
+            background-color: #e81123;
+        }
+
+        .notepad-menu-bar {
+            height: 30px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 13px;
+        }
+
+        .notepad-menu-item {
+            padding: 5px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        .notepad-menu-item:hover {
+            background-color: #e0e0e0;
+        }
+
+        .notepad-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            min-width: 180px;
+            z-index: 1001;
+        }
+
+        .notepad-menu-item:hover .notepad-dropdown-menu {
+            display: block;
+        }
+
+        .notepad-dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .notepad-dropdown-item:hover {
+            background-color: #0078d7;
+            color: white;
+        }
+
+        .notepad-toolbar {
+            height: 30px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 15px;
+            font-size: 12px;
+        }
+
+        .notepad-tool-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notepad-tool-btn {
+            padding: 4px 8px;
+            border: 1px solid transparent;
+            background: none;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .notepad-tool-btn:hover {
+            background-color: #e0e0e0;
+            border-color: #ccc;
+        }
+
+        .notepad-editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .notepad-text-editor {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: "Microsoft YaHei", "Segoe UI", Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        .notepad-text-editor::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .notepad-text-editor::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .notepad-text-editor::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 6px;
+        }
+
+        .notepad-text-editor::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .notepad-status-bar {
+            height: 25px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .notepad-status-item {
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .notepad-file-operations {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 20px;
+            z-index: 1001;
+            min-width: 300px;
+        }
+
+        .notepad-file-operations.active {
+            display: block;
+        }
+
+        .notepad-file-input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .notepad-file-btn {
+            padding: 6px 12px;
+            margin-right: 10px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .notepad-file-btn:hover {
+            background-color: #005a9e;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 桌面提示 -->
+    <div class="desktop-hint">
+        双击图标打开应用<br>
+        调查线索隐藏在文件中
+    </div>
+
+    <!-- 桌面图标 -->
+    <div class="desktop-icons">
+        <!-- 微信图标 - 改回绿底白字 -->
+        <div class="desktop-icon" onclick="openApp('wechat')">
+            <div class="icon-image">
+                💬
+            </div>
+            <div class="icon-label">微信</div>
+        </div>
+
+        <!-- 证据检索图标 -->
+        <div class="desktop-icon" onclick="openApp('evidence')">
+            <div class="icon-image" >
+                🔍
+            </div>
+            <div class="icon-label">证据检索</div>
+        </div>
+
+        <!-- 备忘录图标 -->
+        <div class="desktop-icon" onclick="openNotepad()">
+            <div class="icon-image" style="background: color: #333; font-size: 28px; font-weight: bold;">
+                📝
+            </div>
+            <div class="icon-label">备忘录</div>
+        </div>
+    </div>
+
+    <!-- Windows 任务栏 -->
+    <div class="windows-taskbar">
+        <div class="start-button" onclick="openStartMenu()">
+            🪟
+        </div>
+        
+        <div class="taskbar-apps">
+            <!-- 任务栏微信图标 - 绿底白字 -->
+            <div class="taskbar-app active" onclick="openApp('wechat')">
+                <div class="taskbar-icon" style="background: color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;">
+                    💬
+                </div>
+            </div>
+            
+            <!-- 任务栏证据检索图标 -->
+            <div class="taskbar-app" onclick="openApp('evidence')">
+                🔍
+            </div>
+                        <!-- 任务栏备忘录图标 -->
+            <div class="taskbar-app" onclick="openNotepad()">
+                <div class="taskbar-icon" style="background: color: #333; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;">
+                    📝
+                </div>
+            </div>
+        </div>
+        
+        <div class="system-tray">
+            <span>🌐</span>
+            <span>🔊</span>
+            <div class="taskbar-time" id="taskbar-time-date">
+                <!-- 时间日期会通过JS动态显示 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== 备忘录窗口 ====== -->
+    <div class="notepad-window" id="notepadWindow" style="display: none;">
+        <!-- 标题栏 -->
+        <div class="notepad-title-bar" id="notepadTitleBar">
+            <div class="notepad-window-title">备忘录 - 记事本</div>
+            <div class="notepad-window-controls">
+                <button class="notepad-window-btn" onclick="minimizeNotepad()">─</button>
+                <button class="notepad-window-btn" onclick="toggleMaximizeNotepad()">□</button>
+                <button class="notepad-window-btn close" onclick="closeNotepad()">×</button>
+            </div>
+        </div>
+
+        <!-- 菜单栏 -->
+        <div class="notepad-menu-bar">
+            <div class="notepad-menu-item">
+                文件(F)
+                <div class="notepad-dropdown-menu">
+                    <div class="notepad-dropdown-item" onclick="newFile()">新建(N)</div>
+                    <div class="notepad-dropdown-item" onclick="openFile()">打开(O)...</div>
+                    <div class="notepad-dropdown-item" onclick="saveFile()">保存(S)</div>
+                    <div class="notepad-dropdown-item" onclick="saveAs()">另存为(A)...</div>
+                    <div class="notepad-dropdown-item" onclick="closeNotepad()">退出(X)</div>
+                </div>
+            </div>
+            <div class="notepad-menu-item">
+                编辑(E)
+                <div class="notepad-dropdown-menu">
+                    <div class="notepad-dropdown-item" onclick="undo()">撤销(U)</div>
+                    <div class="notepad-dropdown-item" onclick="redo()">重做(R)</div>
+                    <div class="notepad-dropdown-item" onclick="cutText()">剪切(T)</div>
+                    <div class="notepad-dropdown-item" onclick="copyText()">复制(C)</div>
+                    <div class="notepad-dropdown-item" onclick="pasteText()">粘贴(P)</div>
+                    <div class="notepad-dropdown-item" onclick="deleteText()">删除(D)</div>
+                    <div class="notepad-dropdown-item" onclick="selectAll()">全选(A)</div>
+                </div>
+            </div>
+            <div class="notepad-menu-item">
+                格式(O)
+                <div class="notepad-dropdown-menu">
+                    <div class="notepad-dropdown-item" onclick="toggleWordWrap()">自动换行(W)</div>
+                    <div class="notepad-dropdown-item" onclick="changeFontSize('increase')">字体大小(S)</div>
+                </div>
+            </div>
+            <div class="notepad-menu-item">
+                查看(V)
+                <div class="notepad-dropdown-menu">
+                    <div class="notepad-dropdown-item" onclick="toggleStatusBar()">状态栏(S)</div>
+                </div>
+            </div>
+            <div class="notepad-menu-item">
+                帮助(H)
+                <div class="notepad-dropdown-menu">
+                    <div class="notepad-dropdown-item" onclick="showAbout()">关于备忘录(A)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="notepad-toolbar" id="notepadToolbar">
+            <div class="notepad-tool-group">
+                <button class="notepad-tool-btn" onclick="newFile()" title="新建">📄</button>
+                <button class="notepad-tool-btn" onclick="saveFile()" title="保存">💾</button>
+            </div>
+            <div class="notepad-tool-group">
+                <button class="notepad-tool-btn" onclick="undo()" title="撤销">↶</button>
+                <button class="notepad-tool-btn" onclick="redo()" title="重做">↷</button>
+            </div>
+            <div class="notepad-tool-group">
+                <button class="notepad-tool-btn" onclick="cutText()" title="剪切">✂️</button>
+                <button class="notepad-tool-btn" onclick="copyText()" title="复制">📋</button>
+                <button class="notepad-tool-btn" onclick="pasteText()" title="粘贴">📝</button>
+            </div>
+            <div class="notepad-tool-group">
+                <button class="notepad-tool-btn" onclick="toggleWordWrap()" id="wordWrapBtn" title="自动换行">↵</button>
+            </div>
+        </div>
+
+        <!-- 编辑区域 -->
+        <div class="notepad-editor-container">
+            <textarea 
+                class="notepad-text-editor" 
+                id="textEditor" 
+                placeholder="在这里输入您的备忘录内容..."
+                spellcheck="false"
+            ># 案件备忘录 - 明德中学坠楼案
+
+## 基本信息
+- 案件编号：MDZX-20250412
+- 报案时间：今天 07:40
+- 地点：明德中学教学楼4楼
+- 当事人：江楠，女，17岁，高二（3）班
+
+## 现场初步情况
+1. 坠楼地点：教学楼4楼走廊
+2. 发现时间：今天早上7:30左右
+3. 现场无打斗痕迹
+
+## 需要调查的事项
+□ 调取教学楼监控记录
+□ 询问班主任张磊
+□ 了解江楠同学关系
+□ 检查死者遗物
+□ 询问家属情况
+
+## 线索记录
+- 江楠学号：20230315
+- 生日：2007.03.15
+- 班主任：张磊（38岁）
+- 同学反映：性格内向，最近情绪低落
+
+---
+最后更新：今天 08:00</textarea>
+        </div>
+
+        <!-- 状态栏 -->
+        <div class="notepad-status-bar" id="statusBar">
+            <div class="notepad-status-item">行 1, 列 1</div>
+            <div class="notepad-status-item">字符数: <span id="charCount">0</span></div>
+            <div class="notepad-status-item">行数: <span id="lineCount">0</span></div>
+            <div class="notepad-status-item" id="wrapStatus">自动换行: 开</div>
+        </div>
+    </div>
+
+    <!-- 文件操作对话框 -->
+    <div class="notepad-file-operations" id="fileDialog">
+        <h3 id="dialogTitle">保存文件</h3>
+        <input type="text" class="notepad-file-input" id="fileName" placeholder="请输入文件名">
+        <div style="text-align: right; margin-top: 15px;">
+            <button class="notepad-file-btn" onclick="confirmFileAction()">确定</button>
+            <button class="notepad-file-btn" onclick="cancelFileAction()">取消</button>
+        </div>
+    </div>
+
+    <script>
+        // ====== 桌面系统功能 ======
+        // 实时更新任务栏时间（包含年月日）
+        function updateTaskbarTime() {
+            const now = new Date();
+            
+            // 格式化日期和时间
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekday = now.toLocaleDateString('zh-CN', { weekday: 'short' });
+            
+            const hour = now.getHours().toString().padStart(2, '0');
+            const minute = now.getMinutes().toString().padStart(2, '0');
+            
+            // 显示格式：2025年12月29日 周一 10:30
+            const timeString = `${year}年${month}月${day}日 ${weekday} ${hour}:${minute}`;
+            
+            document.getElementById('taskbar-time-date').textContent = timeString;
+        }
+
+        // 初始化时间并每分钟更新
+        updateTaskbarTime();
+        setInterval(updateTaskbarTime, 60000);
+
+        // 应用交互函数
+        function openApp(appName) {
+            const apps = document.querySelectorAll('.taskbar-app');
+            apps.forEach(app => app.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            
+            // 打开对应页面
+            const appPages = {
+                'wechat': 'wechat.html',
+                'monitor': 'monitor.html',
+                'evidence': 'evidence.html'
+            };
+            
+            if (appPages[appName]) {
+                window.open(appPages[appName], '_blank');
+            }
+        }
+
+        // 开始菜单函数
+        function openStartMenu() {
+            alert("开始菜单已打开 - 调查系统启动中...");
+        }
+
+        // ====== 备忘录功能 ======
+        // 记事本状态
+        let notepadState = {
+            isOpen: false,
+            isMaximized: false,
+            isMinimized: false,
+            currentFile: '未命名.txt',
+            isModified: false,
+            wordWrap: true,
+            showStatusBar: true,
+            fontSize: 14
+        };
+
+        // 打开记事本
+        function openNotepad() {
+            const notepadWindow = document.getElementById('notepadWindow');
+            notepadWindow.style.display = 'flex';
+            notepadState.isOpen = true;
+            
+            // 更新字符统计
+            updateCharacterCount();
+            
+            // 聚焦到编辑器
+            document.getElementById('textEditor').focus();
+            
+            // 激活任务栏图标
+            const apps = document.querySelectorAll('.taskbar-app');
+            apps.forEach(app => app.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // 关闭记事本
+        function closeNotepad() {
+            if (notepadState.isModified) {
+                if (confirm('文档已修改，是否保存更改？')) {
+                    saveFile();
+                }
+            }
+            document.getElementById('notepadWindow').style.display = 'none';
+            notepadState.isOpen = false;
+        }
+
+        // 最小化记事本（模拟）
+        function minimizeNotepad() {
+            const notepadWindow = document.getElementById('notepadWindow');
+            notepadWindow.style.transform = 'translate(-50%, 100vh)';
+            notepadState.isMinimized = true;
+            
+            setTimeout(() => {
+                notepadWindow.style.display = 'none';
+            }, 300);
+        }
+
+        // 最大化/还原记事本
+        function toggleMaximizeNotepad() {
+            const notepadWindow = document.getElementById('notepadWindow');
+            const maximizeBtn = notepadWindow.querySelector('.notepad-window-controls .notepad-window-btn:nth-child(2)');
+            
+            if (notepadState.isMaximized) {
+                // 还原
+                notepadWindow.style.width = '700px';
+                notepadWindow.style.height = '500px';
+                notepadWindow.style.top = '50%';
+                notepadWindow.style.left = '50%';
+                notepadWindow.style.transform = 'translate(-50%, -50%)';
+                maximizeBtn.textContent = '□';
+            } else {
+                // 最大化
+                notepadWindow.style.width = '90vw';
+                notepadWindow.style.height = '80vh';
+                notepadWindow.style.top = '50%';
+                notepadWindow.style.left = '50%';
+                notepadWindow.style.transform = 'translate(-50%, -50%)';
+                maximizeBtn.textContent = '❐';
+            }
+            
+            notepadState.isMaximized = !notepadState.isMaximized;
+        }
+
+        // 拖动功能
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+        let currentPos = { x: 0, y: 0 };
+
+        document.getElementById('notepadTitleBar').addEventListener('mousedown', startDrag);
+
+        function startDrag(e) {
+            if (notepadState.isMaximized) return;
+            
+            isDragging = true;
+            const notepadWindow = document.getElementById('notepadWindow');
+            const rect = notepadWindow.getBoundingClientRect();
+            
+            dragOffset = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+            
+            currentPos = {
+                x: rect.left,
+                y: rect.top
+            };
+            
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function onDrag(e) {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            
+            currentPos = {
+                x: e.clientX - dragOffset.x,
+                y: e.clientY - dragOffset.y
+            };
+            
+            const notepadWindow = document.getElementById('notepadWindow');
+            notepadWindow.style.left = currentPos.x + 'px';
+            notepadWindow.style.top = currentPos.y + 'px';
+            notepadWindow.style.transform = 'none';
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        // 文件操作
+        function newFile() {
+            if (notepadState.isModified) {
+                if (confirm('文档已修改，是否保存当前内容？')) {
+                    saveFile();
+                }
+            }
+            document.getElementById('textEditor').value = '';
+            notepadState.currentFile = '未命名.txt';
+            notepadState.isModified = false;
+            updateWindowTitle();
+            updateCharacterCount();
+        }
+
+        function saveFile() {
+            if (notepadState.currentFile === '未命名.txt') {
+                saveAs();
+            } else {
+                const content = document.getElementById('textEditor').value;
+                localStorage.setItem(`notepad_${notepadState.currentFile}`, content);
+                notepadState.isModified = false;
+                updateWindowTitle();
+                alert(`文件 "${notepadState.currentFile}" 已保存！`);
+            }
+        }
+
+        function saveAs() {
+            document.getElementById('dialogTitle').textContent = '另存为';
+            document.getElementById('fileName').value = notepadState.currentFile;
+            document.getElementById('fileDialog').classList.add('active');
+            currentAction = 'saveAs';
+        }
+
+        // 编辑功能
+        function undo() {
+            document.getElementById('textEditor').focus();
+            document.execCommand('undo');
+            updateCharacterCount();
+        }
+
+        function redo() {
+            document.getElementById('textEditor').focus();
+            document.execCommand('redo');
+            updateCharacterCount();
+        }
+
+        function cutText() {
+            document.getElementById('textEditor').focus();
+            document.execCommand('cut');
+            updateCharacterCount();
+        }
+
+        function copyText() {
+            document.getElementById('textEditor').focus();
+            document.execCommand('copy');
+        }
+
+        function pasteText() {
+            document.getElementById('textEditor').focus();
+            document.execCommand('paste');
+            updateCharacterCount();
+        }
+
+        function deleteText() {
+            const editor = document.getElementById('textEditor');
+            editor.focus();
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const text = editor.value;
+            
+            if (start === end) {
+                editor.value = text.substring(0, start) + text.substring(start + 1);
+            } else {
+                editor.value = text.substring(0, start) + text.substring(end);
+            }
+            
+            editor.selectionStart = editor.selectionEnd = start;
+            notepadState.isModified = true;
+            updateWindowTitle();
+            updateCharacterCount();
+        }
+
+        function selectAll() {
+            document.getElementById('textEditor').focus();
+            document.execCommand('selectAll');
+        }
+
+        // 格式功能
+        function toggleWordWrap() {
+            notepadState.wordWrap = !notepadState.wordWrap;
+            const editor = document.getElementById('textEditor');
+            const wrapBtn = document.getElementById('wordWrapBtn');
+            const wrapStatus = document.getElementById('wrapStatus');
+            
+            if (notepadState.wordWrap) {
+                editor.style.whiteSpace = 'pre-wrap';
+                wrapBtn.style.backgroundColor = '#e0e0e0';
+                wrapStatus.textContent = '自动换行: 开';
+            } else {
+                editor.style.whiteSpace = 'nowrap';
+                wrapBtn.style.backgroundColor = 'transparent';
+                wrapStatus.textContent = '自动换行: 关';
+            }
+        }
+
+        function changeFontSize(action) {
+            const editor = document.getElementById('textEditor');
+            if (action === 'increase') {
+                notepadState.fontSize = Math.min(24, notepadState.fontSize + 2);
+            } else {
+                notepadState.fontSize = Math.max(10, notepadState.fontSize - 2);
+            }
+            editor.style.fontSize = notepadState.fontSize + 'px';
+        }
+
+        // 查看功能
+        function toggleStatusBar() {
+            notepadState.showStatusBar = !notepadState.showStatusBar;
+            const statusBar = document.getElementById('statusBar');
+            statusBar.style.display = notepadState.showStatusBar ? 'flex' : 'none';
+        }
+
+        // 帮助功能
+        function showAbout() {
+            alert('备忘录 - 记事本\n版本 1.0\n\n一个简单的文本编辑器，可用于记录案件线索和备忘录。\n\n© 2025 明德中学案件调查系统');
+        }
+
+        // 更新窗口标题
+        function updateWindowTitle() {
+            const titleElement = document.querySelector('.notepad-window-title');
+            const modified = notepadState.isModified ? '*' : '';
+            titleElement.textContent = `📝 ${modified}${notepadState.currentFile} - 备忘录`;
+        }
+
+        // 更新字符统计
+        function updateCharacterCount() {
+            const editor = document.getElementById('textEditor');
+            const text = editor.value;
+            const charCount = text.length;
+            const lineCount = text.split('\n').length;
+            
+            document.getElementById('charCount').textContent = charCount;
+            document.getElementById('lineCount').textContent = lineCount;
+            
+            // 更新光标位置
+            const cursorPos = editor.selectionStart;
+            const textBeforeCursor = text.substring(0, cursorPos);
+            const lines = textBeforeCursor.split('\n');
+            const line = lines.length;
+            const col = lines[lines.length - 1].length + 1;
+            
+            document.querySelector('.notepad-status-item:first-child').textContent = `行 ${line}, 列 ${col}`;
+            
+            // 标记为已修改
+            notepadState.isModified = true;
+            updateWindowTitle();
+        }
+
+        // 文件对话框处理
+        let currentAction = '';
+        
+        function confirmFileAction() {
+            const fileName = document.getElementById('fileName').value.trim();
+            if (!fileName) {
+                alert('请输入文件名！');
+                return;
+            }
+            
+            if (currentAction === 'saveAs') {
+                notepadState.currentFile = fileName.endsWith('.txt') ? fileName : fileName + '.txt';
+                saveFile();
+            }
+            
+            document.getElementById('fileDialog').classList.remove('active');
+        }
+
+        function cancelFileAction() {
+            document.getElementById('fileDialog').classList.remove('active');
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 监听编辑器内容变化
+            const editor = document.getElementById('textEditor');
+            editor.addEventListener('input', updateCharacterCount);
+            editor.addEventListener('keyup', updateCharacterCount);
+            editor.addEventListener('click', updateCharacterCount);
+            
+            // 初始统计
+            updateCharacterCount();
+            
+            // 启用自动换行
+            toggleWordWrap();
+        });
+    </script>
+</body>
+</html>

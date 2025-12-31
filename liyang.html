@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李阳证据 - 明德中学坠楼案关键证人</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --warning-color: #fbbc05;
+            --dark-color: #202124;
+            --light-color: #f8f9fa;
+            --border-color: #dadce0;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* 顶部导航栏 */
+        .browser-header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: background-color 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .address-bar {
+            flex-grow: 1;
+            height: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 0 15px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            background-color: #f1f3f4;
+        }
+        
+        .address-bar input {
+            border: none;
+            background: none;
+            flex-grow: 1;
+            font-size: 15px;
+            outline: none;
+            color: var(--text-primary);
+        }
+        
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-btn:hover {
+            background-color: #0d62d9;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .evidence-page {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        /* 证人信息 */
+        .witness-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .witness-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .witness-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .witness-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .witness-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        
+        .witness-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        /* 文档部分 */
+        .document-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title:before {
+            content: "📄";
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .document-card {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .document-card.warning {
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .document-card.danger {
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .document-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .document-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .document-content {
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+        
+        .document-content p {
+            margin-bottom: 15px;
+        }
+        
+        /* 退学申请样式 */
+        .withdrawal-form {
+            font-family: "SimSun", serif;
+            line-height: 1.8;
+        }
+        
+        .form-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 20px;
+        }
+        
+        .form-line {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .form-label {
+            min-width: 120px;
+            font-weight: 500;
+        }
+        
+        .form-value {
+            flex-grow: 1;
+            border-bottom: 1px solid #999;
+            min-height: 24px;
+        }
+        
+        .form-signature {
+            text-align: right;
+            margin-top: 40px;
+        }
+        
+        .form-stamp {
+            display: inline-block;
+            padding: 15px;
+            border: 2px solid #c5221f;
+            color: #c5221f;
+            font-weight: bold;
+            font-size: 16px;
+            transform: rotate(-5deg);
+            margin-top: 20px;
+        }
+        
+        /* 邮件样式 */
+        .email-container {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.6;
+        }
+        
+        .email-header {
+            background-color: #f1f3f4;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .email-field {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .email-label {
+            min-width: 80px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .email-value {
+            flex-grow: 1;
+            color: var(--text-primary);
+        }
+        
+        .email-body {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            white-space: pre-line;
+        }
+        
+        /* 证据分析 */
+        .analysis-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .analysis-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .analysis-title:before {
+            content: "🔍";
+            margin-right: 10px;
+        }
+        
+        .analysis-content {
+            color: var(--text-primary);
+        }
+        
+        .analysis-content ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .analysis-content li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            background-color: #fff8e1;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-weight: 500;
+        }
+        
+        .danger-text {
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+        
+        .warning-text {
+            color: #b06000;
+            font-weight: 500;
+        }
+        
+        /* 时间线 */
+        .timeline-section {
+            margin-top: 40px;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 30px auto;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--border-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 50px;
+        }
+        
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 2px solid white;
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+        
+        .timeline-item.danger:before {
+            background-color: var(--danger-color);
+            box-shadow: 0 0 0 3px var(--danger-color);
+        }
+        
+        .timeline-item.warning:before {
+            background-color: var(--warning-color);
+            box-shadow: 0 0 0 3px var(--warning-color);
+        }
+        
+        .timeline-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-date {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+            
+            .evidence-page {
+                padding: 20px;
+            }
+            
+            .browser-header {
+                padding: 10px;
+            }
+            
+            .nav-btn {
+                display: none;
+            }
+            
+            .witness-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .document-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-line {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .form-label {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="browser-header">
+        <button class="nav-btn" onclick="history.back()">←</button>
+        <button class="nav-btn" onclick="history.forward()">→</button>
+        <button class="nav-btn" onclick="location.reload()">↻</button>
+        
+        <div class="address-bar">
+            <span style="color: var(--text-secondary); margin-right: 5px;">🔒</span>
+            <input type="text" value="evidence://关键证人/李阳证据材料" readonly>
+        </div>
+        
+        <button class="search-btn" onclick="window.location.href='index.html'">返回检索系统</button>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="main-container">
+        <div class="evidence-page">
+            <h1 class="page-title">关键证人：李阳证据材料</h1>
+            <p class="page-subtitle">明德中学坠楼案关键证人 - 李阳提供的退学申请与匿名邮件证据</p>
+            
+            <!-- 证人信息 -->
+            <div class="witness-info">
+                <div class="witness-title">证人基本信息</div>
+                <div class="witness-details">
+                    <div class="witness-item">
+                        <span class="witness-label">姓名</span>
+                        <span class="witness-value">李阳</span>
+                    </div>
+                    <div class="witness-item">
+                        <span class="witness-label">原班级</span>
+                        <span class="witness-value">明德中学高三(5)班</span>
+                    </div>
+                    <div class="witness-item">
+                        <span class="witness-label">学号</span>
+                        <span class="witness-value">20230522</span>
+                    </div>
+                    <div class="witness-item">
+                        <span class="witness-label">退学日期</span>
+                        <span class="witness-value">2024年2月10日</span>
+                    </div>
+                    <div class="witness-item">
+                        <span class="witness-label">与案件关系</span>
+                        <span class="witness-value">王浩的前同学、受害者</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 退学申请 -->
+            <div class="document-section">
+                <div class="section-title">证据一：李阳退学申请</div>
+                
+                <div class="document-card warning">
+                    <div class="document-header">
+                        <div class="document-title">明德中学学生退学申请表</div>
+                        <div class="document-meta">申请日期：2024年2月3日 | 状态：已批准</div>
+                    </div>
+                    
+                    <div class="document-content withdrawal-form">
+                        <div class="form-title">明德中学学生退学申请表</div>
+                        
+                        <div class="form-section">
+                            <div class="form-line">
+                                <div class="form-label">申请人姓名：</div>
+                                <div class="form-value">李阳</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">性别：</div>
+                                <div class="form-value">男</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">出生年月：</div>
+                                <div class="form-value">2006年8月15日</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">班级：</div>
+                                <div class="form-value">高三(5)班</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">学号：</div>
+                                <div class="form-value">20230522</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-line">
+                                <div class="form-label">申请退学日期：</div>
+                                <div class="form-value">2024年2月10日</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">预计离校日期：</div>
+                                <div class="form-value">2024年2月15日</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-label">退学原因：</div>
+                            <div class="form-value" style="min-height: 100px; padding-top: 10px;">
+                                <p>家庭原因，需要转学至其他城市。</p>
+                                <p style="margin-top: 10px;">本人及家长已慎重考虑，自愿申请退学。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-line">
+                                <div class="form-label">申请人签字：</div>
+                                <div class="form-value">李阳</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">家长签字：</div>
+                                <div class="form-value">李风致</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">班主任意见：</div>
+                                <div class="form-value">同意，该生近期表现异常，建议转学调整。</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">班主任签字：</div>
+                                <div class="form-value">张磊</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">教务处意见：</div>
+                                <div class="form-value">同意退学申请</div>
+                            </div>
+                            <div class="form-line">
+                                <div class="form-label">教务处盖章：</div>
+                                <div class="form-value"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-signature">
+                            <div>明德中学教务处</div>
+                            <div>2024年2月8日</div>
+                            <div class="form-stamp">已批准</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 匿名邮件 -->
+            <div class="document-section">
+                <div class="section-title">证据二：匿名举报邮件</div>
+                
+                <div class="document-card danger">
+                    <div class="document-header">
+                        <div class="document-title">匿名举报邮件（发送至案件调查组）</div>
+                        <div class="document-meta">发送时间：2025年12月26日 22:47 | 发件人：anonymous_protector@securemail.com</div>
+                    </div>
+                    
+                    <div class="document-content email-container">
+                        <div class="email-header">
+                            <div class="email-field">
+                                <div class="email-label">发件人：</div>
+                                <div class="email-value">anonymous_protector@securemail.com</div>
+                            </div>
+                            <div class="email-field">
+                                <div class="email-label">收件人：</div>
+                                <div class="email-value">investigation_team@police.gov.cn</div>
+                            </div>
+                            <div class="email-field">
+                                <div class="email-label">日期：</div>
+                                <div class="email-value">2025年12月26日 22:47</div>
+                            </div>
+                            <div class="email-field">
+                                <div class="email-label">主题：</div>
+                                <div class="email-value">关于明德中学江楠坠楼案的线索</div>
+                            </div>
+                        </div>
+                        
+                        <div class="email-body">
+警察您好，
+
+我是李阳，曾经是明德中学高三(5)班的学生，去年2月退学了。
+
+我知道江楠的死不是意外。看到新闻说是"学习压力大导致的意外"，我整晚睡不着。我必须说出来，否则江楠就白死了。
+
+王浩之前也这样欺负过我。2023年10月开始，他强迫我帮他作弊，每次考试都要给他传答案。我试过反抗，但他威胁要打我，还说"我爸是校董，你告状也没用"。
+
+2024年1月15日期末考试，我故意把错误答案传给他，想引起老师注意。结果王浩考了低分，张磊老师却把我叫到办公室，说我"故意陷害同学"。后来我才知道，王浩的爸爸王建国给张老师转了钱，事情就被压下去了。
+
+我被记了过，王浩什么事都没有。那之后他变本加厉，每天放学堵我，抢我的钱，还让其他同学孤立我。我告诉父母想转学，他们一开始不同意，直到我在学校厕所被王浩和另外两个同学打了，脸上都是伤，他们才相信。
+
+我退学申请上写的是"家庭原因"，其实是因为我在明德中学待不下去了。张老师知道一切，但他收了王建国的钱，只会说"同学之间要互相包容"。
+
+今年9月，我以前的同学告诉我，王浩又找了个学妹开始欺负，就是江楠。他们说江楠性格内向，家里条件不太好，王浩找她要"保护费"，还在全班面前羞辱她。我让同学提醒江楠小心，但好像没什么用。
+
+12月25日看到新闻，我浑身发冷。一样的模式，一样的沉默，一样的结果。
+
+我有证据。2024年1月，我被记过后，偷偷录了张老师和王建国的通话。张老师说："您放心，李阳的事已经处理好了，不会影响到王浩。"
+
+我不敢直接交给你们，王建国的势力太大了。去年我想举报的时候，我爸的工作就受到了威胁。我把录音和一份书面说明放在了明德中学图书馆3楼哲学区书架的第10层，编号为20230308的书里（王浩的学号）。书是《理想国》，我把证据装在一个白色信封里，夹在书里。
+
+希望这些证据能帮到你们。请一定仔细调查张磊和王建国的关系，还有王浩长期霸凌同学的事实。
+
+江楠不应该这样死去的。我也不应该沉默到现在。
+
+请小心处理这些信息，如果王建国知道是我说的，我和我的家人都会有危险。
+
+希望正义不会迟到。
+
+一个愧疚的见证者
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 时间线 -->
+            <div class="timeline-section">
+                <div class="section-title">李阳事件时间线</div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2023年10月</div>
+                            <div>王浩开始胁迫李阳帮助作弊，每次考试传答案</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item warning">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2024年1月15日</div>
+                            <div>李阳故意传错误答案，试图引起老师注意。反被张磊记过，发现张磊收受王建国贿赂</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item danger">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2024年1月底</div>
+                            <div>李阳在学校厕所被王浩等人殴打，录下张磊与王建国通话证据</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2024年2月3日</div>
+                            <div>提交退学申请，理由为"家庭原因"</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2024年2月10日</div>
+                            <div>正式退学，转学至其他城市</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2025年9月</div>
+                            <div>从同学处得知王浩开始霸凌江楠，提醒未果</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item danger">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2025年12月25日</div>
+                            <div>江楠坠楼身亡，媒体报道为"意外"</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2025年12月26日</div>
+                            <div>发送匿名邮件提供证据，将录音藏于图书馆</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 证据分析 -->
+            <div class="analysis-section">
+                <div class="analysis-title">证据分析</div>
+                <div class="analysis-content">
+                    <p>李阳提供的证据具有重要价值：</p>
+                    <p style="margin-top: 15px; font-weight: 500; color: var(--danger-color);">
+                        李阳的证据直接指证了王浩的长期霸凌行为、张磊的受贿包庇行为，以及王建国利用金钱和权力干预学校正常秩序的行为。这些证据如果核实，将彻底改变案件性质。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加一些交互效果
+            const documentCards = document.querySelectorAll('.document-card');
+            
+            documentCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.transition = 'transform 0.2s';
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            });
+            
+            // 时间线动画
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateX(0)';
+                        entry.target.style.transition = 'opacity 0.5s, transform 0.5s';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            timelineItems.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                observer.observe(item);
+            });
+        });
+    </script>
+</body>
+</html>

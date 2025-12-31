@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明德中学 - 校园监控管理系统</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --light-color: #ffffff;
+            --border-color: #dee2e6;
+            --text-primary: #2c3e50;
+            --text-secondary: #6c757d;
+            --card-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        }
+        
+        /* 登录界面 */
+        .login-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 40px;
+            background-color: var(--light-color);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+        }
+        
+        .login-title {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .login-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        .login-form {
+            margin-top: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .password-input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            background-color: #1a252f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .error-message {
+            color: var(--accent-color);
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .password-hint {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        /* 主界面 */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none;
+        }
+        
+        /* 顶部导航栏 */
+        .monitor-header {
+            background-color: var(--light-color);
+            border-radius: 12px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        .header-date {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        /* 保安队长信息 */
+        .security-info {
+            background-color: var(--light-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            max-width: 300px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .security-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .security-title::before {
+            content: '👮';
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .security-details {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .security-details p {
+            margin-bottom: 8px;
+        }
+        
+        .duty-table {
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .duty-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .duty-table th, .duty-table td {
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+        
+        .duty-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        /* 时间段选择 */
+        .time-selector {
+            background-color: var(--light-color);
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .time-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .time-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .time-btn {
+            padding: 12px 30px;
+            background-color: #f8f9fa;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .time-btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .time-btn:hover:not(.active) {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        
+        /* 监控列表 */
+        .monitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .monitor-card {
+            background-color: var(--light-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s;
+            border-top: 4px solid var(--success-color);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .monitor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+        }
+        
+        .monitor-card.abnormal {
+            border-top-color: var(--accent-color);
+        }
+        
+        .monitor-name {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .monitor-status {
+            display: inline-block;
+            padding: 4px 12px;
+            background-color: #e8f6ef;
+            color: var(--success-color);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .monitor-status.abnormal {
+            background-color: #ffebee;
+            color: var(--accent-color);
+        }
+        
+        .monitor-time {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .monitor-note {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .monitor-password-note {
+            font-size: 13px;
+            color: var(--accent-color);
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        /* 监控详情弹窗 */
+        .monitor-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .monitor-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: var(--light-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+        
+        .monitor-modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: var(--accent-color);
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .modal-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+        
+        .monitor-video {
+            width: 100%;
+            height: 400px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-placeholder {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .video-time {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .modal-details {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .modal-details-title {
+            font-size: 16px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .modal-details-content {
+            font-size: 15px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .password-prompt {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .password-input-modal {
+            width: 300px;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .password-submit {
+            padding: 12px 30px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .password-submit:hover {
+            background-color: #2980b9;
+        }
+        
+        .password-error {
+            color: var(--accent-color);
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        /* 刑警笔录提示 */
+        .police-note {
+            background-color: #e8f4fd;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .monitor-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .monitor-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .time-buttons {
+                flex-direction: column;
+            }
+            
+            .main-container {
+                padding: 15px;
+            }
+            
+            .login-container {
+                margin: 50px 20px;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div id="loginContainer" class="login-container">
+        <h1 class="login-title">明德中学监控管理系统</h1>
+        <p class="login-subtitle">校园安全监控中心 · 2025年12月数据</p>
+        
+        <div class="login-form">
+            <div class="input-group">
+                <label class="input-label">请输入访问密码：</label>
+                <input type="password" id="passwordInput" class="password-input" placeholder="请输入密码" autocomplete="off">
+            </div>
+            
+            <button id="loginBtn" class="login-btn">进入系统</button>
+            
+            <div id="errorMessage" class="error-message">密码错误，请重新输入</div>
+            
+        </div>
+    </div>
+    
+    <!-- 主界面 -->
+    <div id="mainContainer" class="main-container">
+        <!-- 顶部导航栏 -->
+        <div class="monitor-header">
+            <div>
+                <h1 class="header-title">明德中学监控管理系统</h1>
+                <div class="header-date">2025年12月25日 · 校园安全监控中心</div>
+            </div>
+            
+            <!-- 保安队长信息 -->
+            <div class="security-info">
+                <div class="security-title">保安队长信息</div>
+                <div class="security-details">
+                    <p><strong>姓名：</strong>赵铁军</p>
+                    <p><strong>联系电话：</strong>138-XXXX-8888</p>
+                    <p><strong>值班室：</strong>明德中学东门保安室</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 时间段选择 -->
+        <div class="time-selector">
+            <div class="time-title">请选择查看时间段：</div>
+            <div class="time-buttons">
+                <button class="time-btn active" data-time="7-11">07:00 - 11:00</button>
+                <button class="time-btn" data-time="11-15">11:00 - 15:00</button>
+            </div>
+        </div>
+        
+        <!-- 监控列表 -->
+        <div class="monitor-grid" id="monitorGrid">
+            <!-- 监控卡片将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <!-- 监控详情弹窗 -->
+    <div id="monitorModal" class="monitor-modal">
+        <div class="modal-content">
+            <div class="modal-close" id="modalClose">×</div>
+            <h2 class="modal-title" id="modalTitle">监控详情</h2>
+            <div class="modal-subtitle" id="modalSubtitle">2025年12月25日</div>
+            
+            <!-- 监控视频区域 -->
+            <div class="monitor-video" id="monitorVideo">
+                <!-- 视频内容将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 监控详情 -->
+            <div class="modal-details">
+                <div class="modal-details-title">监控信息</div>
+                <div class="modal-details-content" id="modalDetails">
+                    <!-- 详情内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 刑警笔录提示（部分监控显示） -->
+            <div class="police-note" id="policeNote" style="display: none;">
+                <strong>刑警笔录提示：</strong> 2025年12月25日08:30-10:00期间，刑警正在校园内进行案件调查笔录工作。
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 监控数据
+        const MONITOR_DATA = {
+            "7-11": [
+                {
+                    id: "gate",
+                    name: "校门监控",
+                    location: "校门",
+                    status: "normal",
+                    note: "学生进出秩序正常，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: true
+                },
+                {
+                    id: "building-1",
+                    name: "教学楼1楼",
+                    location: "教学楼1楼走廊",
+                    status: "normal",
+                    note: "走廊畅通，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: true
+                },
+                {
+                    id: "building-2",
+                    name: "教学楼2楼",
+                    location: "教学楼2楼走廊",
+                    status: "normal",
+                    note: "走廊畅通，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: true
+                },
+                {
+                    id: "building-3",
+                    name: "教学楼3楼",
+                    location: "教学楼3楼走廊",
+                    status: "normal",
+                    note: "走廊畅通，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: true
+                },
+                {
+                    id: "building-4",
+                    name: "教学楼4楼",
+                    location: "教学楼4楼走廊",
+                    status: "abnormal",
+                    note: "该时间段录像文件异常",
+                    timeNote: "录像文件于08:00被管理员删除",
+                    password: null,
+                    showPoliceNote: false
+                },
+                {
+                    id: "building-5",
+                    name: "教学楼5楼",
+                    location: "教学楼5楼走廊",
+                    status: "normal",
+                    note: "走廊畅通，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: true
+                },
+                {
+                    id: "cafeteria",
+                    name: "食堂监控",
+                    location: "学校食堂",
+                    status: "normal",
+                    note: "早餐时间学生用餐秩序正常",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "playground",
+                    name: "操场监控",
+                    location: "学校操场",
+                    status: "normal",
+                    note: "早晨锻炼学生活动正常",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: true
+                },
+                {
+                    id: "office-grade1",
+                    name: "初一教师办公室",
+                    location: "初一教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-grade2",
+                    name: "初二教师办公室",
+                    location: "初二教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-grade3",
+                    name: "初三教师办公室",
+                    location: "初三教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-senior1",
+                    name: "高一教师办公室",
+                    location: "高一教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-senior2",
+                    name: "高二教师办公室",
+                    location: "高二教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-senior3",
+                    name: "高三教师办公室",
+                    location: "高三教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "counseling-room",
+                    name: "心理咨询室",
+                    location: "心理咨询室门口",
+                    status: "normal",
+                    note: "无人员进出，门锁正常",
+                    timeNote: "07:00-11:00录像正常",
+                    showPoliceNote: false
+                }
+            ],
+            "11-15": [
+                {
+                    id: "gate",
+                    name: "校门监控",
+                    location: "校门",
+                    status: "normal",
+                    note: "午间进出秩序正常，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "building-1",
+                    name: "教学楼1楼",
+                    location: "教学楼1楼走廊",
+                    status: "normal",
+                    note: "走廊畅通，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "building-2",
+                    name: "教学楼2楼",
+                    location: "教学楼2楼走廊",
+                    status: "normal",
+                    note: "走廊畅通，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "building-3",
+                    name: "教学楼3楼",
+                    location: "教学楼3楼走廊",
+                    status: "normal",
+                    note: "走廊畅通，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "building-4",
+                    name: "教学楼4楼",
+                    location: "教学楼4楼走廊",
+                    status: "normal",
+                    note: "走廊畅通，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "building-5",
+                    name: "教学楼5楼",
+                    location: "教学楼5楼走廊",
+                    status: "normal",
+                    note: "走廊畅通，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "cafeteria",
+                    name: "食堂监控",
+                    location: "学校食堂",
+                    status: "normal",
+                    note: "午餐时间学生用餐秩序正常",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "playground",
+                    name: "操场监控",
+                    location: "学校操场",
+                    status: "normal",
+                    note: "午间学生活动正常",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-grade1",
+                    name: "初一教师办公室",
+                    location: "初一教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-grade2",
+                    name: "初二教师办公室",
+                    location: "初二教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-grade3",
+                    name: "初三教师办公室",
+                    location: "初三教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-senior1",
+                    name: "高一教师办公室",
+                    location: "高一教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-senior2",
+                    name: "高二教师办公室",
+                    location: "高二教师办公室走廊",
+                    status: "abnormal",
+                    note: "该监控录像需要密码访问",
+                    timeNote: "访问受限，需输入密码",
+                    password: "zhanglei",
+                    showPoliceNote: false
+                },
+                {
+                    id: "office-senior3",
+                    name: "高三教师办公室",
+                    location: "高三教师办公室走廊",
+                    status: "normal",
+                    note: "教师进出正常，无异常情况",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                },
+                {
+                    id: "counseling-room",
+                    name: "心理咨询室",
+                    location: "心理咨询室门口",
+                    status: "normal",
+                    note: "无人员进出，门锁正常",
+                    timeNote: "11:00-15:00录像正常",
+                    showPoliceNote: false
+                }
+            ]
+        };
+        
+        // 系统密码
+        const SYSTEM_PASSWORD = "zhaotiejun";
+        const OFFICE_PASSWORD = "zhanglei";
+        
+        // DOM元素
+        const loginContainer = document.getElementById('loginContainer');
+        const mainContainer = document.getElementById('mainContainer');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const timeButtons = document.querySelectorAll('.time-btn');
+        const monitorGrid = document.getElementById('monitorGrid');
+        const monitorModal = document.getElementById('monitorModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSubtitle = document.getElementById('modalSubtitle');
+        const monitorVideo = document.getElementById('monitorVideo');
+        const modalDetails = document.getElementById('modalDetails');
+        const policeNote = document.getElementById('policeNote');
+        
+        // 当前选中的时间段
+        let currentTimeSlot = "7-11";
+        // 当前选中的监控
+        let currentMonitor = null;
+        // 办公室监控密码状态
+        let officePasswordEntered = false;
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 登录按钮事件
+            loginBtn.addEventListener('click', handleLogin);
+            
+            // 回车键登录
+            passwordInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+            
+            // 时间段切换事件
+            timeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    timeButtons.forEach(btn => btn.classList.remove('active'));
+                    // 给当前按钮添加active类
+                    this.classList.add('active');
+                    // 更新当前时间段
+                    currentTimeSlot = this.dataset.time;
+                    // 重新渲染监控列表
+                    renderMonitorList(currentTimeSlot);
+                });
+            });
+            
+            // 关闭弹窗事件
+            modalClose.addEventListener('click', closeModal);
+            
+            // 点击弹窗背景关闭
+            monitorModal.addEventListener('click', function(e) {
+                if (e.target === monitorModal) {
+                    closeModal();
+                }
+            });
+            
+            // 初始化渲染监控列表
+            renderMonitorList(currentTimeSlot);
+        });
+        
+        // 处理登录
+        function handleLogin() {
+            const password = passwordInput.value.trim().toLowerCase();
+            
+            if (password === SYSTEM_PASSWORD) {
+                // 登录成功
+                loginContainer.style.display = 'none';
+                mainContainer.style.display = 'block';
+                errorMessage.style.display = 'none';
+                
+                // 添加简单的入场动画
+                mainContainer.style.opacity = '0';
+                mainContainer.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    mainContainer.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    mainContainer.style.opacity = '1';
+                    mainContainer.style.transform = 'translateY(0)';
+                }, 100);
+            } else {
+                // 登录失败
+                errorMessage.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // 添加抖动动画
+                passwordInput.style.animation = 'none';
+                setTimeout(() => {
+                    passwordInput.style.animation = 'shake 0.5s';
+                }, 10);
+            }
+        }
+        
+        // 渲染监控列表
+        function renderMonitorList(timeSlot) {
+            monitorGrid.innerHTML = '';
+            const monitors = MONITOR_DATA[timeSlot];
+            
+            monitors.forEach(monitor => {
+                const card = document.createElement('div');
+                card.className = `monitor-card ${monitor.status === 'abnormal' ? 'abnormal' : ''}`;
+                card.dataset.id = monitor.id;
+                
+                card.innerHTML = `
+                    <div class="monitor-name">${monitor.name}</div>
+                    <div class="monitor-status ${monitor.status === 'abnormal' ? 'abnormal' : ''}">
+                        ${monitor.status === 'normal' ? '正常' : '异常'}
+                    </div>
+                    <div class="monitor-time">${monitor.timeNote}</div>
+                    <div class="monitor-note">${monitor.note}</div>
+                    ${monitor.password ? '<div class="monitor-password-note">需要密码访问</div>' : ''}
+                `;
+                
+                card.addEventListener('click', () => openMonitorModal(monitor, timeSlot));
+                monitorGrid.appendChild(card);
+            });
+            
+            // 添加卡片动画
+            const cards = document.querySelectorAll('.monitor-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = `opacity 0.5s ease ${index * 0.05}s, transform 0.5s ease ${index * 0.05}s`;
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        }
+        
+        // 打开监控详情弹窗
+        function openMonitorModal(monitor, timeSlot) {
+            currentMonitor = monitor;
+            
+            // 更新弹窗标题
+            modalTitle.textContent = monitor.name;
+            modalSubtitle.textContent = `2025年12月25日 ${timeSlot === '7-11' ? '07:00-11:00' : '11:00-15:00'}`;
+            
+            // 重置弹窗内容
+            monitorVideo.innerHTML = '';
+            modalDetails.innerHTML = '';
+            policeNote.style.display = 'none';
+            
+            // 特殊处理：教学楼4楼监控（7-11点时间段）
+            if (monitor.id === 'building-4' && timeSlot === '7-11') {
+                monitorVideo.innerHTML = `
+                    <div class="video-placeholder">
+                        <div style="font-size: 24px; margin-bottom: 15px;">⚠️</div>
+                        <div>监控录像文件异常</div>
+                        <div style="font-size: 14px; margin-top: 10px; color: #ccc;">该时间段录像文件已被删除</div>
+                    </div>
+                    <div class="video-time">08:00:00</div>
+                `;
+                
+                modalDetails.innerHTML = `
+                    <p><strong>监控位置：</strong>${monitor.location}</p>
+                    <p><strong>状态：</strong><span style="color: #e74c3c;">异常</span></p>
+                    <p><strong>详细说明：</strong>该时间段（07:00-11:00）的监控录像文件于2025年12月25日08:00被系统管理员删除。删除记录显示操作者为管理员账户。</p>
+                    <p><strong>操作记录：</strong>删除时间 08:00:23，操作IP：192.168.1.105，操作终端：监控室主机</p>
+                `;
+                
+                // 显示刑警笔录提示
+                if (monitor.showPoliceNote) {
+                    policeNote.style.display = 'block';
+                }
+            }
+            // 特殊处理：高二教师办公室监控（11-15点时间段）
+            else if (monitor.id === 'office-senior2' && timeSlot === '11-15') {
+                if (officePasswordEntered) {
+                    // 密码已输入，显示正常监控
+                    monitorVideo.innerHTML = `
+                        <div class="video-placeholder">
+                            <div style="font-size: 24px; margin-bottom: 15px;">📹</div>
+                            <div>监控录像正常播放</div>
+                            <div style="font-size: 14px; margin-top: 10px; color: #ccc;">2025年12月25日 11:00-15:00</div>
+                        </div>
+                        <div class="video-time">12:45:30</div>
+                    `;
+                    
+                    modalDetails.innerHTML = `
+                        <p><strong>监控位置：</strong>${monitor.location}</p>
+                        <p><strong>状态：</strong><span style="color: #27ae60;">正常</span></p>
+                        <p><strong>访问记录：</strong>当前用户已通过密码验证，可查看完整录像。</p>
+						<p><strong>详细说明：</strong>该时间段监控录像正常，显示教师办公室走廊情况。期间能听到有人高声道：“就说江楠是意外，大事化小，别影响了学校声誉！”，其他无异常。</p>
+                    `;
+                } else {
+                    // 需要输入密码
+                    monitorVideo.innerHTML = `
+                        <div class="password-prompt">
+                            <div style="font-size: 24px; margin-bottom: 15px;">🔒</div>
+                            <div>需要密码访问</div>
+                            <div style="font-size: 14px; margin-top: 10px; margin-bottom: 20px; color: #ccc;">请输入密码查看该监控录像</div>
+                            <input type="password" id="officePasswordInput" class="password-input-modal" placeholder="请输入访问密码" autocomplete="off">
+                            <div style="margin-top: 15px;">
+                                <button id="officePasswordSubmit" class="password-submit">确认</button>
+                            </div>
+                            <div id="officePasswordError" class="password-error">密码错误，请重新输入</div>
+                        </div>
+                    `;
+                    
+                    modalDetails.innerHTML = `
+                        <p><strong>监控位置：</strong>${monitor.location}</p>
+                        <p><strong>状态：</strong><span style="color: #e74c3c;">访问受限</span></p>
+                        <p><strong>详细说明：</strong>该监控录像设置了访问权限，需要输入正确密码方可查看。</p>
+                    `;
+                    
+                    // 添加密码提交事件
+                    setTimeout(() => {
+                        const officePasswordInput = document.getElementById('officePasswordInput');
+                        const officePasswordSubmit = document.getElementById('officePasswordSubmit');
+                        const officePasswordError = document.getElementById('officePasswordError');
+                        
+                        officePasswordSubmit.addEventListener('click', () => {
+                            const password = officePasswordInput.value.trim().toLowerCase();
+                            
+                            if (password === OFFICE_PASSWORD) {
+                                officePasswordEntered = true;
+                                officePasswordError.style.display = 'none';
+                                openMonitorModal(monitor, timeSlot); // 重新打开弹窗显示内容
+                            } else {
+                                officePasswordError.style.display = 'block';
+                                officePasswordInput.value = '';
+                                officePasswordInput.focus();
+                            }
+                        });
+                        
+                        // 回车键提交
+                        officePasswordInput.addEventListener('keyup', function(e) {
+                            if (e.key === 'Enter') {
+                                officePasswordSubmit.click();
+                            }
+                        });
+                    }, 100);
+                }
+            }
+            // 正常监控
+            else {
+                monitorVideo.innerHTML = `
+                    <div class="video-placeholder">
+                        <div style="font-size: 24px; margin-bottom: 15px;">📹</div>
+                        <div>监控录像正常播放</div>
+                        <div style="font-size: 14px; margin-top: 10px; color: #ccc;">2025年12月25日 ${timeSlot === '7-11' ? '07:00-11:00' : '11:00-15:00'}</div>
+                    </div>
+                    <div class="video-time">${timeSlot === '7-11' ? '09:30:15' : '13:20:45'}</div>
+                `;
+                
+                modalDetails.innerHTML = `
+                    <p><strong>监控位置：</strong>${monitor.location}</p>
+                    <p><strong>状态：</strong><span style="color: #27ae60;">正常</span></p>
+                    <p><strong>详细说明：</strong>${monitor.note}</p>
+                    <p><strong>录像质量：</strong>高清，无中断，无异常</p>
+                `;
+                
+                // 显示刑警笔录提示
+                if (monitor.showPoliceNote) {
+                    policeNote.style.display = 'block';
+                }
+            }
+            
+            // 显示弹窗
+            monitorModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // 关闭弹窗
+        function closeModal() {
+            monitorModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // 重置办公室密码状态（如果需要）
+            if (currentMonitor && currentMonitor.id === 'office-senior2') {
+                officePasswordEntered = false;
+            }
+        }
+        
+        // 添加抖动动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
