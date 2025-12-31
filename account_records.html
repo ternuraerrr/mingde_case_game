@@ -32,6 +32,133 @@
             min-height: 100vh;
         }
         
+        /* 密码保护层 */
+        #password-protection {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+        
+        .password-container {
+            background-color: white;
+            border-radius: 16px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .password-container h2 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .password-container p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+        
+        .password-input-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+        
+        .password-input:focus {
+            border-color: var(--primary-color);
+        }
+        
+        .password-input.error {
+            border-color: var(--danger-color);
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .password-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 16px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .password-btn:hover {
+            background-color: #0d62d9;
+        }
+        
+        .password-hint {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 15px;
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 10px;
+            min-height: 20px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .password-lock-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        /* 隐藏主要内容 */
+        .main-content {
+            display: none;
+        }
+        
+        .main-content.show {
+            display: block;
+        }
+        
         /* 顶部导航栏 */
         .browser-header {
             background-color: white;
@@ -450,187 +577,215 @@
             .timeline-item:before {
                 left: 14px;
             }
+            
+            .password-container {
+                padding: 30px 20px;
+                width: 95%;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 顶部导航栏 -->
-    <div class="browser-header">
-        <button class="nav-btn" onclick="history.back()">←</button>
-        <button class="nav-btn" onclick="history.forward()">→</button>
-        <button class="nav-btn" onclick="location.reload()">↻</button>
-        
-        <div class="address-bar">
-            <span style="color: var(--text-secondary); margin-right: 5px;">🔒</span>
-            <input type="text" value="evidence://账户流水/张磊银行卡记录" readonly>
+    <!-- 密码保护层 -->
+    <div id="password-protection">
+        <div class="password-container">
+            <div class="password-lock-icon">🔒</div>
+            <h2>访问受保护的内容</h2>
+            <p>此页面包含敏感证据信息，需要验证身份后才能访问</p>
+            
+            <div class="password-input-container">
+                <input type="password" id="password-input" class="password-input" placeholder="请输入访问密码" maxlength="4" autocomplete="off">
+            </div>
+            
+            <div id="error-message" class="error-message"></div>
+            
+            <button id="password-submit" class="password-btn">验证密码</button>
+            
+            <div class="password-hint">
+                提示：密码为4位数字
+            </div>
         </div>
-		
     </div>
     
-    <!-- 主内容区域 -->
-    <div class="main-container">
-        <div class="evidence-page">
-            <h1 class="page-title">张磊银行账户流水记录</h1>
-            <p class="page-subtitle">明德中学坠楼案相关证据 - 张磊（江楠班主任）的个人银行账户交易明细</p>
+    <!-- 主内容区域（默认隐藏） -->
+    <div id="main-content" class="main-content">
+        <!-- 顶部导航栏 -->
+        <div class="browser-header">
+            <button class="nav-btn" onclick="history.back()">←</button>
+            <button class="nav-btn" onclick="history.forward()">→</button>
+            <button class="nav-btn" onclick="location.reload()">↻</button>
             
-            <!-- 账户基本信息 -->
-            <div class="account-info">
-                <h3>账户基本信息</h3>
-                <div class="account-details">
-                    <div class="account-item">
-                        <span class="account-label">持卡人</span>
-                        <span class="account-value">张磊</span>
-                    </div>
-                    <div class="account-item">
-                        <span class="account-label">银行账号</span>
-                        <span class="account-value">6217 **** **** 5678</span>
-                    </div>
-                    <div class="account-item">
-                        <span class="account-label">开户行</span>
-                        <span class="account-value">中国青州银行明德支行</span>
-                    </div>
-                    <div class="account-item">
-                        <span class="account-label">账户类型</span>
-                        <span class="account-value">工资卡/储蓄卡</span>
-                    </div>
-                    <div class="account-item">
-                        <span class="account-label">调查期间</span>
-                        <span class="account-value">2024年1月 - 2025年12月</span>
-                    </div>
-                </div>
+            <div class="address-bar">
+                <span style="color: var(--text-secondary); margin-right: 5px;">🔒</span>
+                <input type="text" value="evidence://账户流水/张磊银行卡记录" readonly>
             </div>
-            
-            <!-- 统计卡片 -->
-            <div class="stats-section">
-                <div class="stat-card">
-                    <div class="stat-title">工资收入总额</div>
-                    <div class="stat-value">¥288,000</div>
-                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">24个月 × 每月12,000元</div>
-                </div>
+        </div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-container">
+            <div class="evidence-page">
+                <h1 class="page-title">张磊银行账户流水记录</h1>
+                <p class="page-subtitle">明德中学坠楼案相关证据 - 张磊（江楠班主任）的个人银行账户交易明细</p>
                 
-                <div class="stat-card warning">
-                    <div class="stat-title">"补课费"收入总额</div>
-                    <div class="stat-value">¥1,236,000</div>
-                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">包括每月小额和大额转账</div>
-                </div>
-                
-                <div class="stat-card danger">
-                    <div class="stat-title">异常收入占比</div>
-                    <div class="stat-value">81.1%</div>
-                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">"补课费"占收入比例异常偏高</div>
-                </div>
-                
-                <div class="stat-card success">
-                    <div class="stat-title">转账人数</div>
-                    <div class="stat-value">98人-103人不等</div>
-                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px">每月固定转账"补课费"</div>
-                </div>
-            </div>
-            
-            <!-- 2025年流水 -->
-            <div class="transaction-section">
-                <div class="section-title">
-                    <span>2025年交易明细（部分关键记录）</span>
-                    <span style="font-size: 14px; color: var(--warning-color); font-weight: normal;">⚠️ 标记为异常的交易</span>
-                </div>
-                
-                <table class="transaction-table">
-                    <thead>
-                        <tr>
-                            <th width="12%">交易日期</th>
-                            <th width="18%">交易类型</th>
-                            <th width="20%">交易对方</th>
-                            <th width="15%">金额</th>
-                            <th width="20%">备注</th>
-                            <th width="15%">余额</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactionBody2025">
-                        <!-- 数据将通过JavaScript动态生成 -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- 2024年流水 -->
-            <div class="transaction-section">
-                <div class="section-title">2024年交易明细（部分关键记录）</div>
-                
-                <table class="transaction-table">
-                    <thead>
-                        <tr>
-                            <th width="12%">交易日期</th>
-                            <th width="18%">交易类型</th>
-                            <th width="20%">交易对方</th>
-                            <th width="15%">金额</th>
-                            <th width="20%">备注</th>
-                            <th width="15%">余额</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactionBody2024">
-                        <!-- 数据将通过JavaScript动态生成 -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- 异常分析 -->
-            <div class="analysis-section">
-                <div class="analysis-title">流水异常分析</div>
-                <div class="analysis-content">
-                    <p>根据对张磊银行账户流水的分析，发现以下异常情况：</p>
-                    <ul>
-                        <li><strong>异常收入模式：</strong>每月1日（与学校发薪日一致）除正常工资外，还有多笔来自不同人员的1000元转账，备注均为"补课费"，据悉是张磊在校内开设生物辅导班所收。</li>
-                        <li><strong>收入来源异常：</strong>调查期间共有98名不同人员向张磊转账"补课费"，据了解，这些账户都来自张磊所教学生的家长。</li>
-                        <li><strong>金额异常：</strong>每年1月1日均有一笔来自王建国的300,000元大额转账，备注为"补课费"。该金额远超正常课外辅导费用。</li>
-                        <li><strong>收入比例异常：</strong>张磊两年间"补课费"收入总额为1,236,000元，而工资收入仅为288,000元，"补课费"收入占总收入的81.1%，比例严重异常。</li>
-                        <li><strong>学生人数异常：</strong>每月基本上会有98名学生固定支付"补课费"，人数波动不大，24年开始只有两三个学生中途退课，不在张磊开设的辅导班上课。</li>
-                    </ul>
-                    <p style="margin-top: 15px; font-weight: 500;">上述异常表明，有些"补课费"转账可能并非真实课外辅导报酬，而是变相贿赂或其他不正当资金往来。</p>
-                </div>
-            </div>
-            
-            <!-- 时间线 -->
-            <div class="timeline-section">
-                <div class="section-title">关键交易时间线</div>
-                <div class="timeline">
-                    <div class="timeline-item left">
-                        <div class="timeline-content">
-                            <div class="timeline-date">2024年1月1日</div>
-                            <div>王建国转入300,000元，备注"补课费"</div>
+                <!-- 账户基本信息 -->
+                <div class="account-info">
+                    <h3>账户基本信息</h3>
+                    <div class="account-details">
+                        <div class="account-item">
+                            <span class="account-label">持卡人</span>
+                            <span class="account-value">张磊</span>
+                        </div>
+                        <div class="account-item">
+                            <span class="account-label">银行账号</span>
+                            <span class="account-value">6217 **** **** 5678</span>
+                        </div>
+                        <div class="account-item">
+                            <span class="account-label">开户行</span>
+                            <span class="account-value">中国青州银行明德支行</span>
+                        </div>
+                        <div class="account-item">
+                            <span class="account-label">账户类型</span>
+                            <span class="account-value">工资卡/储蓄卡</span>
+                        </div>
+                        <div class="account-item">
+                            <span class="account-label">调查期间</span>
+                            <span class="account-value">2024年1月 - 2025年12月</span>
                         </div>
                     </div>
-                    
-                    <div class="timeline-item right">
-                        <div class="timeline-content">
-                            <div class="timeline-date">2024年1月-12月 每月1日</div>
-                            <div>每月固定收到18笔1000元"补课费"转账</div>
-                        </div>
+                </div>
+                
+                <!-- 统计卡片 -->
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-title">工资收入总额</div>
+                        <div class="stat-value">¥288,000</div>
+                        <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">24个月 × 每月12,000元</div>
                     </div>
                     
-                    <div class="timeline-item left">
-                        <div class="timeline-content">
-                            <div class="timeline-date">2024年6月15日</div>
-                            <div>支付明德中学附近学区房房贷25,000元</div>
-                        </div>
+                    <div class="stat-card warning">
+                        <div class="stat-title">"补课费"收入总额</div>
+                        <div class="stat-value">¥1,236,000</div>
+                        <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">包括每月小额和大额转账</div>
                     </div>
                     
-                    <div class="timeline-item right">
-                        <div class="timeline-content">
-                            <div class="timeline-date">2025年1月1日</div>
-                            <div>王建国再次转入300,000元，备注"补课费"</div>
-                        </div>
+                    <div class="stat-card danger">
+                        <div class="stat-title">异常收入占比</div>
+                        <div class="stat-value">81.1%</div>
+                        <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">"补课费"占收入比例异常偏高</div>
                     </div>
                     
-                    <div class="timeline-item left">
-                        <div class="timeline-content">
-                            <div class="timeline-date">2025年3月10日</div>
-                            <div>支付明德医院手术费58,000元</div>
-                        </div>
+                    <div class="stat-card success">
+                        <div class="stat-title">转账人数</div>
+                        <div class="stat-value">98人-103人不等</div>
+                        <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px">每月固定转账"补课费"</div>
+                    </div>
+                </div>
+                
+                <!-- 2025年流水 -->
+                <div class="transaction-section">
+                    <div class="section-title">
+                        <span>2025年交易明细（部分关键记录）</span>
+                        <span style="font-size: 14px; color: var(--warning-color); font-weight: normal;">⚠️ 标记为异常的交易</span>
                     </div>
                     
-                    <div class="timeline-item right">
-                        <div class="timeline-content">
-                            <div class="timeline-date">2025年12月1日</div>
-                            <div>最后一次收到"补课费"转账，当月25日江楠坠楼事件发生</div>
+                    <table class="transaction-table">
+                        <thead>
+                            <tr>
+                                <th width="12%">交易日期</th>
+                                <th width="18%">交易类型</th>
+                                <th width="20%">交易对方</th>
+                                <th width="15%">金额</th>
+                                <th width="20%">备注</th>
+                                <th width="15%">余额</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionBody2025">
+                            <!-- 数据将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 2024年流水 -->
+                <div class="transaction-section">
+                    <div class="section-title">2024年交易明细（部分关键记录）</div>
+                    
+                    <table class="transaction-table">
+                        <thead>
+                            <tr>
+                                <th width="12%">交易日期</th>
+                                <th width="18%">交易类型</th>
+                                <th width="20%">交易对方</th>
+                                <th width="15%">金额</th>
+                                <th width="20%">备注</th>
+                                <th width="15%">余额</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionBody2024">
+                            <!-- 数据将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 异常分析 -->
+                <div class="analysis-section">
+                    <div class="analysis-title">流水异常分析</div>
+                    <div class="analysis-content">
+                        <p>根据对张磊银行账户流水的分析，发现以下异常情况：</p>
+                        <ul>
+                            <li><strong>异常收入模式：</strong>每月1日（与学校发薪日一致）除正常工资外，还有多笔来自不同人员的1000元转账，备注均为"补课费"，据悉是张磊在校内开设生物辅导班所收。</li>
+                            <li><strong>收入来源异常：</strong>调查期间共有98名不同人员向张磊转账"补课费"，据了解，这些账户都来自张磊所教学生的家长。</li>
+                            <li><strong>金额异常：</strong>每年1月1日均有一笔来自王建国的300,000元大额转账，备注为"补课费"。该金额远超正常课外辅导费用。</li>
+                            <li><strong>收入比例异常：</strong>张磊两年间"补课费"收入总额为1,236,000元，而工资收入仅为288,000元，"补课费"收入占总收入的81.1%，比例严重异常。</li>
+                            <li><strong>学生人数异常：</strong>每月基本上会有98名学生固定支付"补课费"，人数波动不大，24年开始只有两三个学生中途退课，不在张磊开设的辅导班上课。</li>
+                        </ul>
+                        <p style="margin-top: 15px; font-weight: 500;">上述异常表明，有些"补课费"转账可能并非真实课外辅导报酬，而是变相贿赂或其他不正当资金往来。</p>
+                    </div>
+                </div>
+                
+                <!-- 时间线 -->
+                <div class="timeline-section">
+                    <div class="section-title">关键交易时间线</div>
+                    <div class="timeline">
+                        <div class="timeline-item left">
+                            <div class="timeline-content">
+                                <div class="timeline-date">2024年1月1日</div>
+                                <div>王建国转入300,000元，备注"补课费"</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item right">
+                            <div class="timeline-content">
+                                <div class="timeline-date">2024年1月-12月 每月1日</div>
+                                <div>每月固定收到18笔1000元"补课费"转账</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item left">
+                            <div class="timeline-content">
+                                <div class="timeline-date">2024年6月15日</div>
+                                <div>支付明德中学附近学区房房贷25,000元</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item right">
+                            <div class="timeline-content">
+                                <div class="timeline-date">2025年1月1日</div>
+                                <div>王建国再次转入300,000元，备注"补课费"</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item left">
+                            <div class="timeline-content">
+                                <div class="timeline-date">2025年3月10日</div>
+                                <div>支付明德医院手术费58,000元</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item right">
+                            <div class="timeline-content">
+                                <div class="timeline-date">2025年12月1日</div>
+                                <div>最后一次收到"补课费"转账，当月25日江楠坠楼事件发生</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -639,6 +794,86 @@
     </div>
 
     <script>
+        // 密码验证功能
+        const CORRECT_PASSWORD = "8888";
+        let attempts = 0;
+        const MAX_ATTEMPTS = 5;
+        
+        const passwordProtection = document.getElementById('password-protection');
+        const mainContent = document.getElementById('main-content');
+        const passwordInput = document.getElementById('password-input');
+        const passwordSubmit = document.getElementById('password-submit');
+        const errorMessage = document.getElementById('error-message');
+        
+        // 验证密码
+        function verifyPassword() {
+            const enteredPassword = passwordInput.value.trim();
+            
+            if (enteredPassword === CORRECT_PASSWORD) {
+                // 密码正确，显示内容
+                passwordProtection.style.opacity = '0';
+                setTimeout(() => {
+                    passwordProtection.style.display = 'none';
+                    mainContent.classList.add('show');
+                    // 生成表格数据
+                    generateTableRows(transactions2025, 'transactionBody2025');
+                    generateTableRows(transactions2024, 'transactionBody2024');
+                }, 300);
+            } else {
+                // 密码错误
+                attempts++;
+                passwordInput.classList.add('error');
+                errorMessage.textContent = `密码错误，您还有 ${MAX_ATTEMPTS - attempts} 次尝试机会`;
+                errorMessage.classList.add('show');
+                passwordInput.value = '';
+                
+                // 震动效果
+                passwordInput.style.animation = 'none';
+                setTimeout(() => {
+                    passwordInput.style.animation = 'shake 0.5s';
+                }, 10);
+                
+                // 超过最大尝试次数
+                if (attempts >= MAX_ATTEMPTS) {
+                    errorMessage.textContent = '超过最大尝试次数，页面将在5秒后关闭';
+                    passwordInput.disabled = true;
+                    passwordSubmit.disabled = true;
+                    
+                    setTimeout(() => {
+                        window.close();
+                        // 如果window.close()被浏览器阻止，则显示警告
+                        document.body.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-size: 18px; color: #ea4335;">访问被拒绝，请重新打开页面</div>';
+                    }, 5000);
+                }
+            }
+        }
+        
+        // 监听回车键
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyPassword();
+            }
+        });
+        
+        // 监听提交按钮
+        passwordSubmit.addEventListener('click', verifyPassword);
+        
+        // 自动聚焦到密码输入框
+        document.addEventListener('DOMContentLoaded', function() {
+            passwordInput.focus();
+            
+            // 限制只能输入数字
+            passwordInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // 移除错误状态
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                    errorMessage.classList.remove('show');
+                }
+            });
+        });
+        
         // 交易数据
         const transactions2025 = [
             // 1月
@@ -740,12 +975,6 @@
                 tableBody.appendChild(row);
             });
         }
-        
-        // 初始化页面
-        document.addEventListener('DOMContentLoaded', function() {
-            generateTableRows(transactions2025, 'transactionBody2025');
-            generateTableRows(transactions2024, 'transactionBody2024');
-        });
     </script>
 </body>
 </html>
