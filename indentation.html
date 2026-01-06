@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青州市公安局 - 法医证据记录 | 十字星形压痕分析报告</title>
+    <style>
+        :root {
+            --police-blue: #1a365d;
+            --police-dark: #2d3748;
+            --police-red: #c53030;
+            --police-gray: #718096;
+            --police-light: #f7fafc;
+            --police-border: #e2e8f0;
+            --evidence-green: #2f855a;
+            --medical-purple: #6b46c1;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: linear-gradient(to bottom, #e8eff5 0%, #f0f2f5 100%);
+        }
+        
+        /* 警方头部 */
+        .police-header {
+            background-color: var(--police-blue);
+            color: white;
+            padding: 20px 0;
+            border-bottom: 5px solid var(--police-red);
+            position: relative;
+        }
+        
+        .police-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--police-red), #ff6b6b, var(--police-red));
+        }
+        
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .police-title {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .police-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .police-badge {
+            background-color: var(--medical-purple);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 1000px;
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+        
+        /* 证据信息卡片 */
+        .evidence-card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid var(--police-border);
+            border-top: 4px solid var(--medical-purple);
+        }
+        
+        .evidence-header {
+            background-color: #f8fafc;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--police-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .evidence-title {
+            font-size: 22px;
+            color: var(--police-blue);
+            font-weight: bold;
+        }
+        
+        .evidence-number {
+            font-size: 16px;
+            color: var(--police-gray);
+            font-family: monospace;
+            background-color: #edf2f7;
+            padding: 5px 10px;
+            border-radius: 3px;
+            border: 1px solid #cbd5e0;
+        }
+        
+        .evidence-body {
+            padding: 25px;
+        }
+        
+        /* 信息表格 */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px;
+            font-size: 15px;
+        }
+        
+        .info-table th {
+            background-color: #edf2f7;
+            color: var(--police-dark);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--police-border);
+            width: 30%;
+        }
+        
+        .info-table td {
+            padding: 12px 15px;
+            border: 1px solid var(--police-border);
+            color: #4a5568;
+        }
+        
+        .info-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+        
+        /* 证据内容 */
+        .evidence-content {
+            line-height: 1.8;
+            color: #4a5568;
+        }
+        
+        .evidence-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .evidence-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--medical-purple);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--police-border);
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background-color: var(--medical-purple);
+        }
+        
+        /* 重点标记 */
+        .key-info {
+            background-color: #faf5ff;
+            border-left: 4px solid var(--medical-purple);
+            padding: 15px 20px;
+            margin: 20px 0;
+            color: #553c9a;
+        }
+        
+        .key-info strong {
+            color: var(--medical-purple);
+        }
+        
+        /* 压痕展示 */
+        .imprint-container {
+            background-color: #f8fafc;
+            border: 2px solid #cbd5e0;
+            border-radius: 12px;
+            padding: 35px 30px;
+            margin: 25px 0;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .imprint-title {
+            text-align: center;
+            color: var(--police-dark);
+            font-weight: bold;
+            margin-bottom: 25px;
+            font-size: 18px;
+        }
+        
+        .imprint-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 280px;
+            position: relative;
+        }
+        
+        .neck-silhouette {
+            width: 200px;
+            height: 250px;
+            position: relative;
+            background: linear-gradient(to bottom, #e2e8f0 0%, #cbd5e0 100%);
+            border-radius: 100px/150px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .imprint-design {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cross-star {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            animation: pulse 3s infinite;
+        }
+        
+        .cross-star::before,
+        .cross-star::after {
+            content: '';
+            position: absolute;
+            background-color: var(--police-red);
+            border-radius: 2px;
+        }
+        
+        .cross-star::before {
+            width: 80px;
+            height: 8px;
+            top: 36px;
+            left: 0;
+        }
+        
+        .cross-star::after {
+            width: 8px;
+            height: 80px;
+            left: 36px;
+            top: 0;
+        }
+        
+        .center-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: var(--police-red);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 8px rgba(197, 48, 48, 0.5);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        .dimension-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .dimension-line {
+            position: absolute;
+            background-color: #4a5568;
+            height: 1px;
+        }
+        
+        .dimension-line.horizontal {
+            width: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .dimension-line.horizontal.left { left: -70px; }
+        .dimension-line.horizontal.right { right: -70px; }
+        
+        .dimension-line.vertical {
+            width: 1px;
+            height: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dimension-line.vertical.top { top: -70px; }
+        .dimension-line.vertical.bottom { bottom: -70px; }
+        
+        .dimension-label {
+            position: absolute;
+            font-size: 12px;
+            color: #4a5568;
+            background-color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #cbd5e0;
+        }
+        
+        .dimension-label.horizontal { top: 50%; transform: translateY(-50%); }
+        .dimension-label.horizontal.left { left: -95px; }
+        .dimension-label.horizontal.right { right: -95px; }
+        
+        .dimension-label.vertical { left: 50%; transform: translateX(-50%); }
+        .dimension-label.vertical.top { top: -85px; }
+        .dimension-label.vertical.bottom { bottom: -85px; }
+        
+        /* 磨损细节 */
+        .wear-detail {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #ecc94b;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .wear-detail:nth-child(1) { top: 15px; left: 15px; }
+        .wear-detail:nth-child(2) { top: 15px; right: 15px; }
+        .wear-detail:nth-child(3) { bottom: 15px; left: 15px; }
+        .wear-detail:nth-child(4) { bottom: 15px; right: 15px; }
+        
+        /* 法医报告 */
+        .forensic-report {
+            background-color: #f8fafc;
+            border: 1px solid var(--police-border);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid var(--medical-purple);
+        }
+        
+        .forensic-title {
+            color: var(--medical-purple);
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .forensic-title::before {
+            content: '⚕️';
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        /* 旧案对比 */
+        .cold-case-container {
+            background-color: #fff5f5;
+            border: 2px solid #fc8181;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .cold-case-title {
+            color: #c53030;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cold-case-title::before {
+            content: '🕵️';
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .case-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .case-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .case-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .case-name {
+            color: var(--police-blue);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .case-date {
+            color: var(--police-gray);
+            font-size: 14px;
+        }
+        
+        .case-imprint {
+            width: 100px;
+            height: 100px;
+            margin: 15px auto;
+            position: relative;
+            background-color: #f7fafc;
+            border-radius: 50%;
+            border: 2px dashed #cbd5e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .incomplete-cross {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        
+        .incomplete-cross::before,
+        .incomplete-cross::after {
+            content: '';
+            position: absolute;
+            background-color: #a0aec0;
+        }
+        
+        .incomplete-cross::before {
+            width: 60px;
+            height: 6px;
+            top: 27px;
+            left: 0;
+        }
+        
+        .incomplete-cross::after {
+            width: 6px;
+            height: 30px;
+            left: 27px;
+            top: 15px;
+        }
+        
+        /* 数据库比对 */
+        .database-result {
+            background-color: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .database-title {
+            font-weight: bold;
+            color: #285e61;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .no-match {
+            color: #c53030;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            background-color: #fff5f5;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        
+        /* 时间线 */
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+        
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--medical-purple);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid var(--medical-purple);
+        }
+        
+        .timeline-time {
+            font-weight: bold;
+            color: var(--medical-purple);
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        
+        .timeline-content {
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        /* 签名区域 */
+        .signature-area {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--police-border);
+            text-align: right;
+        }
+        
+        .signature-line {
+            display: inline-block;
+            width: 200px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 5px;
+        }
+        
+        .signature-text {
+            font-size: 14px;
+            color: var(--police-gray);
+        }
+        
+        /* 页脚 */
+        .police-footer {
+            background-color: var(--police-dark);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-notice {
+            color: #a0aec0;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .main-container {
+                padding: 0 15px;
+            }
+            
+            .evidence-body {
+                padding: 20px 15px;
+            }
+            
+            .info-table th, .info-table td {
+                padding: 10px;
+                display: block;
+                width: 100%;
+            }
+            
+            .info-table tr {
+                margin-bottom: 10px;
+                display: block;
+                border: 1px solid var(--police-border);
+            }
+            
+            .info-table th {
+                border-bottom: none;
+            }
+            
+            .imprint-display {
+                height: 220px;
+            }
+            
+            .neck-silhouette {
+                width: 160px;
+                height: 200px;
+            }
+            
+            .dimension-line.horizontal.left { left: -50px; }
+            .dimension-line.horizontal.right { right: -50px; }
+            .dimension-line.vertical.top { top: -50px; }
+            .dimension-line.vertical.bottom { bottom: -50px; }
+            
+            .dimension-label.horizontal.left { left: -65px; }
+            .dimension-label.horizontal.right { right: -65px; }
+            .dimension-label.vertical.top { top: -65px; }
+            .dimension-label.vertical.bottom { bottom: -65px; }
+            
+            .case-comparison {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 警方头部 -->
+    <header class="police-header">
+        <div class="header-content">
+            <div>
+                <div class="police-title">青州市公安局</div>
+                <div class="police-subtitle">法医鉴定中心 - 特殊损伤分析系统</div>
+            </div>
+            <div class="police-badge">法医证据</div>
+        </div>
+    </header>
+    
+    <!-- 主内容区域 -->
+    <main class="main-container">
+        <!-- 证据信息卡片 -->
+        <div class="evidence-card">
+            <div class="evidence-header">
+                <div class="evidence-title">十字星形压痕分析报告</div>
+                <div class="evidence-number">法证编号：FY-20251111-01</div>
+            </div>
+            
+            <div class="evidence-body">
+                <!-- 基本信息 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">一、损伤基本信息</h3>
+                    <table class="info-table">
+                        <tr>
+                            <th>损伤类型</th>
+                            <td>十字星形压痕（颈部扼压损伤）</td>
+                        </tr>
+                        <tr>
+                            <th>发现时间</th>
+                            <td>2025年11月11日10:30</td>
+                        </tr>
+                        <tr>
+                            <th>检验位置</th>
+                            <td>死者江川颈部前侧，甲状软骨上方</td>
+                        </tr>
+                        <tr>
+                            <th>检验法医</th>
+                            <td>赵盈嫚（主检法医师）、李博文（法医病理专家）</td>
+                        </tr>
+                        <tr>
+                            <th>检验方法</th>
+                            <td>三维扫描、微距摄影、硅胶模型提取</td>
+                        </tr>
+                        <tr>
+                            <th>保存状态</th>
+                            <td>法医证据室2号柜，硅胶模型编号SM-001</td>
+                        </tr>
+                        <tr>
+                            <th>关联案件</th>
+                            <td>滨江新城烂尾楼尸体发现案（案卷号：QZGA-20251111-001）</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- 压痕展示 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">二、压痕形态展示</h3>
+                    <div class="evidence-content">
+                        <p>该压痕为颈部扼压损伤中罕见的特殊形态，具有明确的几何特征。</p>
+                        
+                        <div class="imprint-container">
+                            <div class="imprint-title">十字星形压痕 - 三维重建图</div>
+                            <div class="imprint-display">
+                                <div class="neck-silhouette">
+                                    <div class="imprint-design">
+                                        <div class="cross-star">
+                                            <div class="center-dot"></div>
+                                            <div class="wear-detail"></div>
+                                            <div class="wear-detail"></div>
+                                            <div class="wear-detail"></div>
+                                            <div class="wear-detail"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="dimension-lines">
+                                    <div class="dimension-line horizontal left"></div>
+                                    <div class="dimension-line horizontal right"></div>
+                                    <div class="dimension-line vertical top"></div>
+                                    <div class="dimension-line vertical bottom"></div>
+                                    
+                                    <div class="dimension-label horizontal left">8cm</div>
+                                    <div class="dimension-label horizontal right">8cm</div>
+                                    <div class="dimension-label vertical top">8cm</div>
+                                    <div class="dimension-label vertical bottom">8cm</div>
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin-top: 20px; color: #718096; font-size: 14px;">
+                                注：黄色圆点表示压痕边缘的细微磨损位置
+                            </div>
+                        </div>
+                        
+                        <div class="key-info">
+                            <strong>形态特征：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>形状：完美的十字星形，四臂等长</li>
+                                <li>尺寸：十字总长8cm，臂宽1.2cm</li>
+                                <li>中心点：直径1.2cm的圆形凹陷</li>
+                                <li>深度：压痕深度0.3-0.5cm，中心最深</li>
+                                <li>边缘：整齐锐利，无模糊或扩散现象</li>
+                                <li>角度：十字轴线与身体中轴线成15°夹角</li>
+                                <li>颜色：暗红色，皮下出血明显</li>
+                            </ul>
+                        </div>
+                        
+                        <p><strong>检验记录：</strong>2025年11月11日10:30，在尸体检验过程中发现该特殊压痕。立即进行三维扫描（精度0.1mm）和硅胶模型提取，以保留原始形态特征。</p>
+                        
+                        <div class="timeline-container">
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.11.11 10:30</div>
+                                <div class="timeline-content">尸体检验发现特殊压痕</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.11.11 14:00</div>
+                                <div class="timeline-content">完成三维扫描和硅胶模型制作</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.11.12 09:15</div>
+                                <div class="timeline-content">磨损痕迹显微分析</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.11.12 13:45</div>
+                                <div class="timeline-content">全国数据库比对完成</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 法医详细报告 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">三、法医详细报告</h3>
+                    <div class="evidence-content">
+                        <div class="forensic-report">
+                            <div class="forensic-title">十字星形压痕 - 专业分析</div>
+                            <p><strong>检验机构：</strong>青州市公安局法医鉴定中心</p>
+                            <p><strong>检验人员：</strong>赵盈嫚（主检法医师）、李博文（法医病理专家）</p>
+                            <p><strong>检验日期：</strong>2025年11月11日-12日</p>
+                            
+                            <div style="margin-top: 20px;">
+                                <h4 style="color: var(--medical-purple); margin-bottom: 10px;">1. 压痕形成机制分析</h4>
+                                <p>压痕边缘整齐锐利，无徒手扼压常见的指节模糊痕迹。中心点凹陷深度均匀，表明施力点集中。四臂交汇处应力分布均匀，符合<strong>特定工具</strong>作用特征。</p>
+                            </div>
+                            
+                            <div style="margin: 20px 0;">
+                                <h4 style="color: var(--medical-purple); margin-bottom: 10px;">2. 磨损痕迹发现</h4>
+                                <p>在压痕四臂末端发现<strong>细微磨损痕迹</strong>（显微镜下观察）：
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>磨损方向：从中心向外侧的线性划痕</li>
+                                    <li>磨损深度：0.05-0.1mm</li>
+                                    <li>材质推断：工具表面有细小突起或纹理</li>
+                                    <li>使用痕迹：工具已使用一段时间，边缘有微小缺损</li>
+                                </ul>
+                                </p>
+                            </div>
+                            
+                            <div style="margin: 20px 0;">
+                                <h4 style="color: var(--medical-purple); margin-bottom: 10px;">3. 非徒手扼压证据</h4>
+                                <p><strong>排除徒手扼压可能性的依据：</strong>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>无手指指节或手掌的生理性弧度</li>
+                                    <li>压力分布完全均匀，非人体力学特征</li>
+                                    <li>十字星形几何精度超出人体操作能力</li>
+                                    <li>中心点凹陷无法由人体拇指形成</li>
+                                    <li>无指甲抓痕或皮肤滑动痕迹</li>
+                                </ul>
+                                </p>
+                            </div>
+                            
+                            <div style="margin: 20px 0;">
+                                <h4 style="color: var(--medical-purple); margin-bottom: 10px;">4. 工具类型推断</h4>
+                                <p>根据压痕特征，可能工具类型：
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li><strong>定制扼压工具：</strong>专门设计的十字星形扼压器</li>
+                                    <li><strong>改造器械：</strong>由其他工具改造而成</li>
+                                    <li><strong>仪式性工具：</strong>具有象征意义的特定工具</li>
+                                    <li><strong>专业工具：</strong>医疗、工业或特殊行业的器械</li>
+                                </ul>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="database-result">
+                            <div class="database-title">全国法医数据库比对结果</div>
+                            <p><strong>比对范围：</strong>全国刑事案例数据库（2010-2025）</p>
+                            <p><strong>比对内容：</strong>特殊扼压损伤、工具性损伤、仪式性伤害</p>
+                            <p><strong>数据库版本：</strong>公安部法医损伤库 v3.2.1</p>
+                            
+                            <div class="no-match">
+                                ⚠️ 数据库比对结果：无匹配记录
+                            </div>
+                            
+                            <p><strong>专家意见：</strong>该十字星形压痕为<strong>首次出现</strong>的独特损伤形态，未在过往案例中发现相同或高度相似模式。可能为新型犯罪工具或特定群体作案特征。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 关联旧案查询 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">四、关联旧案查询</h3>
+                    <div class="evidence-content">
+                        <p>在扩大检索范围后，发现五年前一起未侦破失踪案存在相似损伤特征。</p>
+                        
+                        <div class="cold-case-container">
+                            <div class="cold-case-title">林纾失踪案（案卷号：QZGA-20200817-003）</div>
+                            
+                            <div class="case-comparison">
+                                <div class="case-item">
+                                    <div class="case-header">
+                                        <div class="case-name">林纾失踪案</div>
+                                        <div class="case-date">失踪时间：2020年8月17日</div>
+                                    </div>
+                                    <p><strong>基本情况：</strong>林纾，女，32岁，青州市建筑设计院工程师。2020年8月17日晚下班后失踪，至今未找到尸体。</p>
+                                    <p><strong>关键证据：</strong>失踪前三天拍摄的自拍照片显示，其<strong>颈部右侧有类似但不完整的印记</strong>。</p>
+                                    
+                                    <div class="case-imprint">
+                                        <div class="incomplete-cross"></div>
+                                    </div>
+                                    
+                                    <p><strong>照片分析：</strong>照片中印记为十字星形的<strong>右上半部分</strong>，尺寸约4cm，与本案压痕形态相似。</p>
+                                </div>
+                                
+                                <div class="case-item">
+                                    <div class="case-header">
+                                        <div class="case-name">江川死亡案</div>
+                                        <div class="case-date">死亡时间：2025年11月10日</div>
+                                    </div>
+                                    <p><strong>基本情况：</strong>江川，男，28岁，自由职业程序员。2025年11月11日发现死于烂尾楼。</p>
+                                    <p><strong>关键证据：</strong>颈部有明显完整的十字星形压痕。</p>
+                                    
+                                    <div style="width: 100px; height: 100px; margin: 15px auto; display: flex; align-items: center; justify-content: center;">
+                                        <div style="color: var(--police-red); font-size: 48px;">✵</div>
+                                    </div>
+                                    
+                                    <p><strong>损伤分析：</strong>完整的十字星形压痕，8cm×8cm，中心点凹陷，边缘整齐。</p>
+                                </div>
+                            </div>
+                            
+                            <div style="text-align: center; margin-top: 25px; padding: 15px; background-color: #feebc8; border-radius: 8px;">
+                                <strong>关联分析：</strong>两案压痕<strong>形态相似但完整度不同</strong>，可能为同一工具在不同使用状态下造成，或为同一犯罪者作案手法的发展。
+                            </div>
+                        </div>
+                        
+                        <div class="key-info">
+                            <strong>林纾案补充信息：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>失踪前一周曾向同事透露"工作压力大，有人找麻烦"</li>
+                                <li>手机通话记录显示失踪前频繁接听未知号码来电</li>
+                                <li>电脑中发现加密文件夹，技术部门未能破解</li>
+                                <li>失踪时正在参与"滨江新城规划项目"设计工作</li>
+                                <li>家属报案后未收到任何勒索或联系信息</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="forensic-report">
+                            <div class="forensic-title">两案关联性分析</div>
+                            <p><strong>时间跨度：</strong>5年3个月，符合连环作案的潜伏期特征</p>
+                            <p><strong>受害者关联：</strong>两人均为技术人员，均涉及滨江新城相关项目</p>
+                            <p><strong>损伤关联：</strong>相似但不相同的压痕形态，显示工具可能进化或不同使用方式</p>
+                            <p><strong>作案手法：</strong>林纾案为失踪（可能死亡），江川案为明确他杀，显示犯罪者可能变得更加大胆</p>
+                            <p><strong>可能性评估：</strong>两案为同一犯罪者所为的可能性为<strong>65-70%</strong></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 结论与建议 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">五、结论与调查建议</h3>
+                    <div class="evidence-content">
+                        <div class="key-info">
+                            <strong>主要结论：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>十字星形压痕为<strong>特定工具所致</strong>，非徒手扼压</li>
+                                <li>工具具有<strong>独特设计和制造精度</strong>，可能为定制器械</li>
+                                <li>磨损痕迹显示工具已使用一段时间</li>
+                                <li>与五年前林纾失踪案存在<strong>显著关联</strong></li>
+                                <li>可能为<strong>连环作案</strong>或系列犯罪的一部分</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="database-result">
+                            <div class="database-title">调查建议</div>
+                            <p>1. 立即成立联合专案组，将林纾失踪案与江川死亡案并案调查</p>
+                            <p>2. 重点调查滨江新城相关项目的所有参与人员，特别是技术人员</p>
+                            <p>3. 在全市范围内排查可能制造或销售特殊工具的工作坊、加工厂</p>
+                            <p>4. 调查医疗、工业、宗教等可能使用十字星形符号的领域</p>
+                            <p>5. 重新审查林纾案的所有证据，特别是加密文件夹内容</p>
+                            <p>6. 扩大数据库比对范围，包括国际犯罪数据库</p>
+                        </div>
+                        
+                        <p><strong>工具重建方向：</strong>根据压痕特征，建议委托刑侦技术部门进行工具三维重建。重点考虑工具可能具有的<strong>仪式性、专业性、象征性</strong>功能。</p>
+                        
+                        <div class="forensic-report">
+                            <div class="forensic-title">危险性评估</div>
+                            <p><strong>犯罪者特征：</strong>可能具有工程技术背景，工具制作能力，对滨江新城项目深入了解，选择技术人员为目标，使用逐渐进化的作案手法。</p>
+                            <p><strong>危险性：</strong>高。两案间隔5年，但手法更加熟练、大胆，存在继续作案的可能性。</p>
+                            <p><strong>紧急程度：</strong>需要立即采取行动，防止更多技术人员受害。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 签名 -->
+                <div class="signature-area">
+                    <div class="signature-line"></div>
+                    <div class="signature-text">
+                        主检法医师：赵盈嫚 &nbsp;&nbsp;&nbsp;&nbsp; 法医编号：FJ0512<br>
+                        法医病理专家：李博文 &nbsp;&nbsp;&nbsp;&nbsp; 编号：FJ0387<br>
+                        日期：2025年11月12日
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="police-footer">
+        <div class="footer-content">
+            <p>青州市公安局法医鉴定中心 · 特殊损伤分析系统</p>
+            <p class="footer-notice">
+                本文件属公安机关内部工作记录，未经许可不得复制、传播<br>
+                保密等级：机密 · 法证编号：FY-20251111-01 · 存档日期：2025-11-12
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加打印样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    body {
+                        background-color: white;
+                    }
+                    .evidence-card {
+                        box-shadow: none;
+                        border: 1px solid #ccc;
+                    }
+                    .police-header, .police-footer {
+                        background-color: white;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                    .police-badge {
+                        background-color: #eee;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 时间线动画
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 300);
+            });
+            
+            // 压痕动画
+            const imprintContainer = document.querySelector('.imprint-container');
+            imprintContainer.style.opacity = '0';
+            imprintContainer.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                imprintContainer.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+                imprintContainer.style.opacity = '1';
+                imprintContainer.style.transform = 'scale(1)';
+            }, 500);
+            
+            // 十字星脉冲动画
+            const crossStar = document.querySelector('.cross-star');
+            crossStar.style.animation = 'pulse 3s infinite';
+            
+            // 旧案容器动画
+            const coldCaseContainer = document.querySelector('.cold-case-container');
+            coldCaseContainer.style.opacity = '0';
+            
+            setTimeout(() => {
+                coldCaseContainer.style.transition = 'opacity 0.8s ease 0.5s';
+                coldCaseContainer.style.opacity = '1';
+            }, 800);
+            
+            // 案件对比项动画
+            const caseItems = document.querySelectorAll('.case-item');
+            caseItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 1000 + index * 200);
+            });
+            
+            // 重点信息框动画
+            const keyInfoBoxes = document.querySelectorAll('.key-info');
+            keyInfoBoxes.forEach((box, index) => {
+                box.style.opacity = '0';
+                box.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    box.style.transition = `opacity 0.5s ease ${index * 0.2}s, transform 0.5s ease ${index * 0.2}s`;
+                    box.style.opacity = '1';
+                    box.style.transform = 'translateY(0)';
+                }, 600 + index * 200);
+            });
+            
+            // 报告框动画
+            const reportBoxes = document.querySelectorAll('.forensic-report, .database-result');
+            reportBoxes.forEach((box, index) => {
+                box.style.opacity = '0';
+                
+                setTimeout(() => {
+                    box.style.transition = `opacity 0.4s ease ${index * 0.1}s`;
+                    box.style.opacity = '1';
+                }, 1200 + index * 100);
+            });
+        });
+        
+        // 添加打印功能
+        function printDocument() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

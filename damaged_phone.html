@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青州市公安局 - 证物记录 | 滨江新城烂尾楼案手机物证</title>
+    <style>
+        :root {
+            --police-blue: #1a365d;
+            --police-dark: #2d3748;
+            --police-red: #c53030;
+            --police-gray: #718096;
+            --police-light: #f7fafc;
+            --police-border: #e2e8f0;
+            --evidence-green: #2f855a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: linear-gradient(to bottom, #e8eff5 0%, #f0f2f5 100%);
+        }
+        
+        /* 警方头部 */
+        .police-header {
+            background-color: var(--police-blue);
+            color: white;
+            padding: 20px 0;
+            border-bottom: 5px solid var(--police-red);
+            position: relative;
+        }
+        
+        .police-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--police-red), #ff6b6b, var(--police-red));
+        }
+        
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .police-title {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .police-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .police-badge {
+            background-color: var(--evidence-green);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 1000px;
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+        
+        /* 证物信息卡片 */
+        .evidence-card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid var(--police-border);
+            border-top: 4px solid var(--evidence-green);
+        }
+        
+        .evidence-header {
+            background-color: #f8fafc;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--police-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .evidence-title {
+            font-size: 22px;
+            color: var(--police-blue);
+            font-weight: bold;
+        }
+        
+        .evidence-number {
+            font-size: 16px;
+            color: var(--police-gray);
+            font-family: monospace;
+            background-color: #edf2f7;
+            padding: 5px 10px;
+            border-radius: 3px;
+            border: 1px solid #cbd5e0;
+        }
+        
+        .evidence-body {
+            padding: 25px;
+        }
+        
+        /* 信息表格 */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px;
+            font-size: 15px;
+        }
+        
+        .info-table th {
+            background-color: #edf2f7;
+            color: var(--police-dark);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--police-border);
+            width: 30%;
+        }
+        
+        .info-table td {
+            padding: 12px 15px;
+            border: 1px solid var(--police-border);
+            color: #4a5568;
+        }
+        
+        .info-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+        
+        /* 证物内容 */
+        .evidence-content {
+            line-height: 1.8;
+            color: #4a5568;
+        }
+        
+        .evidence-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .evidence-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--evidence-green);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--police-border);
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background-color: var(--evidence-green);
+        }
+        
+        /* 重点标记 */
+        .key-info {
+            background-color: #f0fff4;
+            border-left: 4px solid var(--evidence-green);
+            padding: 15px 20px;
+            margin: 20px 0;
+            color: #22543d;
+        }
+        
+        .key-info strong {
+            color: var(--evidence-green);
+        }
+        
+        /* 手机模拟 */
+        .phone-container {
+            background-color: #2d3748;
+            border: 2px solid #4a5568;
+            border-radius: 20px;
+            padding: 30px 20px;
+            margin: 25px 0;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .phone-screen {
+            background-color: #1a202c;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .screen-crack {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.1) 50%, transparent 52%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .sms-container {
+            background-color: #2d3748;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .sms-header {
+            color: #a0aec0;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .sms-content {
+            background-color: #4a5568;
+            border-radius: 8px;
+            padding: 15px;
+            color: white;
+            line-height: 1.6;
+            border-left: 4px solid #4299e1;
+            font-family: "Courier New", monospace;
+        }
+        
+        .sms-quote {
+            color: #cbd5e0;
+            font-style: italic;
+            margin: 10px 0;
+            padding-left: 15px;
+            border-left: 2px solid #718096;
+        }
+        
+        /* 照片模拟 */
+        .photo-container {
+            background-color: #f8fafc;
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .photo-frame {
+            background-color: #2d3748;
+            border-radius: 5px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .photo-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(45deg, #4a5568 25%, #718096 25%, #718096 50%, #4a5568 50%, #4a5568 75%, #718096 75%);
+            background-size: 40px 40px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .banner-text {
+            background-color: rgba(255,255,255,0.9);
+            color: #2d3748;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            max-width: 80%;
+        }
+        
+        /* 时间线 */
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+        
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--evidence-green);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid var(--evidence-green);
+        }
+        
+        .timeline-time {
+            font-weight: bold;
+            color: var(--evidence-green);
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        
+        .timeline-content {
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        /* 鉴定报告 */
+        .report-box {
+            background-color: #f8fafc;
+            border: 1px solid var(--police-border);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .report-title {
+            font-weight: bold;
+            color: var(--police-blue);
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .report-title::before {
+            content: '🔍';
+            margin-right: 8px;
+        }
+        
+        /* 数据恢复结果 */
+        .recovery-result {
+            background-color: #ebf8ff;
+            border: 1px solid #90cdf4;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .recovery-title {
+            font-weight: bold;
+            color: #2c5282;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        /* 签名区域 */
+        .signature-area {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--police-border);
+            text-align: right;
+        }
+        
+        .signature-line {
+            display: inline-block;
+            width: 200px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 5px;
+        }
+        
+        .signature-text {
+            font-size: 14px;
+            color: var(--police-gray);
+        }
+        
+        /* 页脚 */
+        .police-footer {
+            background-color: var(--police-dark);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-notice {
+            color: #a0aec0;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .main-container {
+                padding: 0 15px;
+            }
+            
+            .evidence-body {
+                padding: 20px 15px;
+            }
+            
+            .info-table th, .info-table td {
+                padding: 10px;
+                display: block;
+                width: 100%;
+            }
+            
+            .info-table tr {
+                margin-bottom: 10px;
+                display: block;
+                border: 1px solid var(--police-border);
+            }
+            
+            .info-table th {
+                border-bottom: none;
+            }
+            
+            .phone-container {
+                max-width: 280px;
+                padding: 20px 15px;
+            }
+            
+            .photo-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 警方头部 -->
+    <header class="police-header">
+        <div class="header-content">
+            <div>
+                <div class="police-title">青州市公安局</div>
+                <div class="police-subtitle">刑事侦查支队 - 证物管理系统</div>
+            </div>
+            <div class="police-badge">物证档案</div>
+        </div>
+    </header>
+    
+    <!-- 主内容区域 -->
+    <main class="main-container">
+        <!-- 证物信息卡片 -->
+        <div class="evidence-card">
+            <div class="evidence-header">
+                <div class="evidence-title">损坏手机物证记录</div>
+                <div class="evidence-number">证物编号：BJ-20251111-01</div>
+            </div>
+            
+            <div class="evidence-body">
+                <!-- 基本信息 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">一、证物基本信息</h3>
+                    <table class="info-table">
+                        <tr>
+                            <th>证物名称</th>
+                            <td>旧款智能手机（物理损坏）</td>
+                        </tr>
+                        <tr>
+                            <th>发现时间</th>
+                            <td>2025年11月11日 08:30</td>
+                        </tr>
+                        <tr>
+                            <th>发现地点</th>
+                            <td>滨江新城烂尾楼3号楼2层现场<br>死者右手边1.2米处</td>
+                        </tr>
+                        <tr>
+                            <th>提取人员</th>
+                            <td>张宏刚（主办民警）、曹康（技术科）</td>
+                        </tr>
+                        <tr>
+                            <th>提取方式</th>
+                            <td>戴手套提取，放入防静电证物袋</td>
+                        </tr>
+                        <tr>
+                            <th>保存状态</th>
+                            <td>证物室5号柜，防静电保存，湿度45%</td>
+                        </tr>
+                        <tr>
+                            <th>关联案件</th>
+                            <td>滨江新城烂尾楼尸体发现案（案卷号：QZGA-20251111-001）</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- 证物描述 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">二、证物物理特征</h3>
+                    <div class="evidence-content">
+                        <p>该证物为一台旧款智能手机，品牌型号为华为P20，机身黑色，发现时已遭严重物理损坏。</p>
+                        
+                        <div class="key-info">
+                            <strong>物理特征：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>屏幕状态：全面碎裂，呈蛛网状裂纹，触摸功能失效</li>
+                                <li>机身损伤：多处凹陷，有明显砸击痕迹</li>
+                                <li>SIM卡槽：SIM卡缺失，卡槽有撬动痕迹</li>
+                                <li>存储部件：手机内存芯片部分损坏，但可进行数据恢复</li>
+                                <li>电池状态：电量耗尽，电池有轻微鼓包</li>
+                                <li>特殊发现：机身背面有少量非死者指纹（已提取）</li>
+                            </ul>
+                        </div>
+                        
+                        <p><strong>提取记录：</strong>2025年11月11日08:30，在现场勘查时发现该手机。提取时使用防静电镊子，避免污染机身表面残留物。手机立即放入防静电证物袋密封保存。</p>
+                        
+                        <div class="timeline-container">
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.11.11 08:30</div>
+                                <div class="timeline-content">现场勘查时发现损坏手机</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.11.11 14:00</div>
+                                <div class="timeline-content">技术科对手机进行初步检查</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.11.12 09:30</div>
+                                <div class="timeline-content">数据恢复专家介入处理</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2025.11.12 16:45</div>
+                                <div class="timeline-content">成功恢复部分关键数据</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 数据恢复结果 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">三、数据恢复结果</h3>
+                    <div class="evidence-content">
+                        <p>通过专业数据恢复技术，成功从损坏的手机内存中提取到以下关键信息：</p>
+                        
+                        <!-- 手机模拟 -->
+                        <div class="phone-container">
+                            <div class="phone-screen">
+                                <div class="screen-crack"></div>
+                                <div class="sms-container">
+                                    <div class="sms-header">
+                                        <span>未知号码</span>
+                                        <span>2025-11-10 21:03</span>
+                                    </div>
+                                    <div class="sms-content">
+                                        <div class="sms-quote">"方舟"将倾，数据备份在"老地方"。</div>
+                                        <div>"牧羊人"已察觉。</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="key-info">
+                            <strong>短信内容分析：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>发送时间：2025年11月10日 21:03（死者死亡前约2小时）</li>
+                                <li>发送号码：未知号码（经查为一次性预付费卡，无法追踪）</li>
+                                <li>内容特征：使用隐喻词汇，具有特定含义</li>
+                                <li>紧急程度：内容暗示危机状态</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="recovery-result">
+                            <div class="recovery-title">云端同步数据恢复</div>
+                            <p>通过死者手机账号的云端备份，成功恢复最后一张同步照片：</p>
+                            
+                            <div class="photo-container">
+                                <div class="photo-frame">
+                                    <div class="photo-image">
+                                        <div class="photo-overlay">
+                                            <div class="banner-text">
+                                                星耀集团 & 青州城投<br>
+                                                战略合作签约仪式
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="text-align: center; margin-top: 15px; color: #718096; font-size: 14px;">
+                                    拍摄时间：2025-11-08 15:22<br>
+                                    拍摄地点：青州市国际会议中心
+                                </p>
+                            </div>
+                            
+                            <p><strong>照片分析：</strong>该照片为偷拍角度，人物面部模糊，但背景横幅文字清晰可见。照片拍摄于案发前三天。</p>
+                        </div>
+                        
+                        <div class="report-box">
+                            <div class="report-title">其他恢复数据</div>
+                            <p>1. 通话记录：最后一周内频繁联系同一未知号码（共7次通话）</p>
+                            <p>2. 社交应用：微信记录已删除，但恢复部分群聊记录，涉及"项目进展"讨论</p>
+                            <p>3. 备忘录：有一条加密备忘录，内容为"FZ-DATA-1125"</p>
+                            <p>4. 浏览器记录：频繁搜索"数据安全"、"加密传输"、"数据销毁"等关键词</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 关键信息分析 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">四、关键信息分析</h3>
+                    <div class="evidence-content">
+                        <div class="key-info">
+                            <strong>短信内容解读：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>"方舟"：可能指代某个项目、组织或数据存储系统</li>
+                                <li>"将倾"：暗示该系统面临崩溃、泄露或破坏危险</li>
+                                <li>"老地方"：特定地点，可能为数据备份的物理存储位置</li>
+                                <li>"牧羊人"：可能指代监管者、竞争对手或威胁方</li>
+                                <li>"已察觉"：表明对方已发现异常，情况紧急</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="report-box">
+                            <div class="report-title">照片关联分析</div>
+                            <p>1. 星耀集团：本地知名房地产开发企业，近年业务扩张迅速</p>
+                            <p>2. 青州城投：青州市城市投资建设有限公司，国有企业</p>
+                            <p>3. 战略合作签约：可能与滨江新城项目开发有关</p>
+                            <p>4. 死者作为程序员，与房地产公司无直接关联，照片具有调查价值</p>
+                        </div>
+                        
+                        <div class="recovery-result">
+                            <div class="recovery-title">时间线重建</div>
+                            <p>2025.11.08 15:22 - 死者偷拍签约仪式照片</p>
+                            <p>2025.11.10 21:03 - 收到"方舟"警告短信</p>
+                            <p>2025.11.10 22:47 - 进入烂尾楼区</p>
+                            <p>2025.11.10 23:00-01:00 - 死亡时间</p>
+                            <p>分析：死者收到警告后约1小时前往烂尾楼区，可能与"老地方"数据备份有关。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 案件关联分析 -->
+                <div class="evidence-section">
+                    <h3 class="section-title">五、案件关联分析</h3>
+                    <div class="evidence-content">
+                        <div class="key-info">
+                            <strong>手机与案件关联性分析：</strong>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>手机在案发现场被故意损坏，SIM卡被取走</li>
+                                <li>最后短信内容暗示死者掌握敏感信息或数据</li>
+                                <li>"老地方"可能与滨江新城烂尾楼有关联(?)</li>
+                                <li>死者偷拍签约仪式照片，显示对房地产项目有兴趣(???)</li>
+                                <li>手机数据指向死者生前参与秘密项目或数据操作</li>
+                            </ul>
+                        </div>
+                        
+                        <p><strong>动机指向：</strong>手机数据恢复显示，死者可能因掌握"方舟"项目敏感数据而遭灭口。凶手取走SIM卡并损坏手机，意图销毁通信证据。</p>
+                        
+                        <div class="report-box">
+                            <div class="report-title">后续调查方向</div>
+                            <p>1. 调查"方舟"具体指代内容</p>
+                            <p>2. 确定"老地方"具体位置（可能与烂尾楼有关）</p>
+                            <p>3. 调查星耀集团与青州城投的合作项目</p>
+                            <p>4. 查找"牧羊人"身份</p>
+                            <p>5. 追查发送短信的未知号码来源</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 签名 -->
+                <div class="signature-area">
+                    <div class="signature-line"></div>
+                    <div class="signature-text">
+                        技术科数据恢复专家：陈昊 &nbsp;&nbsp;&nbsp;&nbsp; 编号：SJ-0418<br>
+                        日期：2025年11月12日
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="police-footer">
+        <div class="footer-content">
+            <p>青州市公安局刑事侦查支队 · 证物管理系统</p>
+            <p class="footer-notice">
+                本文件属公安机关内部工作记录，未经许可不得复制、传播<br>
+                保密等级：内部 · 证物编号：BJ-20251111-01 · 存档日期：2025-11-12
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加打印样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    body {
+                        background-color: white;
+                    }
+                    .evidence-card {
+                        box-shadow: none;
+                        border: 1px solid #ccc;
+                    }
+                    .police-header, .police-footer {
+                        background-color: white;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                    .police-badge {
+                        background-color: #eee;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 时间线动画
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 300);
+            });
+            
+            // 手机动画
+            const phoneContainer = document.querySelector('.phone-container');
+            phoneContainer.style.opacity = '0';
+            phoneContainer.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                phoneContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                phoneContainer.style.opacity = '1';
+                phoneContainer.style.transform = 'scale(1)';
+            }, 600);
+            
+            // 照片动画
+            const photoContainer = document.querySelector('.photo-container');
+            photoContainer.style.opacity = '0';
+            photoContainer.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                photoContainer.style.transition = 'opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s';
+                photoContainer.style.opacity = '1';
+                photoContainer.style.transform = 'translateY(0)';
+            }, 900);
+            
+            // 重点信息框动画
+            const keyInfoBoxes = document.querySelectorAll('.key-info');
+            keyInfoBoxes.forEach((box, index) => {
+                box.style.opacity = '0';
+                box.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    box.style.transition = `opacity 0.5s ease ${index * 0.2}s, transform 0.5s ease ${index * 0.2}s`;
+                    box.style.opacity = '1';
+                    box.style.transform = 'translateY(0)';
+                }, 800 + index * 200);
+            });
+            
+            // 报告框动画
+            const reportBoxes = document.querySelectorAll('.report-box, .recovery-result');
+            reportBoxes.forEach((box, index) => {
+                box.style.opacity = '0';
+                
+                setTimeout(() => {
+                    box.style.transition = `opacity 0.4s ease ${index * 0.1}s`;
+                    box.style.opacity = '1';
+                }, 1200 + index * 100);
+            });
+        });
+        
+        // 添加打印功能
+        function printDocument() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

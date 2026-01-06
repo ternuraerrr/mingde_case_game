@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青州市公安局 - 案件记录 | 滨江新城烂尾楼尸体发现案</title>
+    <style>
+        :root {
+            --police-blue: #1a365d;
+            --police-dark: #2d3748;
+            --police-red: #c53030;
+            --police-gray: #718096;
+            --police-light: #f7fafc;
+            --police-border: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: linear-gradient(to bottom, #e8eff5 0%, #f0f2f5 100%);
+        }
+        
+        /* 警方头部 */
+        .police-header {
+            background-color: var(--police-blue);
+            color: white;
+            padding: 20px 0;
+            border-bottom: 5px solid var(--police-red);
+            position: relative;
+        }
+        
+        .police-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--police-red), #ff6b6b, var(--police-red));
+        }
+        
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .police-title {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .police-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .police-badge {
+            background-color: var(--police-red);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 1000px;
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+        
+        /* 案件信息卡片 */
+        .case-card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid var(--police-border);
+            border-top: 4px solid var(--police-blue);
+        }
+        
+        .case-header {
+            background-color: #f8fafc;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--police-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .case-title {
+            font-size: 22px;
+            color: var(--police-blue);
+            font-weight: bold;
+        }
+        
+        .case-number {
+            font-size: 16px;
+            color: var(--police-gray);
+            font-family: monospace;
+            background-color: #edf2f7;
+            padding: 5px 10px;
+            border-radius: 3px;
+            border: 1px solid #cbd5e0;
+        }
+        
+        .case-body {
+            padding: 25px;
+            position: relative;
+        }
+        
+        /* 信息表格 */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px;
+            font-size: 15px;
+        }
+        
+        .info-table th {
+            background-color: #edf2f7;
+            color: var(--police-dark);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--police-border);
+            width: 30%;
+        }
+        
+        .info-table td {
+            padding: 12px 15px;
+            border: 1px solid var(--police-border);
+            color: #4a5568;
+        }
+        
+        .info-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+        
+        /* 笔录内容 */
+        .record-content {
+            line-height: 1.8;
+            color: #4a5568;
+        }
+        
+        .record-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .record-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--police-blue);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--police-border);
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background-color: var(--police-red);
+        }
+        
+        /* 重点标记 */
+        .key-info {
+            background-color: #fff5f5;
+            border-left: 4px solid var(--police-red);
+            padding: 15px 20px;
+            margin: 20px 0;
+            color: #742a2a;
+        }
+        
+        .key-info strong {
+            color: var(--police-red);
+        }
+        
+        .evidence-item {
+            background-color: #f0fff4;
+            border: 1px solid #c6f6d5;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .evidence-title {
+            color: #22543d;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .evidence-title::before {
+            content: '📄';
+            margin-right: 8px;
+        }
+        
+        /* 时间线 */
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+        
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--police-blue);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid var(--police-blue);
+        }
+        
+        .timeline-time {
+            font-weight: bold;
+            color: var(--police-blue);
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        
+        .timeline-content {
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        /* 印章样式 - 移到右下角 */
+        .stamp-container {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            text-align: center;
+        }
+        
+        .police-stamp {
+            display: inline-block;
+            border: 3px solid var(--police-red);
+            border-radius: 50%;
+            width: 160px;
+            height: 160px;
+            position: relative;
+            color: var(--police-red);
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.4;
+            padding-top: 55px;
+            font-size: 16px;
+            letter-spacing: 1px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(197, 48, 48, 0.2);
+        }
+        
+        .stamp-text {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stamp-text::before {
+            content: '★';
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+        }
+        
+        /* 签名区域 */
+        .signature-area {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--police-border);
+            text-align: right;
+            padding-right: 200px;
+            position: relative;
+        }
+        
+        .signature-line {
+            display: inline-block;
+            width: 200px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 5px;
+        }
+        
+        .signature-text {
+            font-size: 14px;
+            color: var(--police-gray);
+        }
+        
+        /* 特殊证物样式 */
+        .crucial-evidence {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .crucial-title {
+            color: #92400e;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .crucial-title::before {
+            content: '⚠️';
+            margin-right: 8px;
+        }
+        
+        /* 页脚 */
+        .police-footer {
+            background-color: var(--police-dark);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-notice {
+            color: #a0aec0;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .main-container {
+                padding: 0 15px;
+            }
+            
+            .case-body {
+                padding: 20px 15px;
+            }
+            
+            .info-table th, .info-table td {
+                padding: 10px;
+                display: block;
+                width: 100%;
+            }
+            
+            .info-table tr {
+                margin-bottom: 10px;
+                display: block;
+                border: 1px solid var(--police-border);
+            }
+            
+            .info-table th {
+                border-bottom: none;
+            }
+            
+            .police-stamp {
+                width: 130px;
+                height: 130px;
+                padding-top: 45px;
+                font-size: 14px;
+            }
+            
+            .stamp-container {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                margin: 30px 0;
+            }
+            
+            .signature-area {
+                padding-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 警方头部 -->
+    <header class="police-header">
+        <div class="header-content">
+            <div>
+                <div class="police-title">青州市公安局</div>
+                <div class="police-subtitle">刑事侦查支队 - 案件记录系统</div>
+            </div>
+            <div class="police-badge">内部文件</div>
+        </div>
+    </header>
+    
+    <!-- 主内容区域 -->
+    <main class="main-container">
+        <!-- 案件信息卡片 -->
+        <div class="case-card">
+            <div class="case-header">
+                <div class="case-title">滨江新城烂尾楼案</div>
+                <div class="case-number">案卷编号：QZGA-20251111-001</div>
+            </div>
+            
+            <div class="case-body">
+                <!-- 基本信息 -->
+                <div class="record-section">
+                    <h3 class="section-title">一、案件基本信息</h3>
+                    <table class="info-table">
+                        <tr>
+                            <th>案件名称</th>
+                            <td>滨江新城烂尾楼案</td>
+                        </tr>
+                        <tr>
+                            <th>接警时间</th>
+                            <td>2025年11月11日 06:18</td>
+                        </tr>
+                        <tr>
+                            <th>接警单位</th>
+                            <td>青州市公安局天云分局明德派出所</td>
+                        </tr>
+                        <tr>
+                            <th>报案人</th>
+                            <td>王建国（晨跑者，48岁）</td>
+                        </tr>
+                        <tr>
+                            <th>死者信息</th>
+                            <td>江川，男，28岁，自由职业程序员，户籍地址：青州市新华区人民路128号</td>
+                        </tr>
+                        <tr>
+                            <th>案件状态</th>
+                            <td>调查中（死因可疑）</td>
+                        </tr>
+                        <tr>
+                            <th>办案人员</th>
+                            <td>张宏刚（主办刑警，警号：051287）、岳月（主办刑警，警号：051383）、陈亚菲（主办刑警，警号：051296）、曹康（技术科，警号：051302）、赵盈嫚（主检法医师，警号：FJ0512）</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- 现场勘查记录 -->
+                <div class="record-section">
+                    <h3 class="section-title">二、现场勘查记录</h3>
+                    <div class="record-content">
+                        <p>2025年11月11日06时18分，明德派出所接报警称：滨江新城烂尾楼区发现一具男性尸体。值班民警张宏刚、岳月立即赶赴现场，于06时35分到达。</p>
+                        
+                        <div class="key-info">
+                            <strong>现场概况：</strong>尸体位于滨江新城“锦绣华庭”烂尾楼项目3号楼2层东侧房间内。该楼栋主体结构已完成，但门窗、水电均未安装，内部堆有少量建筑垃圾。死者仰卧于水泥地面上，衣着完整。
+                        </div>
+                        
+                        <p><strong>勘查时间：</strong>2025年11月11日06:40-09:15</p>
+                        <p><strong>勘查人员：</strong>张宏刚、岳月、陈亚菲、赵盈嫚、曹康</p>
+                        <p><strong>天气情况：</strong>晴，气温8℃，微风，能见度良好</p>
+                        
+                        <div class="timeline-container">
+                            <div class="timeline-item">
+                                <div class="timeline-time">06:05（估计）</div>
+                                <div class="timeline-content">报案人王建国晨跑途经烂尾楼区，发现异常</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">06:18</div>
+                                <div class="timeline-content">王建国拨打110报警</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">06:35</div>
+                                <div class="timeline-content">民警到达现场，设置警戒区</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">06:40</div>
+                                <div class="timeline-content">技术科人员开始现场勘查</div>
+                            </div>
+                        </div>
+                        
+                        <p><strong>现场环境：</strong>烂尾楼区已停工两年，平时偶有流浪人员或好奇者进入，但无固定人员居住。3号楼位于项目边缘，相对隐蔽。现场地面有灰尘，可见死者鞋印及另一组模糊鞋印（已提取）。</p>
+                        
+                        <div class="key-info">
+                            <strong>重要发现：</strong>现场<strong>无打斗痕迹</strong>，死者随身物品摆放整齐。死者脖颈处有明显扼压痕迹，形态特异。
+                        </div>
+                        
+                        <p><strong>死者状态：</strong>死者身着深灰色夹克、黑色长裤、运动鞋。随身物品包括：钱包（内有身份证、银行卡、现金320元）、钥匙串、一包未开封的纸巾。</p>
+                        
+                        <div class="crucial-evidence">
+                            <div class="crucial-title">关键物证发现</div>
+                            <p>1. 在死者右手边1.2米处发现一部被物理<strong>损坏的手机</strong>（证物编号：BJ-20251111-01）。手机屏幕碎裂，SIM卡缺失，机身有被刻意砸击痕迹。</p>
+                            <p>2. 在死者左侧地面发现一枚银灰色<strong>定制袖扣</strong>（证物编号：BJ-20251111-02），上刻有模糊的鹰徽图案，非死者所有。袖扣背面有细微磨损，疑似使用过一段时间。</p>
+                            <p>3. 现场提取到多组鞋印，其中一组与死者鞋印不符，尺码约为42码，鞋底花纹独特（证物编号：BJ-20251111-03）。</p>
+                        </div>
+                        
+                        <p><strong>监控调取：</strong>烂尾楼区周边道路监控缺失。</p>
+                    </div>
+                </div>
+                
+                <!-- 法医鉴定 -->
+                <div class="record-section">
+                    <h3 class="section-title">三、法医学检验报告</h3>
+                    <div class="record-content">
+                        <p><strong>检验时间：</strong>2025年11月11日10:00-13:30</p>
+                        <p><strong>检验地点：</strong>青州市公安局法医鉴定中心</p>
+                        <p><strong>检验法医：</strong>赵盈嫚（主检法医师，法医编号：FJ0512）</p>
+                        
+                        <table class="info-table">
+                            <tr>
+                                <th>死亡原因</th>
+                                <td>机械性窒息</td>
+                            </tr>
+                            <tr>
+                                <th>死亡时间</th>
+                                <td>2025年11月10日23:00-11月11日01:00之间</td>
+                            </tr>
+                            <tr>
+                                <th>颈部损伤特征</th>
+                                <td>颈前部及两侧见明显扼压痕迹，皮下及深层肌肉出血，舌骨大角骨折</td>
+                            </tr>
+                            <tr>
+                                <th>特殊发现</th>
+                                <td>脖颈处皮肤有清晰的<strong>“十字星”形压痕</strong>(法证编号：FY-20251111-01)，中央有直径约0.5cm的圆形凹陷</td>
+                            </tr>
+                            <tr>
+                                <th>其他损伤</th>
+                                <td>双手有轻微防御伤，右手食指指甲断裂，甲缝内提取到微量纤维（已送检）</td>
+                            </tr>
+                            <tr>
+                                <th>毒物检测</th>
+                                <td>血液中未检出常见毒物、麻醉药品及酒精成分</td>
+                            </tr>
+                            <tr>
+                                <th>胃内容物</th>
+                                <td>死亡前3-4小时进食，食物已部分消化</td>
+                            </tr>
+                        </table>
+                        
+                        <div class="key-info">
+                            <strong>法医意见：</strong>根据尸体检验，死者系被人徒手扼压颈部致机械性窒息死亡。脖颈处“十字星”形压痕形态特殊，<strong>疑似由带有特殊凸起物的工具或饰品压迫形成</strong>。该损伤与常见扼颈损伤不同，需结合现场发现的袖扣等物证进一步分析。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 调查访问 -->
+                <div class="record-section">
+                    <h3 class="section-title">四、相关人员询问笔录摘要</h3>
+                    <div class="record-content">
+                        <p><strong>询问时间：</strong>2025年11月11日09:00-12:00</p>
+                        <p><strong>询问人员：</strong>张宏刚、岳月、陈亚菲</p>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-title">1. 王建国（报案人，晨跑者，明德中学党委书记，48岁）</div>
+                            <p>"我每天早上6点左右沿着江边跑步，都会经过那片烂尾楼。今天跑过3号楼时，瞥见二楼窗户里好像有个人躺在地上。我用手电照了一下，发现一动不动，感觉不对劲，就赶紧报警了。"</p>
+                            <p>"平时早上那里基本没人，晚上偶尔能看到有年轻人进去探险。昨天跑的时候没发现什么异常。"</p>
+                        </div>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-title">2. 李静（死者同事，29岁）</div>
+                            <p>"江川性格比较孤僻，但代码写得很好。最近两个月他好像有点心神不宁，问他在忙什么也不说。"</p>
+                            <p>"他提过在做一个‘私人项目’，但没具体说是什么。上周我约他吃饭，他推脱说有事。"</p>
+                        </div>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-title">3. 刘浩（烂尾楼附近便利店店主，41岁）</div>
+                            <p>"那个烂尾楼经常有年轻人晚上进去玩，我也见怪不怪了。昨晚大概10点多，有个男的单独走进去，穿着深色外套，有点像死者。之后没注意有没有其他人进去。"</p>
+                            <p>"大概半夜12点半左右，我听到那边传来一声闷响，像是什么东西掉地上，但没太在意。"</p>
+                        </div>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-title">4. 孙明（死者房东，56岁）</div>
+                            <p>"江川租我的房子两年了，平时挺安静，房租也按时交。最近一个月他好像特别忙，经常半夜才回来。11月9号晚上他来交房租时，我随口问了一句，他说在赶一个要紧的活儿，完成后就能‘轻松了’。"</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 初步结论 -->
+                <div class="record-section">
+                    <h3 class="section-title">五、案件初步分析</h3>
+                    <div class="record-content">
+                        <p>综合现场勘查、法医检验和调查访问情况，初步分析如下：</p>
+                        
+                        <div class="key-info">
+                            <strong>1. 案件性质：</strong>初步认定为<strong>他杀</strong>，依据如下：
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>死因为机械性窒息，颈部有扼压痕迹</li>
+                                <li>脖颈处出现特殊的“十字星”形压痕，非常见损伤</li>
+                                <li>现场发现不属于死者的定制袖扣</li>
+                                <li>死者手机被物理损坏，SIM卡缺失</li>
+                                <li>现场存在另一组不明鞋印</li>
+                            </ul>
+                        </div>
+                        
+                        <p><strong>2. 案发过程重建：</strong>死者于11月10日22:47进入烂尾楼区，可能与人有约或独自前往。23:00-01:00期间，遭遇他人袭击，被扼颈致死。凶手可能取走了死者手机中的SIM卡，并损坏手机。作案后凶手清理现场痕迹，但遗留一枚袖扣。</p>
+                        
+                        <p><strong>3. 动机分析：</strong>可能涉及死者生前参与的“私人项目”、技术纠纷、经济矛盾或个人恩怨。定制袖扣可能指向特定群体或组织。</p>
+                        
+                        <div class="crucial-evidence">
+                            <div class="crucial-title">需重点调查方向</div>
+                            <p>1. 死者生前接触的“私人项目”具体内容，是否涉及敏感信息或利益纠纷。</p>
+                            <p>2. 定制袖扣的来源，鹰徽图案可能代表的团体、公司或组织。</p>
+                            <p>3. 现场不明鞋印的比对，以及死者指甲内纤维的鉴定。</p>
+                            <p>4. 死者通信记录、网络活动及财务状况调查。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 印章 -->
+                <div class="stamp-container">
+                    <div class="police-stamp">
+                        <div class="stamp-text">
+                            青州市公安局<br>
+                            刑事侦查支队<br>
+                            案件已受理
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 签名 -->
+                <div class="signature-area">
+                    <div class="signature-line"></div>
+                    <div class="signature-text">
+                        主办民警：张宏刚 &nbsp;&nbsp;&nbsp;&nbsp; 警号：051287<br>
+                        日期：2025年11月11日
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="police-footer">
+        <div class="footer-content">
+            <p>青州市公安局刑事侦查支队 · 案件管理系统</p>
+            <p class="footer-notice">
+                本文件属公安机关内部工作记录，未经许可不得复制、传播<br>
+                保密等级：内部 · 案件编号：QZGA-20251111-001 · 存档日期：2025-11-11
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加打印样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    body {
+                        background-color: white;
+                    }
+                    .case-card {
+                        box-shadow: none;
+                        border: 1px solid #ccc;
+                    }
+                    .police-header, .police-footer {
+                        background-color: white;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                    .police-badge {
+                        background-color: #eee;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 时间线动画
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 300);
+            });
+            
+            // 证据卡片动画
+            const evidenceItems = document.querySelectorAll('.evidence-item, .crucial-evidence');
+            evidenceItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 600);
+            });
+            
+            // 表格行动画
+            const tableRows = document.querySelectorAll('.info-table tr');
+            tableRows.forEach((row, index) => {
+                row.style.opacity = '0';
+                
+                setTimeout(() => {
+                    row.style.transition = `opacity 0.3s ease ${index * 0.05}s`;
+                    row.style.opacity = '1';
+                }, 800);
+            });
+            
+            // 印章动画
+            const stamp = document.querySelector('.police-stamp');
+            stamp.style.transform = 'scale(0)';
+            
+            setTimeout(() => {
+                stamp.style.transition = 'transform 0.5s ease-out';
+                stamp.style.transform = 'scale(1)';
+            }, 1200);
+        });
+        
+        // 添加打印功能（如果需要）
+        function printDocument() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

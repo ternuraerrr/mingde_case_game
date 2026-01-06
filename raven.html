@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青州市公安局 | "渡鸦"专项调查案卷</title>
+    <style>
+        :root {
+            --raven-black: #0c0c0c;
+            --investigation-purple: #6a0dad;
+            --tech-blue: #0077b6;
+            --dark-bg: #121212;
+            --light-text: #e0e0e0;
+            --border-color: #333333;
+            --highlight-red: #ff4757;
+            --data-green: #00d26a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Consolas", "Courier New", "Microsoft YaHei", monospace;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(106, 13, 173, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 119, 182, 0.1) 0%, transparent 20%);
+        }
+        
+        /* 调查页面头部 */
+        .investigation-header {
+            background: linear-gradient(to right, var(--raven-black), #1a1a1a);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            position: relative;
+            border-bottom: 5px solid var(--investigation-purple);
+            margin-bottom: 30px;
+        }
+        
+        .investigation-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--investigation-purple), var(--tech-blue), var(--investigation-purple));
+        }
+        
+        .code-name {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(106, 13, 173, 0.7);
+        }
+        
+        .case-tag {
+            display: inline-block;
+            padding: 8px 25px;
+            background-color: var(--investigation-purple);
+            color: white;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .case-subtitle {
+            font-size: 16px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+        
+        /* 渡鸦图标动画 */
+        .raven-icon {
+            font-size: 24px;
+            margin: 0 10px;
+            animation: ravenFly 3s infinite;
+            display: inline-block;
+        }
+        
+        @keyframes ravenFly {
+            0% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-5px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(5px) rotate(-5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        /* 调查卷宗容器 */
+        .dossier-container {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+        }
+        
+        /* 调查模块 */
+        .tech-module {
+            background-color: rgba(20, 20, 30, 0.9);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tech-module::before {
+            content: "RAVEN";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            color: rgba(106, 13, 173, 0.05);
+            font-weight: bold;
+            letter-spacing: 20px;
+            white-space: nowrap;
+            z-index: 0;
+        }
+        
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--tech-blue);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .module-title {
+            font-size: 22px;
+            color: var(--tech-blue);
+            font-weight: bold;
+        }
+        
+        .module-tag {
+            display: inline-block;
+            padding: 5px 15px;
+            background-color: var(--investigation-purple);
+            color: white;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* IP追踪可视化 */
+        .ip-tracking-container {
+            position: relative;
+            z-index: 1;
+            margin-top: 20px;
+        }
+        
+        .world-map {
+            height: 400px;
+            background-color: #0a0a1a;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .ip-node {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: var(--highlight-red);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px var(--highlight-red);
+            animation: pulse 2s infinite;
+        }
+        
+        .ip-node::after {
+            content: attr(data-location);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            white-space: nowrap;
+            border: 1px solid var(--highlight-red);
+        }
+        
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background-color: var(--tech-blue);
+            transform-origin: 0 0;
+            z-index: -1;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+        }
+        
+        .ip-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .ip-card {
+            background-color: rgba(30, 30, 40, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid var(--tech-blue);
+        }
+        
+        .ip-location {
+            font-size: 16px;
+            color: var(--data-green);
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .ip-info {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        /* 聊天记录展示 */
+        .chat-container {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid #444;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chat-log {
+            height: 300px;
+            overflow-y: auto;
+            background-color: #0a0a0a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        
+        .message-raven {
+            background-color: rgba(106, 13, 173, 0.2);
+            border-left: 4px solid var(--investigation-purple);
+            margin-right: auto;
+        }
+        
+        .message-jiang {
+            background-color: rgba(0, 119, 182, 0.2);
+            border-left: 4px solid var(--tech-blue);
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .message-raven .message-sender {
+            color: var(--investigation-purple);
+        }
+        
+        .message-jiang .message-sender {
+            color: var(--tech-blue);
+        }
+        
+        .message-content {
+            color: #ddd;
+            word-break: break-word;
+        }
+        
+        .encrypted-note {
+            color: #888;
+            font-style: italic;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        /* 网吧监控模块 */
+        .cctv-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid #555;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cctv-footage {
+            height: 300px;
+            background-color: #111;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #444;
+        }
+        
+        .cctv-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--highlight-red);
+            font-size: 12px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        
+        .cctv-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .cctv-detail {
+            background-color: rgba(50, 50, 50, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .detail-label {
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* 声纹比对模块 */
+        .voiceprint-container {
+            background-color: rgba(20, 30, 40, 0.8);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 20px;
+            border: 1px solid var(--tech-blue);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .voiceprint-visual {
+            height: 200px;
+            background-color: #0a0a14;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .voice-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(to top, 
+                rgba(106, 13, 173, 0.1) 0%, 
+                rgba(106, 13, 173, 0.3) 30%,
+                rgba(106, 13, 173, 0.5) 60%,
+                rgba(106, 13, 173, 0.8) 100%);
+            animation: waveMove 3s infinite linear;
+        }
+        
+        @keyframes waveMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100px); }
+        }
+        
+        .comparison-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .comparison-item {
+            background-color: rgba(30, 40, 50, 0.7);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .comparison-title {
+            font-size: 16px;
+            color: var(--data-green);
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .match-percentage {
+            font-size: 36px;
+            color: var(--highlight-red);
+            text-align: center;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .match-details {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        /* 按钮样式 */
+        .tech-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--tech-blue);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .tech-button:hover {
+            background-color: #005a8c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 182, 0.4);
+        }
+        
+        .purple-button {
+            background-color: var(--investigation-purple);
+        }
+        
+        .purple-button:hover {
+            background-color: #4d0080;
+        }
+        
+        /* 页脚 */
+        .investigation-footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            font-size: 14px;
+            color: #666;
+            background-color: rgba(10, 10, 15, 0.9);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .code-name {
+                font-size: 28px;
+            }
+            
+            .dossier-container {
+                padding: 0 15px;
+            }
+            
+            .tech-module {
+                padding: 20px;
+            }
+            
+            .module-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .module-tag {
+                margin-top: 10px;
+            }
+            
+            .world-map {
+                height: 300px;
+            }
+            
+            .ip-details,
+            .comparison-results {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 调查页面头部 -->
+    <header class="investigation-header">
+        <div class="code-name">调查代号：<span class="raven-icon">渡鸦</span></div>
+        <div class="case-tag">数字追踪与声纹比对专项调查</div>
+        <div class="case-subtitle">关联案件：江川被害案 | 林纾失踪案（5年前）</div>
+        <div class="case-subtitle">调查编号：QZGA-2025-1118-RAVEN</div>
+    </header>
+    
+    <!-- 调查卷宗容器 -->
+    <main class="dossier-container">
+        <!-- 模块1：加密邮箱追踪 -->
+        <section class="tech-module">
+            <div class="module-header">
+                <div class="module-title">1. 加密邮箱通信追踪</div>
+                <div class="module-tag">数字取证 | IP追踪</div>
+            </div>
+            
+            <div class="ip-tracking-container">
+                <p style="color: #ccc; margin-bottom: 20px; position: relative; z-index: 1;">
+                    通过对江川加密邮箱的逆向工程，发现其与代号"渡鸦"的联系人频繁通信。
+                    通信使用PGP加密和Tor网络，IP地址经过多次跳转，最后定位到本地。
+                </p>
+                
+                <div class="world-map" id="worldMap">
+                    <!-- IP节点将通过JavaScript动态添加 -->
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #444; text-align: center;">
+                        <div>全球IP跳转路径可视化</div>
+                        <div style="font-size: 12px; margin-top: 10px;">红色节点：通信服务器位置</div>
+                        <div style="font-size: 12px;">蓝色连线：通信路径</div>
+                    </div>
+                </div>
+                
+                <div class="ip-details">
+                    <div class="ip-card">
+                        <div class="ip-location">初始IP：冰岛 · 雷克雅未克</div>
+                        <div class="ip-info">
+                            <p><strong>服务器：</strong>加密通信中继站 #IceRelay-07</p>
+                            <p><strong>时间：</strong>2025-10-20 14:23:11 UTC</p>
+                            <p><strong>备注：</strong>使用一次性VPN，24小时后销毁</p>
+                        </div>
+                    </div>
+                    
+                    <div class="ip-card">
+                        <div class="ip-location">二次跳转：新加坡</div>
+                        <div class="ip-info">
+                            <p><strong>服务器：</strong>Tor节点 #SG-Tor-128</p>
+                            <p><strong>时间：</strong>2025-10-20 14:25:47 UTC</p>
+                            <p><strong>备注：</strong>停留时间仅3.2秒，反追踪技术娴熟</p>
+                        </div>
+                    </div>
+                    
+                    <div class="ip-card">
+                        <div class="ip-location">三次跳转：巴西 · 圣保罗</div>
+                        <div class="ip-info">
+                            <p><strong>服务器：</strong>商业VPN端点 #BR-VPN-42</p>
+                            <p><strong>时间：</strong>2025-10-20 14:27:15 UTC</p>
+                            <p><strong>备注：</strong>使用伪造信用卡注册的VPN服务</p>
+                        </div>
+                    </div>
+                    
+                    <div class="ip-card">
+                        <div class="ip-location">最终定位：中国 · 青州市</div>
+                        <div class="ip-info">
+                            <p><strong>地址：</strong>"极速"二十四小时网吧（天云区明德路56号）</p>
+                            <p><strong>时间：</strong>2025-10-28 21:15:33 CST</p>
+                            <p><strong>备注：</strong>使用公共电脑，支付现金，无身份登记</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 模块2：聊天记录分析 -->
+        <section class="tech-module">
+            <div class="module-header">
+                <div class="module-title">2. 加密聊天记录（部分解密）</div>
+                <div class="module-tag">通信分析 | 内容解密</div>
+            </div>
+            
+            <div class="chat-container">
+                <div class="chat-log" id="chatLog">
+                    <!-- 聊天记录将通过JavaScript动态添加 -->
+                </div>
+                
+                <div style="text-align: center;">
+                    <button class="tech-button purple-button" onclick="loadMoreChat()">加载更多聊天记录</button>
+                    <button class="tech-button" onclick="analyzePattern()" style="margin-left: 15px;">分析通信模式</button>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: rgba(106, 13, 173, 0.1); border-radius: 8px;">
+                    <p style="color: #cc99ff; font-size: 14px;"><strong>技术分析：</strong>通信使用256位PGP加密，Tor网络传输。解密内容显示"渡鸦"向江川提供"穹顶会"内部信息，并多次警告江川注意安全。"渡鸦"似乎知道江川在调查"方舟计划"。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 模块3：网吧监控分析 -->
+        <section class="tech-module">
+            <div class="module-header">
+                <div class="module-title">3. "极速网吧"监控分析</div>
+                <div class="module-tag">监控取证 | 行为分析</div>
+            </div>
+            
+            <div class="cctv-container">
+                <div class="cctv-footage">
+                    <div class="cctv-overlay">监控录像 · 2025-10-28 21:15-21:45</div>
+                    <div style="text-align: center; color: #888;">
+                        <div style="font-size: 24px; margin-bottom: 10px;">📹</div>
+                        <div>嫌疑人监控录像片段</div>
+                        <div style="font-size: 12px; margin-top: 10px;">画面已被嫌疑人技术干扰</div>
+                    </div>
+                </div>
+                
+                <div class="cctv-details">
+                    <div class="cctv-detail">
+                        <div class="detail-label">使用机位</div>
+                        <div class="detail-value">37号机（角落位置）</div>
+                    </div>
+                    <div class="cctv-detail">
+                        <div class="detail-label">使用时长</div>
+                        <div class="detail-value">32分钟</div>
+                    </div>
+                    <div class="cctv-detail">
+                        <div class="detail-label">支付方式</div>
+                        <div class="detail-value">现金（50元面额）</div>
+                    </div>
+                    <div class="cctv-detail">
+                        <div class="detail-label">进入时间</div>
+                        <div class="detail-value">21:12:45</div>
+                    </div>
+                    <div class="cctv-detail">
+                        <div class="detail-label">离开时间</div>
+                        <div class="detail-value">21:44:20</div>
+                    </div>
+                    <div class="cctv-detail">
+                        <div class="detail-label">着装特征</div>
+                        <div class="detail-value">黑色连帽衫，口罩</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 25px; padding: 15px; background-color: rgba(255, 71, 87, 0.1); border-radius: 8px;">
+                    <p style="color: #ff9999; font-size: 14px;"><strong>反侦察行为分析：</strong></p>
+                    <ul style="color: #ff9999; font-size: 14px; margin-left: 20px; margin-top: 10px;">
+                        <li>选择角落机位，背对监控摄像头</li>
+                        <li>使用现金支付，避免电子支付记录</li>
+                        <li>进入网吧前在监控盲区更换外套</li>
+                        <li>使用自带加密U盘，不在电脑留下痕迹</li>
+                        <li>离开时擦拭键盘鼠标，清除指纹</li>
+                        <li>出门后进入地铁站，利用人群掩护</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 模块4：声纹比对 -->
+        <section class="tech-module">
+            <div class="module-header">
+                <div class="module-title">4. 声纹比对分析</div>
+                <div class="module-tag">生物识别 | 案件关联</div>
+            </div>
+            
+            <div class="voiceprint-container">
+                <p style="color: #ccc; margin-bottom: 20px; position: relative; z-index: 1;">
+                    通过对网吧附近公共电话录音（匿名举报电话）的声纹分析，
+                    与五年前林纾失踪案相关人员的声纹进行比对。
+                </p>
+                
+                <div class="voiceprint-visual">
+                    <div class="voice-wave"></div>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #666; text-align: center;">
+                        <div>声纹波形对比图</div>
+                        <div style="font-size: 12px; margin-top: 10px;">红色：匿名电话声纹</div>
+                        <div style="font-size: 12px;">蓝色：林纾弟弟声纹样本</div>
+                    </div>
+                </div>
+                
+                <div class="comparison-results">
+                    <div class="comparison-item">
+                        <div class="comparison-title">声纹相似度匹配</div>
+                        <div class="match-percentage">60%</div>
+                        <div class="match-details">
+                            <p><strong>基础声纹特征匹配：</strong>60%</p>
+                            <p><strong>共振峰频率相似度：</strong>58%</p>
+                            <p><strong>语调模式相似度：</strong>62%</p>
+                            <p><strong>语速特征相似度：</strong>65%</p>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-title">林纾失踪案背景</div>
+                        <div class="match-details">
+                            <p><strong>案件时间：</strong>2020年7月15日</p>
+                            <p><strong>失踪人员：</strong>林纾，青州城投前财务部职员</p>
+                            <p><strong>案件状态：</strong>悬案，无实质进展</p>
+                            <p><strong>关键线索：</strong>林纾失踪前正在调查城投公司异常账目</p>
+                            <p><strong>关联人员：</strong>林纾弟弟林峰曾多次上访，后失去联系</p>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-title">调查假设</div>
+                        <div class="match-details">
+                            <p><strong>假设1：</strong>"渡鸦"可能是林纾弟弟林峰的化名</p>
+                            <p><strong>假设2：</strong>林峰通过五年时间掌握了黑客技术</p>
+                            <p><strong>假设3：</strong>林峰在为姐姐失踪案收集证据</p>
+                            <p><strong>假设4：</strong>江川的审计工作触发了林峰的介入</p>
+                            <p><strong>假设5：</strong>林峰可能掌握了关键证据，选择与江川合作</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background-color: rgba(0, 119, 182, 0.1); border-radius: 8px;">
+                    <p style="color: #66ccff; font-size: 15px;"><strong>专家分析：</strong>60%的声纹相似度在声纹鉴定中属于中等匹配度，不足以直接认定同一人，但强烈提示关联性。考虑到时间跨度（5年）、录音质量差异、以及可能的故意变声，实际关联可能性高于数据表现。</p>
+                    <p style="color: #66ccff; font-size: 15px; margin-top: 10px;">建议：调取林峰五年来的通讯记录、银行流水、出入境记录，同时对其社交关系进行深入调查。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="investigation-footer">
+        <p>青州市公安局刑事侦查支队 · 技术侦查大队</p>
+        <p>案件编号：QZGA-2025-1108-RAVEN | 调查负责人：李振华（技侦大队队长）</p>
+        <p>技术支持单位：公安部第三研究所 · 声纹鉴定中心</p>
+        <p style="margin-top: 15px; color: var(--investigation-purple); font-size: 13px; font-weight: bold;">
+            警告：此案卷涉及高度敏感的调查技术细节，仅限于专案组成员查阅。
+        </p>
+    </footer>
+
+    <script>
+        // IP追踪地图可视化
+        function initIPTracking() {
+            const worldMap = document.getElementById('worldMap');
+            const ipLocations = [
+                { name: "冰岛 · 雷克雅未克", x: 25, y: 35, color: "#ff4757" },
+                { name: "新加坡", x: 72, y: 48, color: "#ff4757" },
+                { name: "巴西 · 圣保罗", x: 30, y: 60, color: "#ff4757" },
+                { name: "中国 · 青州市", x: 68, y: 42, color: "#ff4757" }
+            ];
+            
+            // 创建IP节点
+            ipLocations.forEach(location => {
+                const ipNode = document.createElement('div');
+                ipNode.className = 'ip-node';
+                ipNode.style.left = `${location.x}%`;
+                ipNode.style.top = `${location.y}%`;
+                ipNode.style.backgroundColor = location.color;
+                ipNode.setAttribute('data-location', location.name);
+                worldMap.appendChild(ipNode);
+            });
+            
+            // 创建连接线
+            const points = [
+                { x: 25, y: 35 }, // 冰岛
+                { x: 72, y: 48 }, // 新加坡
+                { x: 30, y: 60 }, // 巴西
+                { x: 68, y: 42 }  // 中国
+            ];
+            
+            for (let i = 0; i < points.length - 1; i++) {
+                const start = points[i];
+                const end = points[i + 1];
+                
+                // 计算距离和角度
+                const dx = end.x - start.x;
+                const dy = end.y - start.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                
+                // 创建连接线
+                const line = document.createElement('div');
+                line.className = 'connection-line';
+                line.style.width = `${distance}%`;
+                line.style.left = `${start.x}%`;
+                line.style.top = `${start.y}%`;
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.opacity = '0.6';
+                
+                worldMap.appendChild(line);
+                
+                // 添加动画延迟
+                setTimeout(() => {
+                    line.style.transition = 'opacity 1s';
+                    line.style.opacity = '0.6';
+                }, i * 500);
+            }
+        }
+        
+        // 聊天记录数据
+        const chatMessages = [
+            {
+                sender: "渡鸦",
+                time: "2025-10-20 14:25",
+                content: "江工，你要的数据已经发到加密邮箱。小心处理，这些文件会触动某些人的神经。",
+                encrypted: true
+            },
+            {
+                sender: "江川",
+                time: "2025-10-20 14:30",
+                content: "收到。这些账目比我想象的还要严重。赵翔宇的胆子太大了。",
+                encrypted: true
+            },
+            {
+                sender: "渡鸦",
+                time: "2025-10-20 14:32",
+                content: "不止是赵。整个'穹顶会'都是利益网络。你调查的'方舟计划'只是冰山一角。",
+                encrypted: true
+            },
+            {
+                sender: "江川",
+                time: "2025-10-20 14:35",
+                content: "我需要更多关于沈梦的证据。她似乎是被迫卷入的。",
+                encrypted: true
+            },
+            {
+                sender: "渡鸦",
+                time: "2025-10-20 14:38",
+                content: "沈梦的女儿是她的软肋。赵翔宇控制着医疗资源。但我这里有沈梦的医疗账本，可以证明资金异常。",
+                encrypted: true
+            },
+            {
+                sender: "江川",
+                time: "2025-10-20 14:40",
+                content: "发给我。我要把完整的证据链交给纪委。",
+                encrypted: true
+            },
+            {
+                sender: "渡鸦",
+                time: "2025-10-20 14:42",
+                content: "小心。他们已经开始警觉了。不要单独行动，你的审计工作已经暴露。",
+                encrypted: true
+            },
+            {
+                sender: "江川",
+                time: "2025-10-25 21:15",
+                content: "渡鸦，我发现更严重的事情。'方舟计划'涉及国有资产流失，金额超过十亿。",
+                encrypted: true
+            },
+            {
+                sender: "渡鸦",
+                time: "2025-10-25 21:18",
+                content: "立即停止！你的调查已经触碰到核心了。他们不会让你活着交出证据。",
+                encrypted: true
+            },
+            {
+                sender: "江川",
+                time: "2025-10-25 21:20",
+                content: "我已经备份了所有资料。如果我出事，资料会自动发送到指定邮箱。",
+                encrypted: true
+            },
+            {
+                sender: "渡鸦",
+                time: "2025-10-25 21:22",
+                content: "告诉我备份位置。我可以帮你保护证据。",
+                encrypted: true
+            },
+            {
+                sender: "江川",
+                time: "2025-10-25 21:25",
+                content: "还不能告诉你。但我需要你帮忙查一个人——林纾，五年前失踪的城投前员工。",
+                encrypted: true
+            },
+            {
+                sender: "渡鸦",
+                time: "2025-10-25 21:28",
+                content: "......我认识她。她是我的姐姐。",
+                encrypted: true
+            }
+        ];
+        
+        // 加载聊天记录
+        let chatIndex = 0;
+        const chatLog = document.getElementById('chatLog');
+        
+        function loadChatMessages(count = 6) {
+            for (let i = 0; i < count && chatIndex < chatMessages.length; i++, chatIndex++) {
+                const msg = chatMessages[chatIndex];
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message message-${msg.sender === '渡鸦' ? 'raven' : 'jiang'}`;
+                
+                messageDiv.innerHTML = `
+                    <div class="message-sender">${msg.sender} · ${msg.time}</div>
+                    <div class="message-content">${msg.content}</div>
+                    ${msg.encrypted ? '<div class="encrypted-note">[PGP加密传输]</div>' : ''}
+                `;
+                
+                // 添加动画
+                messageDiv.style.opacity = '0';
+                messageDiv.style.transform = 'translateY(10px)';
+                
+                chatLog.appendChild(messageDiv);
+                
+                // 滚动到底部
+                setTimeout(() => {
+                    chatLog.scrollTop = chatLog.scrollHeight;
+                }, 100);
+                
+                // 显示动画
+                setTimeout(() => {
+                    messageDiv.style.transition = 'opacity 0.5s, transform 0.5s';
+                    messageDiv.style.opacity = '1';
+                    messageDiv.style.transform = 'translateY(0)';
+                }, i * 100);
+            }
+        }
+        
+        // 加载更多聊天记录
+        function loadMoreChat() {
+            if (chatIndex < chatMessages.length) {
+                loadChatMessages(3);
+            } else {
+                alert('已加载全部聊天记录');
+            }
+        }
+        
+        // 分析通信模式
+        function analyzePattern() {
+            alert('通信模式分析结果：\n\n' +
+                  '1. 通信频率：2025年10月明显增加\n' +
+                  '2. 话题敏感度：随时间逐步提高\n' +
+                  '3. 安全警告：渡鸦多次提醒江川注意安全\n' +
+                  '4. 紧急程度：10月25日后通信显示高度紧迫\n' +
+                  '5. 信任级别：双方逐渐建立信任关系\n\n' +
+                  '结论：江川遇害前与渡鸦的合作关系已经相当密切。');
+        }
+        
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化IP追踪地图
+            setTimeout(initIPTracking, 500);
+            
+            // 加载初始聊天记录
+            setTimeout(() => loadChatMessages(6), 1000);
+            
+            // 为调查模块添加动画
+            const modules = document.querySelectorAll('.tech-module');
+            modules.forEach((module, index) => {
+                module.style.opacity = '0';
+                module.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    module.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
+                    module.style.opacity = '1';
+                    module.style.transform = 'translateY(0)';
+                }, 300 + index * 200);
+            });
+            
+            // 模拟声纹波形动画
+            const voiceWave = document.querySelector('.voice-wave');
+            if (voiceWave) {
+                setInterval(() => {
+                    const height = 30 + Math.random() * 70;
+                    voiceWave.style.height = `${height}%`;
+                }, 500);
+            }
+        });
+        
+        // 安全限制
+        window.addEventListener('keydown', function(e) {
+            // F12限制
+            if (e.key === 'F12') {
+                e.preventDefault();
+                alert('⚠️ 技术侦查数据受保护，禁止开发者工具访问。');
+                return false;
+            }
+            
+            // 打印限制
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                alert('⚠️ 此案卷包含技术侦查手段细节，禁止打印！');
+                return false;
+            }
+        });
+        
+        // 禁止右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            alert('⚠️ 技术侦查案卷，禁止右键操作。');
+        });
+    </script>
+</body>
+</html>

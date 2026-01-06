@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>青州市公安局 - 日常工作</title>
+    <title>青州市公安局 - 实习警员</title>
     <style>
         :root {
             --police-blue: #003366;
@@ -132,7 +132,7 @@
             padding: 25px;
             border-radius: 10px;
             box-shadow: var(--shadow);
-            border-left: 8px solid var(--police-red);
+            border-left: 8px solid #999;
         }
 
         .police-id-title {
@@ -165,14 +165,17 @@
             color: var(--police-blue);
         }
 
-        .police-number {
+        .intern-notice {
             text-align: center;
-            font-size: 2.5em;
+            font-size: 1.5em;
             font-weight: bold;
-            color: var(--police-red);
-            letter-spacing: 3px;
+            color: #999;
+            letter-spacing: 1px;
             margin: 10px 0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #ccc;
         }
 
         /* 电脑区域 */
@@ -202,7 +205,7 @@
 
         .password-prompt {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             color: #555;
             font-size: 1.1em;
         }
@@ -252,7 +255,10 @@
             margin-top: 15px;
             color: #777;
             font-size: 0.9em;
-            display: none; /* 初始隐藏 */
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid var(--police-gold);
         }
 
         .error-message {
@@ -308,8 +314,8 @@
                 grid-template-columns: 1fr;
             }
             
-            .police-number {
-                font-size: 2em;
+            .intern-notice {
+                font-size: 1.2em;
             }
             
             .computer-section {
@@ -333,7 +339,7 @@
                 </div>
             </div>
             <div class="user-info">
-                <div class="badge">警员</div>
+                <div class="badge">实习警员</div>
                 <div class="user-name">岳月</div>
             </div>
         </div>
@@ -343,11 +349,11 @@
     <div class="main-container">
         <!-- 欢迎部分 -->
         <section class="welcome-section">
-            <h2 class="welcome-title">恭喜转正，欢迎上岗！</h2>
-            <p class="welcome-subtitle">今天是2025年12月25日，这是你正式成为青州市公安局二队警员的第25天</p>
+            <h2 class="welcome-title">实习警员工作台</h2>
+            <p class="welcome-subtitle">今天是2025年11月11日，这是你在青州市公安局实习的第72天</p>
             
             <div class="police-id-card">
-                <div class="police-id-title">警官证</div>
+                <div class="police-id-title">实习警员证</div>
                 <div class="id-info">
                     <div class="info-item">
                         <div class="info-label">姓名</div>
@@ -359,23 +365,19 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">部门</div>
-                        <div class="info-value">刑侦支队二队</div>
+                        <div class="info-value">刑侦支队二队（实习）</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">警衔</div>
-                        <div class="info-value">三级警司</div>
+                        <div class="info-label">实习期</div>
+                        <div class="info-value">09.01-11.30</div>
                     </div>
-                </div>
-                <div class="police-number" id="policeNumber">051383</div>
-                <div style="text-align: center; color: #777; font-size: 0.9em;">
-                    颁发日期：2025年12月1日
                 </div>
             </div>
         </section>
 
         <!-- 电脑部分 -->
         <section class="computer-section">
-            <h2 class="section-title">办公电脑系统</h2>
+            <h2 class="section-title">办公电脑系统（实习权限）</h2>
             
             <!-- 电脑SVG图像 -->
             <svg class="computer-image" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
@@ -384,39 +386,36 @@
                 <rect x="120" y="100" width="260" height="40" rx="5" fill="#003366"/>
                 <text x="250" y="125" text-anchor="middle" fill="#ffcc00" font-family="Arial, sans-serif" font-size="18" font-weight="bold">青州公安内部系统</text>
                 <rect x="150" y="170" width="200" height="20" rx="3" fill="#333"/>
-                <rect x="150" y="170" width="120" height="20" rx="3" fill="#0066cc"/>
+                <rect x="150" y="170" width="80" height="20" rx="3" fill="#999"/>
                 
                 <rect x="180" y="240" width="140" height="40" rx="5" fill="#003366" id="powerButton"/>
                 <text x="250" y="265" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16">启动电脑</text>
                 
-                <rect x="175" y="245" width="10" height="10" rx="2" fill="#00cc00" opacity="0.7">
+                <rect x="175" y="245" width="10" height="10" rx="2" fill="#ffcc00" opacity="0.7">
                     <animate attributeName="opacity" values="0.7;1;0.7" dur="1.5s" repeatCount="indefinite"/>
                 </rect>
             </svg>
             
             <div class="password-prompt">
-                请输入电脑开机密码以访问内部系统：
+                请输入实习警员警号以访问基础系统：
             </div>
             
             <div class="password-input-container">
-                <input type="password" class="password-input" id="passwordInput" placeholder="输入密码" maxlength="8">
+                <input type="password" class="password-input" id="passwordInput" placeholder="输入6位数字密码" maxlength="6" inputmode="numeric">
                 <button class="submit-btn" id="submitPassword">
                     <i class="fas fa-unlock-alt"></i> 解锁系统
                 </button>
                 <div class="error-message" id="errorMessage"></div>
-                <div class="hint" id="passwordHint">
-                    提示：密码为8位小写字母，是作者名首字母全拼(不是yueyue相关的哦)
-                </div>
             </div>
         </section>
     </div>
 
     <!-- 进度指示器 -->
-    <div class="progress-indicator">入职第25天</div>
+    <div class="progress-indicator">实习第72天</div>
 
     <!-- 页脚 -->
     <footer class="footer">
-        青州市公安局信息中心 | 内部系统，严禁外传 | 系统版本：v2.5.1
+        青州市公安局信息中心 | 实习权限系统 | 系统版本：v2.5.1
     </footer>
 
     <script>        
@@ -424,20 +423,16 @@
         document.getElementById('submitPassword').addEventListener('click', function() {
             const passwordInput = document.getElementById('passwordInput');
             const errorMessage = document.getElementById('errorMessage');
-            const passwordHint = document.getElementById('passwordHint');
-            const password = passwordInput.value.trim().toLowerCase();
+            const password = passwordInput.value.trim();
             
-            // 正确密码：xdemydmm
-            const correctPassword = "xdemydmm";
+            // 正确密码：051383（未来的正式警号）
+            const correctPassword = "051383";
             
             if (password === correctPassword) {
                 // 密码正确，跳转到desk.html
                 errorMessage.textContent = "";
                 errorMessage.style.color = "#34a853";
-                errorMessage.textContent = "✓ 密码正确，正在进入系统...";
-                
-                // 隐藏提示
-                passwordHint.style.display = 'none';
+                errorMessage.textContent = "✓ 密码正确，正在进入实习系统...";
                 
                 // 模拟加载过程
                 setTimeout(() => {
@@ -447,11 +442,14 @@
             } else if (password === "") {
                 errorMessage.textContent = "请输入密码";
                 errorMessage.style.color = "#ea4335";
-                passwordHint.style.display = 'none'; // 空密码时不显示提示
+            } else if (password.length !== 6 || !/^\d+$/.test(password)) {
+                errorMessage.textContent = "密码必须为6位数字";
+                errorMessage.style.color = "#ea4335";
+                passwordInput.value = "";
+                passwordInput.focus();
             } else {
                 errorMessage.textContent = "密码错误，请重新输入";
                 errorMessage.style.color = "#ea4335";
-                passwordHint.style.display = 'block'; // 显示密码提示
                 passwordInput.value = "";
                 passwordInput.focus();
                 
@@ -473,6 +471,14 @@
         // 当输入框获得焦点时，清除错误信息
         document.getElementById('passwordInput').addEventListener('focus', function() {
             document.getElementById('errorMessage').textContent = "";
+        });
+        
+        // 限制只能输入数字
+        document.getElementById('passwordInput').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length > 6) {
+                this.value = this.value.slice(0, 6);
+            }
         });
         
         // 添加振动动画

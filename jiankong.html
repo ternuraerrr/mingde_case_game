@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青州市公安局 - 案件记录 | 滨江新区监控调查</title>
+    <style>
+        :root {
+            --police-blue: #1a365d;
+            --police-dark: #2d3748;
+            --police-red: #c53030;
+            --police-gray: #718096;
+            --police-light: #f7fafc;
+            --police-border: #e2e8f0;
+            --case-archive: #8b7355;
+            --tech-blue: #2b6cb0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background-color: #0f1721;
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 20% 30%, #1a365d 0%, #0f1721 40%);
+        }
+        
+        /* 警方头部 */
+        .police-header {
+            background-color: rgba(26, 54, 93, 0.95);
+            color: white;
+            padding: 20px 0;
+            border-bottom: 5px solid var(--police-red);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        
+        .police-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--police-red), #ff6b6b, var(--police-red));
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .police-title {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .police-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .police-badge {
+            background-color: var(--police-red);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .tech-badge {
+            background-color: var(--tech-blue);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-left: 10px;
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+        
+        /* 监控地图区域 */
+        .map-container {
+            background-color: rgba(30, 41, 59, 0.9);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        .map-title {
+            font-size: 20px;
+            color: white;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--tech-blue);
+            display: flex;
+            align-items: center;
+        }
+        
+        .map-title::before {
+            content: '🗺️';
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .map-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .map-area {
+            background-color: #1e293b;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 400px;
+            position: relative;
+            border: 1px solid #475569;
+        }
+        
+        .map-info {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #475569;
+        }
+        
+        /* 监控点标记 */
+        .map-point {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .map-point:hover {
+            transform: scale(1.2);
+            z-index: 20;
+        }
+        
+        .map-point.public {
+            background-color: rgba(43, 108, 176, 0.8);
+            border: 3px solid #63b3ed;
+            box-shadow: 0 0 15px rgba(99, 179, 237, 0.5);
+        }
+        
+        .map-point.private {
+            background-color: rgba(197, 48, 48, 0.8);
+            border: 3px solid #fc8181;
+            box-shadow: 0 0 15px rgba(252, 129, 129, 0.5);
+        }
+        
+        .map-point-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .map-point:hover .map-point-label {
+            opacity: 1;
+        }
+        
+        .map-point-icon {
+            font-size: 20px;
+        }
+        
+        /* 烂尾楼区域 */
+        .abandoned-building {
+            position: absolute;
+            bottom: 60px;
+            left: 100px;
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            border-radius: 5px;
+            border: 2px solid #c53030;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fed7d7;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(197, 48, 48, 0.3);
+        }
+        
+        .abandoned-building::before {
+            content: '⚠️';
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        /* 道路 */
+        .road {
+            position: absolute;
+            background-color: #4a5568;
+        }
+        
+        .road-horizontal {
+            width: 80%;
+            height: 10px;
+            top: 180px;
+            left: 10%;
+        }
+        
+        .road-vertical {
+            width: 10px;
+            height: 70%;
+            top: 15%;
+            left: 40%;
+        }
+        
+        /* 摄像头详情面板 */
+        .camera-panel {
+            background-color: rgba(30, 41, 59, 0.95);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+        
+        .camera-panel.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .camera-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #475569;
+        }
+        
+        .camera-title {
+            font-size: 22px;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        
+        .camera-title::before {
+            content: '📹';
+            margin-right: 10px;
+            font-size: 28px;
+        }
+        
+        .camera-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .status-online {
+            background-color: rgba(72, 187, 120, 0.2);
+            color: #48bb78;
+            border: 1px solid #48bb78;
+        }
+        
+        .status-offline {
+            background-color: rgba(197, 48, 48, 0.2);
+            color: #fc8181;
+            border: 1px solid #fc8181;
+        }
+        
+        .status-encrypted {
+            background-color: rgba(246, 173, 85, 0.2);
+            color: #f6ad55;
+            border: 1px solid #f6ad55;
+        }
+        
+        .camera-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .video-container {
+            background-color: #1a202c;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #4a5568;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .video-placeholder {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        .camera-info {
+            background-color: rgba(26, 32, 44, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #4a5568;
+        }
+        
+        .info-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #2d3748;
+        }
+        
+        .info-label {
+            color: #a0aec0;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        /* 涂鸦展示 */
+        .graffiti-container {
+            background-color: #1a202c;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid #4a5568;
+            text-align: center;
+        }
+        
+        .graffiti-title {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .graffiti-title::before {
+            content: '🎨';
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .graffiti-symbols {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin: 30px 0;
+            font-size: 40px;
+        }
+        
+        .graffiti-symbol {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background-color: #2d3748;
+            transition: all 0.3s ease;
+        }
+        
+        .graffiti-symbol:hover {
+            transform: scale(1.2);
+            background-color: #4a5568;
+            box-shadow: 0 0 15px rgba(99, 179, 237, 0.5);
+        }
+        
+        .symbol-1 { color: #63b3ed; } /* ▲ */
+        .symbol-2 { color: #68d391; } /* ● */
+        .symbol-3 { color: #f6ad55; } /* ■ */
+        .symbol-4 { color: #fc8181; } /* | */
+        .symbol-5 { color: #b794f4; } /* ◯ */
+        
+        /* 密码输入区域 */
+        .password-container {
+            background-color: rgba(26, 32, 44, 0.9);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px dashed #4a5568;
+            text-align: center;
+        }
+        
+        .password-title {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .password-title::before {
+            content: '🔐';
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .password-hint {
+            color: #a0aec0;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .password-input-area {
+            margin: 20px 0;
+        }
+        
+        .password-input {
+            padding: 12px 20px;
+            border: 2px solid #4a5568;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 18px;
+            width: 250px;
+            background-color: #1a202c;
+            color: white;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+        
+        .decrypt-button {
+            background-color: var(--tech-blue);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .decrypt-button:hover {
+            background-color: #2c5282;
+        }
+        
+        .decrypt-button:disabled {
+            background-color: #4a5568;
+            cursor: not-allowed;
+        }
+        
+        /* 视频证据区域 */
+        .evidence-video-container {
+            display: none;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--police-red);
+        }
+        
+        .evidence-title {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .evidence-title::before {
+            content: '🎥';
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .video-analysis {
+            background-color: rgba(26, 32, 44, 0.9);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid var(--police-red);
+        }
+        
+        .analysis-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: rgba(197, 48, 48, 0.1);
+            border-radius: 6px;
+            border-left: 4px solid var(--police-red);
+        }
+        
+        /* 页脚 */
+        .police-footer {
+            background-color: rgba(15, 23, 42, 0.95);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 40px;
+            border-top: 1px solid #2d3748;
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-notice {
+            color: #a0aec0;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .map-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .camera-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .main-container {
+                padding: 0 15px;
+            }
+            
+            .password-input {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .decrypt-button {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            .graffiti-symbols {
+                gap: 15px;
+                font-size: 30px;
+            }
+            
+            .graffiti-symbol {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 警方头部 -->
+    <header class="police-header">
+        <div class="header-content">
+            <div>
+                <div class="police-title">青州市公安局</div>
+                <div class="police-subtitle">刑事侦查支队 - 技术侦查科 | 滨江新区监控调查</div>
+            </div>
+            <div>
+                <div class="police-badge">技术侦查</div>
+                <div class="tech-badge">实时监控分析</div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 主内容区域 -->
+    <main class="main-container">
+        <!-- 监控地图 -->
+        <div class="map-container">
+            <h2 class="map-title">滨江新区烂尾楼区域监控分布图</h2>
+            
+            <div class="map-grid">
+                <div class="map-area">
+                    <!-- 道路 -->
+                    <div class="road road-horizontal"></div>
+                    <div class="road road-vertical"></div>
+                    
+                    <!-- 烂尾楼 -->
+                    <div class="abandoned-building">
+                        滨江新区烂尾楼
+                    </div>
+                    
+                    <!-- 市政交通摄像头 -->
+                    <div class="map-point public" id="public-camera" style="top: 120px; left: 30%;" data-camera="public">
+                        <div class="map-point-icon">📹</div>
+                        <div class="map-point-label">市政交通摄像头 #TJ-074</div>
+                    </div>
+                    
+                    <!-- 私人隐藏摄像头 -->
+                    <div class="map-point private" id="private-camera" style="top: 250px; left: 60%;" data-camera="private">
+                        <div class="map-point-icon">🕵️</div>
+                        <div class="map-point-label">隐藏摄像头 (网络流量异常检测)</div>
+                    </div>
+                    
+                    <!-- 涂鸦位置 -->
+                    <div class="map-point" style="top: 280px; left: 55%; background-color: rgba(246, 173, 85, 0.8); border: 3px solid #f6ad55;" id="graffiti-point">
+                        <div class="map-point-icon">🎨</div>
+                        <div class="map-point-label">涂鸦图案位置</div>
+                    </div>
+                    
+                    <!-- 电线杆 -->
+                    <div style="position: absolute; top: 270px; left: 57%; width: 10px; height: 100px; background-color: #a0aec0; border-radius: 2px;"></div>
+                    
+                    <!-- 图例 -->
+                    <div style="position: absolute; bottom: 20px; right: 20px; background-color: rgba(0,0,0,0.7); padding: 15px; border-radius: 6px; font-size: 14px;">
+                        <div style="margin-bottom: 8px; display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background-color: rgba(43, 108, 176, 0.8); border: 2px solid #63b3ed; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>市政摄像头</span>
+                        </div>
+                        <div style="margin-bottom: 8px; display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background-color: rgba(197, 48, 48, 0.8); border: 2px solid #fc8181; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>隐藏摄像头</span>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background-color: rgba(246, 173, 85, 0.8); border: 2px solid #f6ad55; border-radius: 50%; margin-right: 10px;"></div>
+                            <span>涂鸦位置</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="map-info">
+                    <h3 style="color: white; margin-bottom: 15px; border-bottom: 1px solid #475569; padding-bottom: 10px;">区域监控信息</h3>
+                    
+                    <div class="info-item">
+                        <div class="info-label">调查时间</div>
+                        <div class="info-value">2025年11月19日 14:30</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">调查人员</div>
+                        <div class="info-value">技术侦查科 - 陈亚菲 (警号: 051296)</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">调查依据</div>
+                        <div class="info-value">网络流量异常检测报告<br>黑客组织"守望者"提供线索</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">发现情况</div>
+                        <div class="info-value">该区域存在异常网络数据流，疑似隐藏监控设备传输数据</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">现场状况</div>
+                        <div class="info-value">烂尾楼已废弃3年，周边市政监控多数损坏，但检测到活跃WiFi信号</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">操作提示</div>
+                        <div class="info-value" style="color: #f6ad55;">点击地图上的监控点进行调查</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 市政摄像头详情面板 -->
+        <div class="camera-panel" id="public-camera-panel">
+            <div class="camera-header">
+                <h2 class="camera-title">市政交通摄像头 #TJ-074</h2>
+                <div class="camera-status status-offline">离线状态</div>
+            </div>
+            
+            <div class="camera-content">
+                <div class="video-container">
+                    <div class="video-placeholder">📹</div>
+                    <div style="color: #fc8181; font-size: 20px; margin-bottom: 10px;">摄像头故障</div>
+                    <div style="color: #a0aec0; text-align: center;">
+                        <p>该摄像头最后一次正常记录：2025年10月15日</p>
+                        <p>故障报告：电源模块损坏，镜头有水渍</p>
+                    </div>
+                </div>
+                
+                <div class="camera-info">
+                    <div class="info-item">
+                        <div class="info-label">摄像头编号</div>
+                        <div class="info-value">TJ-074</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">安装位置</div>
+                        <div class="info-value">滨江新区烂尾楼南侧路口</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">管理部门</div>
+                        <div class="info-value">青州市交通管理局</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">设备状态</div>
+                        <div class="info-value" style="color: #fc8181;">离线 (已故障82天)</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">最后维护记录</div>
+                        <div class="info-value">2025年9月5日 - 例行检查正常</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">覆盖范围</div>
+                        <div class="info-value">烂尾楼南侧道路及停车场入口</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">调查结论</div>
+                        <div class="info-value" style="color: #f6ad55;">摄像头故障时间与案发时间接近，可能为人为破坏</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 私人摄像头详情面板 -->
+        <div class="camera-panel" id="private-camera-panel">
+            <div class="camera-header">
+                <h2 class="camera-title">隐藏监控设备 (加密)</h2>
+                <div class="camera-status status-encrypted">视频流加密</div>
+            </div>
+            
+            <div class="camera-content">
+                <div class="video-container">
+                    <div class="video-placeholder">🔒</div>
+                    <div style="color: #f6ad55; font-size: 20px; margin-bottom: 10px;">视频流已加密</div>
+                    <div style="color: #a0aec0; text-align: center;">
+                        <p>需要密码才能访问案发时段录像</p>
+                        <p>提示：7位数字，观察涂鸦</p>
+                    </div>
+                </div>
+                
+                <div class="camera-info">
+                    <div class="info-item">
+                        <div class="info-label">设备类型</div>
+                        <div class="info-value">隐藏式无线监控摄像头</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">发现方式</div>
+                        <div class="info-value">网络流量异常检测 (黑客组织"守望者"提供线索)</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">安装位置</div>
+                        <div class="info-value">烂尾楼东侧电线杆，伪装为线路设备</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">视频加密</div>
+                        <div class="info-value" style="color: #f6ad55;">AES-256加密，需密码访问特定时间段</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">存储内容</div>
+                        <div class="info-value">覆盖2025年10月1日-11月18日</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">关键时间段</div>
+                        <div class="info-value">2025年11月15日 21:00-23:00 (案发时段)</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">涂鸦线索</div>
+                        <div class="info-value">摄像头所在电线杆发现涂鸦图案，可能是密码提示</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 涂鸦展示 -->
+            <div class="graffiti-container">
+                <h3 class="graffiti-title">摄像头所在电线杆涂鸦照片 (证据编号: QZGA-20251119-003)</h3>
+                <div style="color: #a0aec0; margin-bottom: 15px;">图案拍摄时间：2025年11月19日 10:15</div>
+                
+                <div class="graffiti-symbols">
+                    <div class="graffiti-symbol symbol-1">▲</div>
+                    <div class="graffiti-symbol symbol-2">●</div>
+                    <div class="graffiti-symbol symbol-3">■</div>
+                    <div class="graffiti-symbol symbol-4">|</div>
+                    <div class="graffiti-symbol symbol-5">◯</div>
+                    <div class="graffiti-symbol symbol-1">▲</div>
+                    <div class="graffiti-symbol symbol-3">■</div>
+                    <div class="graffiti-symbol symbol-4">|</div>
+                    <div class="graffiti-symbol symbol-2">●</div>
+                    <div class="graffiti-symbol symbol-5">◯</div>
+                    <div class="graffiti-symbol symbol-1">▲</div>
+                </div>
+                
+                <div style="color: #cbd5e0; margin-top: 15px; font-family: monospace; font-size: 18px;">
+                    ▲ ● ■ | ◯ ▲ ■ | ● ◯ ▲
+                </div>
+                <div style="color: #a0aec0; margin-top: 10px; font-style: italic;">
+                    注意：涂鸦图案排列顺序可能有特殊含义
+                </div>
+            </div>
+            
+            <!-- 密码输入区域 -->
+            <div class="password-container">
+                <h3 class="password-title">访问加密视频流</h3>
+                <div class="password-hint">提示：7位数字，观察涂鸦图案</div>
+                
+                <div class="password-input-area">
+                    <input type="text" id="cameraPassword" class="password-input" placeholder="输入7位数字密码" maxlength="7" pattern="\d*">
+                    <button id="decryptCameraButton" class="decrypt-button">解密视频</button>
+                </div>
+                
+                <div id="passwordError" style="color: #fc8181; margin-top: 10px; display: none;">
+                    密码错误！请仔细观察涂鸦图案。
+                </div>
+            </div>
+            
+            <!-- 视频证据区域 (解密后显示) -->
+            <div id="evidenceVideoContainer" class="evidence-video-container">
+                <h3 class="evidence-title">案发时段视频证据 (2025年11月15日 21:47-22:15)</h3>
+                
+                <div class="video-container" style="min-height: 400px;">
+                    <div class="video-placeholder" style="font-size: 80px;">🎥</div>
+                    <div style="color: #68d391; font-size: 22px; margin-bottom: 15px;">视频解密成功！</div>
+                    <div style="color: white; margin-bottom: 20px; text-align: center;">
+                        <p>正在播放：2025年11月15日 21:47:33</p>
+                        <p>视频质量：720p | 帧率：30fps</p>
+                    </div>
+                    
+                    <!-- 模拟视频时间轴 -->
+                    <div style="width: 90%; height: 30px; background-color: #2d3748; border-radius: 15px; margin: 20px 0; position: relative;">
+                        <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: flex; justify-content: space-between; padding: 0 10px;">
+                            <span style="color: #a0aec0; font-size: 12px; position: relative; top: 35px;">21:40</span>
+                            <span style="color: #a0aec0; font-size: 12px; position: relative; top: 35px;">21:50</span>
+                            <span style="color: #a0aec0; font-size: 12px; position: relative; top: 35px;">22:00</span>
+                            <span style="color: #a0aec0; font-size: 12px; position: relative; top: 35px;">22:10</span>
+                            <span style="color: #a0aec0; font-size: 12px; position: relative; top: 35px;">22:20</span>
+                        </div>
+                        <div style="position: absolute; left: 25%; width: 50%; height: 100%; background-color: #c53030; border-radius: 15px;">
+                            <div style="position: absolute; left: 50%; transform: translateX(-50%); color: white; font-weight: bold; line-height: 30px;">关键事件</div>
+                        </div>
+                    </div>
+                    
+                    <button id="playVideoButton" class="decrypt-button" style="margin-top: 10px;">
+                        ▶ 播放关键片段
+                    </button>
+                </div>
+                
+                <!-- 视频分析 -->
+                <div class="video-analysis">
+                    <h4 style="color: white; margin-bottom: 15px;">视频分析报告</h4>
+                    
+                    <div class="analysis-item">
+                        <strong>时间点 21:47:15</strong> - 赵翔宇进入监控画面，身着黑色外套、深色裤子，与之前活动视频中的衣着匹配度98%
+                    </div>
+                    
+                    <div class="analysis-item">
+                        <strong>时间点 21:49:22</strong> - 江川进入画面，两人在烂尾楼东侧空地处相遇并开始交谈
+                    </div>
+                    
+                    <div class="analysis-item">
+                        <strong>时间点 21:52:47</strong> - 交谈逐渐激烈，赵翔宇手势激动，江川后退一步
+                    </div>
+                    
+                    <div class="analysis-item">
+                        <strong>时间点 21:53:15</strong> - <strong>关键证据：</strong>赵翔宇从口袋中取出一个反光小物体，经图像增强分析，确认与密室发现的信笺封印钳形状一致
+                    </div>
+                    
+                    <div class="analysis-item" style="background-color: rgba(197, 48, 48, 0.2); border-left: 4px solid #fc8181;">
+                        <strong>时间点 21:53:33</strong> - <strong>直接证据：</strong>赵翔宇使用该物体袭击江川头部，江川倒地。物体在灯光下反射特征与封印钳完全匹配
+                    </div>
+                    
+                    <div class="analysis-item">
+                        <strong>时间点 21:54:10</strong> - 赵翔宇查看倒地的江川，随后快速离开现场
+                    </div>
+                    
+                    <div class="analysis-item">
+                        <strong>时间点 22:56:40</strong> - 江川恢复意识，艰难站起往现场出口方向走去
+                    </div>
+                    
+					<div class="analysis-item">
+					    <strong>时间点 23:12:08</strong> - 江川倒下
+					</div>
+					
+                    <div class="analysis-item" style="background-color: rgba(72, 187, 120, 0.1); border-left: 4px solid #68d391;">
+                        <strong>技术分析结论：</strong>视频中赵翔宇使用的袭击工具反射特征、尺寸比例与物证室保存的信笺封印钳匹配度达99.7%，为同一物品。此视频为赵翔宇袭击江川的直接证据。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="police-footer">
+        <div class="footer-content">
+            <p>青州市公安局刑事侦查支队 · 技术侦查科</p>
+            <p class="footer-notice">
+                本文件属公安机关内部工作记录，未经许可不得复制、传播<br>
+                保密等级：绝密 · 案件编号：QZGA-20251119-MON · 调查日期：2025-11-19
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 地图标记动画
+            const mapPoints = document.querySelectorAll('.map-point');
+            mapPoints.forEach((point, index) => {
+                point.style.opacity = '0';
+                point.style.transform = 'scale(0)';
+                
+                setTimeout(() => {
+                    point.style.transition = `opacity 0.5s ease ${index * 0.2}s, transform 0.5s ease ${index * 0.2}s`;
+                    point.style.opacity = '1';
+                    point.style.transform = 'scale(1)';
+                }, 300);
+            });
+            
+            // 烂尾楼动画
+            const building = document.querySelector('.abandoned-building');
+            if (building) {
+                building.style.opacity = '0';
+                
+                setTimeout(() => {
+                    building.style.transition = 'opacity 0.8s ease 0.8s';
+                    building.style.opacity = '1';
+                }, 800);
+            }
+            
+            // 涂鸦符号动画
+            const graffitiSymbols = document.querySelectorAll('.graffiti-symbol');
+            graffitiSymbols.forEach((symbol, index) => {
+                symbol.style.opacity = '0';
+                symbol.style.transform = 'rotate(0deg) scale(0.5)';
+                
+                setTimeout(() => {
+                    symbol.style.transition = `opacity 0.5s ease ${index * 0.05}s, transform 0.5s ease ${index * 0.05}s`;
+                    symbol.style.opacity = '1';
+                    symbol.style.transform = 'rotate(360deg) scale(1)';
+                }, 1000);
+            });
+            
+            // 添加打印样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    body {
+                        background-color: white;
+                        color: black;
+                    }
+                    .map-container, .camera-panel, .video-analysis {
+                        box-shadow: none;
+                        border: 1px solid #ccc;
+                        background-color: white;
+                    }
+                    .police-header, .police-footer {
+                        background-color: white;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                    .police-badge, .tech-badge {
+                        background-color: #eee;
+                        color: black;
+                        border: 1px solid #ccc;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+        
+        // 监控点点击事件
+        document.getElementById('public-camera').addEventListener('click', function() {
+            // 隐藏所有面板
+            document.querySelectorAll('.camera-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // 显示市政摄像头面板
+            document.getElementById('public-camera-panel').classList.add('active');
+            
+            // 滚动到面板位置
+            document.getElementById('public-camera-panel').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        document.getElementById('private-camera').addEventListener('click', function() {
+            // 隐藏所有面板
+            document.querySelectorAll('.camera-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // 显示私人摄像头面板
+            document.getElementById('private-camera-panel').classList.add('active');
+            
+            // 滚动到面板位置
+            document.getElementById('private-camera-panel').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        document.getElementById('graffiti-point').addEventListener('click', function() {
+            // 隐藏所有面板
+            document.querySelectorAll('.camera-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // 显示私人摄像头面板（涂鸦在同一个面板）
+            document.getElementById('private-camera-panel').classList.add('active');
+            
+            // 滚动到涂鸦区域
+            const graffitiContainer = document.querySelector('.graffiti-container');
+            graffitiContainer.scrollIntoView({ behavior: 'smooth' });
+            
+            // 高亮涂鸦区域
+            graffitiContainer.style.border = '2px solid #f6ad55';
+            graffitiContainer.style.boxShadow = '0 0 20px rgba(246, 173, 85, 0.5)';
+            
+            setTimeout(() => {
+                graffitiContainer.style.border = '1px solid #4a5568';
+                graffitiContainer.style.boxShadow = 'none';
+            }, 2000);
+        });
+        
+        // 密码解密功能
+        document.getElementById('decryptCameraButton').addEventListener('click', function() {
+            const passwordInput = document.getElementById('cameraPassword');
+            const passwordError = document.getElementById('passwordError');
+            const evidenceContainer = document.getElementById('evidenceVideoContainer');
+            const correctPassword = '1041401';
+            
+            if (passwordInput.value === correctPassword) {
+                // 成功解密
+                passwordError.style.display = 'none';
+                evidenceContainer.style.display = 'block';
+                
+                // 动画显示证据
+                evidenceContainer.style.opacity = '0';
+                evidenceContainer.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    evidenceContainer.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                    evidenceContainer.style.opacity = '1';
+                    evidenceContainer.style.transform = 'translateY(0)';
+                }, 100);
+                
+                // 高亮显示解密成功
+                const passwordContainer = document.querySelector('.password-container');
+                passwordContainer.style.border = '2px solid #68d391';
+                passwordContainer.style.backgroundColor = 'rgba(104, 211, 145, 0.1)';
+                
+                // 禁用输入和按钮
+                passwordInput.disabled = true;
+                this.disabled = true;
+                this.textContent = '已解密';
+                this.style.backgroundColor = '#68d391';
+                
+                // 滚动到证据区域
+                setTimeout(() => {
+                    evidenceContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 500);
+                
+            } else {
+                // 解密失败
+                passwordError.style.display = 'block';
+                passwordInput.style.borderColor = '#fc8181';
+                passwordInput.style.backgroundColor = 'rgba(252, 129, 129, 0.1)';
+                
+                setTimeout(() => {
+                    passwordInput.style.borderColor = '#4a5568';
+                    passwordInput.style.backgroundColor = '#1a202c';
+                }, 1000);
+            }
+        });
+        
+        // 按回车键也可以触发解密
+        document.getElementById('cameraPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('decryptCameraButton').click();
+            }
+        });
+        
+        // 播放视频按钮
+        document.getElementById('playVideoButton').addEventListener('click', function() {
+            const videoContainer = document.querySelector('.video-container');
+            const playButton = this;
+            
+            // 模拟视频播放
+            playButton.disabled = true;
+            playButton.innerHTML = '⏸ 播放中...';
+            
+            // 添加播放效果
+            videoContainer.style.boxShadow = '0 0 30px rgba(99, 179, 237, 0.5)';
+            
+            setTimeout(() => {
+                playButton.innerHTML = '▶ 重新播放';
+                playButton.disabled = false;
+                videoContainer.style.boxShadow = 'none';
+                
+                // 高亮关键证据
+                const analysisItems = document.querySelectorAll('.analysis-item');
+                analysisItems.forEach((item, index) => {
+                    if (index === 3 || index === 4) { // 关键证据行
+                        item.style.backgroundColor = 'rgba(197, 48, 48, 0.3)';
+                        item.style.boxShadow = '0 0 10px rgba(197, 48, 48, 0.5)';
+                        
+                        setTimeout(() => {
+                            item.style.transition = 'background-color 1s ease, box-shadow 1s ease';
+                            item.style.backgroundColor = 'rgba(197, 48, 48, 0.1)';
+                            item.style.boxShadow = 'none';
+                        }, 3000);
+                    }
+                });
+            }, 5000);
+        });
+        
+        // 添加打印功能
+        function printDocument() {
+            window.print();
+        }
+        
+        // 涂鸦图案点击提示
+        document.querySelectorAll('.graffiti-symbol').forEach(symbol => {
+            symbol.addEventListener('click', function() {
+                const originalColor = this.style.color;
+                this.style.transform = 'scale(1.5)';
+                this.style.boxShadow = '0 0 20px rgba(99, 179, 237, 0.8)';
+                
+                setTimeout(() => {
+                    this.style.transform = 'scale(1.2)';
+                    this.style.boxShadow = '0 0 15px rgba(99, 179, 237, 0.5)';
+                }, 300);
+                
+                setTimeout(() => {
+                    this.style.transform = 'scale(1.2)';
+                    this.style.boxShadow = '0 0 15px rgba(99, 179, 237, 0.5)';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

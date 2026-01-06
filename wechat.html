@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>微信 - 明德中学学生坠楼案调查系统</title>
+    <title>微信 - 滨江新城案件调查系统</title>
     <style>
-        /* 全局样式 - 修改为透明背景和覆盖层 */
+        /* 全局样式 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
@@ -20,32 +20,10 @@
             top: 0;
             left: 0;
             z-index: 1000;
-        }
-
-        /* 桌面背景容器 */
-        .desktop-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* 遮罩层 - 让桌面变暗但可见 */
-        .desktop-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
             background: rgba(0, 0, 0, 0.3);
-            z-index: -1;
-            pointer-events: none;
         }
 
-        /* 微信主容器 - 提升层级并添加阴影 */
+        /* 微信主容器 */
         .wechat-container {
             width: 1000px;
             height: 650px;
@@ -118,7 +96,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 20px;
             color: white;
             font-weight: bold;
             flex-shrink: 0;
@@ -195,24 +173,6 @@
             min-height: 0;
         }
 
-        /* 修复滚动条样式 */
-        .messages-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .messages-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        
-        .messages-container::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
-        }
-        
-        .messages-container::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-
         /* 消息样式 */
         .message {
             margin-bottom: 20px;
@@ -235,14 +195,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 18px;
             color: white;
             font-weight: bold;
             flex-shrink: 0;
         }
 
         .message-content {
-            max-width: 60%;
+            max-width: 65%;
             padding: 12px 16px;
             border-radius: 18px;
             position: relative;
@@ -265,10 +225,11 @@
         }
 
         /* 群聊消息 - 显示发送者姓名 */
-        .group-message.received .message-content {
-            background-color: #f0f0f0;
+        .group-message .message-content {
+            position: relative;
         }
         
+        /* 群聊消息显示发送者名称 */
         .group-message.received .message-content::before {
             content: attr(data-sender);
             display: block;
@@ -284,62 +245,6 @@
             text-align: center;
             margin: 20px 0;
             white-space: nowrap;
-        }
-
-        /* 消息输入框 */
-        .input-area {
-            height: 150px;
-            background-color: #ededed;
-            border-top: 1px solid #d9d9d9;
-            padding: 15px;
-        }
-
-        .input-box {
-            background-color: white;
-            border-radius: 6px;
-            padding: 10px;
-            height: 70px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            font-size: 15px;
-        }
-
-        .input-box:focus {
-            outline: none;
-            border-color: #07c160;
-        }
-
-        .send-button {
-            background-color: #07c160;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 4px;
-            float: right;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .send-button:hover {
-            background-color: #06ae56;
-        }
-
-        /* 群聊信息 */
-        .group-info {
-            font-size: 14px;
-            color: #666;
-        }
-        
-        /* 聊天内容容器 */
-        .chat-content {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-        }
-        
-        .chat-content.active {
-            display: flex;
         }
 
         /* 关闭按钮 */
@@ -365,996 +270,1031 @@
         .close-wechat:hover {
             background: #e53935;
         }
+        
+        /* 我的头像样式 - 月亮 */
+        .my-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .my-avatar::after {
+            content: "🌙";
+        }
+        
+        /* 聊天内容容器 - 修正显示问题 */
+        .chat-content {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .chat-content.active {
+            display: flex;
+        }
     </style>
 </head>
 <body>
-    <!-- 桌面背景和任务栏 -->
-    <div class="desktop-background">
-        <!-- 这里通过iframe嵌入桌面，但禁用所有交互 -->
-        <iframe 
-            src="desk.html" 
-            style="width: 100%; height: 100%; border: none; pointer-events: none;"
-            scrolling="no"
-            frameborder="0"
-            id="desktopFrame"
-        ></iframe>
-    </div>
-
-    <!-- 半透明遮罩层，让桌面变暗但可见 -->
-    <div class="desktop-overlay"></div>
-
     <!-- 关闭按钮 -->
     <button class="close-wechat" onclick="closeWechat()">×</button>
 
     <!-- 微信聊天界面 -->
     <div class="wechat-container">
-            <!-- 左侧聊天列表 -->
-            <div class="chat-list">
-                <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="搜索">
+        <!-- 左侧聊天列表 -->
+        <div class="chat-list">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="搜索">
+            </div>
+            
+            <div class="chat-list-content">
+                <!-- 张队 -->
+                <div class="chat-item active" data-chat-id="zhangdui">
+                    <div class="avatar" style="background-color: #2e86de;">张</div>
+                    <div class="chat-info">
+                        <div class="chat-name">领导-张队</div>
+                        <div class="last-message">滨江新城烂尾楼有新发现，需要紧急支援</div>
+                    </div>
+                    <div class="unread-count">3</div>
                 </div>
                 
-                <div class="chat-list-content">
-                    <!-- 张队 -->
-                    <div class="chat-item active" onclick="switchChat('zhangdui')">
-                        <div class="avatar" style="background-color: #2e86de;">张</div>
-                        <div class="chat-info">
-                            <div class="chat-name">领导-张队</div>
-                            <div class="last-message">小岳，紧急情况！明德中学刚刚发生一起坠楼事件</div>
+                <!-- 赵姐 -->
+                <div class="chat-item" data-chat-id="zhaojie">
+                    <div class="avatar" style="background-color: #c8e6c9;">🍀</div>
+                    <div class="chat-info">
+                        <div class="chat-name">同事-赵姐</div>
+                        <div class="last-message">我发现一本超棒的哈利波特同人小说！</div>
+                    </div>
+                    <div class="unread-count">1</div>
+                </div>
+                
+                <!-- 冯姐 -->
+                <div class="chat-item" data-chat-id="fengjie">
+                    <div class="avatar" style="background-color: #ff6b6b;">冯</div>
+                    <div class="chat-info">
+                        <div class="chat-name">财务-冯姐</div>
+                        <div class="last-message">上月报销已审核通过，请查收</div>
+                    </div>
+                </div>
+                
+                <!-- 西西 -->
+                <div class="chat-item" data-chat-id="xixi">
+                    <div class="avatar" style="background-color: #d1c4e9;">🌸</div>
+                    <div class="chat-info">
+                        <div class="chat-name">发小-西西</div>
+                        <div class="last-message">《喜剧大会第二季》太搞笑了！笑到肚子疼！</div>
+                    </div>
+                    <div class="unread-count">2</div>
+                </div>
+                
+                <!-- 妈妈 -->
+                <div class="chat-item" data-chat-id="mama">
+                    <div class="avatar" style="background-color: #e74c3c;">妈</div>
+                    <div class="chat-info">
+                        <div class="chat-name">妈妈</div>
+                        <div class="last-message">维生素买了吗？最近看你很疲惫</div>
+                    </div>
+                </div>
+                
+                <!-- 家庭群 -->
+                <div class="chat-item" data-chat-id="jiating">
+                    <div class="avatar" style="background-color: #2ecc71;">家</div>
+                    <div class="chat-info">
+                        <div class="chat-name">幸福一家人(4)</div>
+                        <div class="last-message">弟弟：姐姐转正倒计时，加油！</div>
+                    </div>
+                    <div class="unread-count">4</div>
+                </div>
+                
+                <!-- 二队工作群 -->
+                <div class="chat-item" data-chat-id="erdui">
+                    <div class="avatar" style="background-color: #f39c12;">队</div>
+                    <div class="chat-info">
+                        <div class="chat-name">刑侦二队(9)</div>
+                        <div class="last-message">倦鸟奔赴不落霞：今日工作重点已发群</div>
+                    </div>
+                    <div class="unread-count">5</div>
+                </div>
+                
+                <!-- 案情交流总群 -->
+                <div class="chat-item" data-chat-id="zongqun">
+                    <div class="avatar" style="background-color: #34495e;">案</div>
+                    <div class="chat-info">
+                        <div class="chat-name">明德路各大案情交流总群(212)</div>
+                        <div class="last-message">@全体成员：滨江新城案件紧急集合</div>
+                    </div>
+                    <div class="unread-count">12</div>
+                </div>
+                
+                <!-- 专案组 -->
+                <div class="chat-item" data-chat-id="zhuangan">
+                    <div class="avatar" style="background-color: #1abc9c;">专</div>
+                    <div class="chat-info">
+                        <div class="chat-name">滨江专案组(5)</div>
+                        <div class="last-message">赵盈嫚：初步尸检结果已出</div>
+                    </div>
+                    <div class="unread-count">6</div>
+                </div>
+                
+                <!-- 猫猫粉丝群 -->
+                <div class="chat-item" data-chat-id="maomao">
+                    <div class="avatar" style="background-color: #ff9ff3;">🐱</div>
+                    <div class="chat-info">
+                        <div class="chat-name">猫猫粉丝群(15)</div>
+                        <div class="last-message">非沉思录：猫猫老师的网页解谜游戏太棒了！</div>
+                    </div>
+                    <div class="unread-count">3</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧聊天窗口 -->
+        <div class="chat-window">
+            <!-- 张队聊天 -->
+            <div class="chat-content active" id="zhangdui-chat">
+                <div class="chat-header">
+                    <div class="chat-title">领导-张队</div>
+                </div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年10月12日 上午10:15</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content">
+                            小岳，上次那个入室盗窃案的结案报告我看了，写得很规范，继续保持这种严谨态度
                         </div>
-                        <div class="unread-count">3</div>
                     </div>
                     
-                    <!-- 赵姐 -->
-                    <div class="chat-item" onclick="switchChat('zhaojie')">
-                        <div class="avatar" style="background-color: #8e44ad;">赵</div>
-                        <div class="chat-info">
-                            <div class="chat-name">同事-赵姐</div>
-                            <div class="last-message">月儿啊等会出现场坐我车就行</div>
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            谢谢张队认可！我会继续努力把每个细节都做好
                         </div>
                     </div>
                     
-                    <!-- 冯姐 -->
-                    <div class="chat-item" onclick="switchChat('fengjie')">
-                        <div class="avatar" style="background-color: #ee5a24;">冯</div>
-                        <div class="chat-info">
-                            <div class="chat-name">财务-冯姐</div>
-                            <div class="last-message">工资已发放，注意查收</div>
+                    <div class="message-time">2025年10月28日 下午3:40</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content">
+                            局里安排了下个月初的新警员技能比武，我看你现场勘查能力不错，推荐你参加痕迹检验项目
                         </div>
                     </div>
                     
-                    <!-- 西西 -->
-                    <div class="chat-item" onclick="switchChat('xixi')">
-                        <div class="avatar" style="background-color: #9b59b6;">西</div>
-                        <div class="chat-info">
-                            <div class="chat-name">发小-西西</div>
-                            <div class="last-message">天啊...听起来很严重。那你注意安全</div>
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            太好了！谢谢张队给我这个机会，我一定认真准备
                         </div>
-                        <div class="unread-count">2</div>
                     </div>
                     
-                    <!-- 妈妈 -->
-                    <div class="chat-item" onclick="switchChat('mama')">
-                        <div class="avatar" style="background-color: #e74c3c;">妈</div>
-                        <div class="chat-info">
-                            <div class="chat-name">妈妈</div>
-                            <div class="last-message">记得吃早餐，别空着肚子去上班</div>
+                    <div class="message-time">2025年11月11日 清晨6:18</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content">
+                            紧急情况！滨江新城烂尾楼工地保安报警，凌晨发现可疑痕迹，疑似刑事案件，需要马上勘查。你立即赶往现场，我已经通知技术科和法医
                         </div>
-                        <div class="unread-count">1</div>
                     </div>
                     
-                    <!-- 家庭群 -->
-                    <div class="chat-item" onclick="switchChat('jiating')">
-                        <div class="avatar" style="background-color: #2ecc71;">家</div>
-                        <div class="chat-info">
-                            <div class="chat-name">一家人(4)</div>
-                            <div class="last-message">妈妈：月月，天气冷了，我给你寄了件羽绒服</div>
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            收到！马上出发！预计20分钟内抵达现场
                         </div>
-                        <div class="unread-count">5</div>
                     </div>
                     
-                    <!-- 二队群 -->
-                    <div class="chat-item" onclick="switchChat('erdui')">
-                        <div class="avatar" style="background-color: #f39c12;">队</div>
-                        <div class="chat-info">
-                            <div class="chat-name">二队(10)</div>
-                            <div class="last-message">李哥：明德中学现场集合，所有人员8:30到</div>
-                        </div>
-                        <div class="unread-count">7</div>
-                    </div>
-                    
-                    <!-- 总群 -->
-                    <div class="chat-item" onclick="switchChat('zongqun')">
-                        <div class="avatar" style="background-color: #34495e;">总</div>
-                        <div class="chat-info">
-                            <div class="chat-name">总群(100)</div>
-                            <div class="last-message">@所有人：紧急通知！明德中学发生学生坠楼事件</div>
-                        </div>
-                        <div class="unread-count">12</div>
-                    </div>
-                    
-                    <!-- 案件群 -->
-                    <div class="chat-item" onclick="switchChat('mingde')">
-                        <div class="avatar" style="background-color: #1abc9c;">案</div>
-                        <div class="chat-info">
-                            <div class="chat-name">明德中学坠楼案(5)</div>
-                            <div class="last-message">张队：小岳，到了以后先去和学校领导沟通</div>
-                        </div>
-                        <div class="unread-count">9</div>
-                    </div>
-                    
-                    <!-- 王哥 -->
-                    <div class="chat-item" onclick="switchChat('wangge')">
-                        <div class="avatar" style="background-color: #27ae60;">王</div>
-                        <div class="chat-info">
-                            <div class="chat-name">受害人家属-王哥</div>
-                            <div class="last-message">真的谢谢你！你是我们家的恩人！</div>
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content">
+                            对了，局里代号"倦鸟奔赴不落霞"的同事特别热心，业务能力也强，你有不清楚的地方可以多向她请教
                         </div>
                     </div>
                 </div>
             </div>
-    
-            <!-- 右侧聊天窗口 -->
-            <div class="chat-window">
-                <!-- 张队聊天 -->
-                <div class="chat-content active" id="zhangdui-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">领导-张队</div>
+
+            <!-- 赵姐聊天 -->
+            <div class="chat-content" id="zhaojie-chat">
+                <div class="chat-header">
+                    <div class="chat-title">同事-赵姐</div>
+                </div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年10月18日 晚上8:20</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #c8e6c9;">🍀</div>
+                        <div class="message-content">
+                            月月，我知道一家新开的川菜馆特别正宗，周末要不要一起去尝尝？
+                        </div>
                     </div>
                     
-                    <div class="messages-container">
-                        <div class="message-time">11月25日 10:30</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                小岳，上次那个盗窃案的卷宗整理得不错，继续保持
-                            </div>
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            好啊赵姐！我周末应该有时间，最近确实需要美食治愈一下
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                谢谢张队鼓励，我会继续努力的！
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月2日 上午10:05</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #c8e6c9;">🍀</div>
+                        <div class="message-content">
+                            你上次问的那个证人询问笔录规范，我整理了一份电子版发你邮箱了，里面有我多年的经验总结
                         </div>
-                        
-                        <div class="message-time">11月28日 15:20</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                下周有个新警员的培训，你想参加的话我给你报名
-                            </div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            太感谢了赵姐！这份资料太及时了，对我帮助很大
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                太好了张队！我想参加，谢谢您！
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月8日 晚上11:40</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #c8e6c9;">🍀</div>
+                        <div class="message-content">
+                            我发现了一本特别精彩的哈利波特同人小说，叫《霍格沃茨的月色》，作者文笔太好了，我这几天天天熬夜追更
                         </div>
-                        
-                        <div class="message-time">12月1日 08:30</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                小岳，恭喜你成功破获了上次那个诈骗案！局里已经批准你的转正申请了！
-                            </div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            真的吗！我最喜欢HP同人了！等这个案子忙完我一定要看
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                谢谢张队！都是您教导有方，我会继续努力的！
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月10日 下午7:15</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #c8e6c9;">🍀</div>
+                        <div class="message-content">
+                            月月，看你最近脸色不太好，是不是太累了？我感觉身体也有点疲惫，正考虑买点维生素和蛋白粉补充一下
                         </div>
-                        
-                        <div class="message-time">今天 07:45</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                小岳，紧急情况！明德中学刚刚发生一起坠楼事件，高二学生江楠，女，17岁。现场已经封锁，你赶紧过来！
-                            </div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            是啊，最近几个案子连轴转，确实有点透支。我也打算买点维生素来着，你有什么推荐吗？
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                收到！我现在立即出发，20分钟内赶到现场！
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
-                        </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                好的，保持联系。
-                            </div>
-                        </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                明白！
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #c8e6c9;">🍀</div>
+                        <div class="message-content">
+                            我吃的是复合维生素B和维生素C，感觉对缓解疲劳挺有效的。说起来，还是警局里代号"可以不打折"的警员厉害，她真的好有冲劲，每次都冲在一线。
                         </div>
                     </div>
                 </div>
-    
-                <!-- 赵姐聊天 -->
-                <div class="chat-content" id="zhaojie-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">同事-赵姐</div>
+            </div>
+
+            <!-- 冯姐聊天 -->
+            <div class="chat-content" id="fengjie-chat">
+                <div class="chat-header">
+                    <div class="chat-title">财务-冯姐</div>
+                </div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年10月15日 下午4:30</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #ff6b6b;">冯</div>
+                        <div class="message-content">
+                            小岳警官，你上个月提交的差旅费报销单里，有张餐饮发票金额超出标准了，需要重新提供符合规定的票据
+                        </div>
                     </div>
                     
-                    <div class="messages-container">
-                        <div class="message-time">11月20日 19:30</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #8e44ad;">赵</div>
-                            <div class="message-content">
-                                月儿，上次说的那家火锅店，这周末去试试吗？
-                            </div>
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            好的冯姐，我马上找找其他发票替换，今天下班前重新提交
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                好啊赵姐！这周六我应该有空
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月6日 下午2:50</div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            冯姐您好，请问这个月工资发放日期有变动吗？我这边需要安排一些支出
                         </div>
-                        
-                        <div class="message-time">11月27日 09:15</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #8e44ad;">赵</div>
-                            <div class="message-content">
-                                月儿，上次你问的那个案卷归档流程，我发你邮箱了
-                            </div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #ff6b6b;">冯</div>
+                        <div class="message-content">
+                            正常是15号发放，但因为银行系统维护可能要推迟到18号左右，我会提前通知大家
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                收到！太感谢了赵姐，正需要这个
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月10日 上午11:20</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #ff6b6b;">冯</div>
+                        <div class="message-content">
+                            小岳，10月份的所有报销款项已经审核通过，共计¥1,850元，预计3个工作日内到账。工资发放时间调整为11月17日，请知悉
                         </div>
-                        
-                        <div class="message-time">昨天 18:30</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #8e44ad;">赵</div>
-                            <div class="message-content">
-                                月儿，明天早上要开周会，记得准备一下上周案件的汇报材料
-                            </div>
-                        </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                好的赵姐，我晚上整理好发你
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
-                        </div>
-                        
-                        <div class="message-time">今天 07:50</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #8e44ad;">赵</div>
-                            <div class="message-content">
-                                月儿啊，我看到群里的通知了，明德中学那个案子。等会出现场坐我车就行，我刚送完孩子上学，正好顺路
-                            </div>
-                        </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                好的赵姐，我现在从家里出发，大概8:10到单位门口等你
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
-                        </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #8e44ad;">赵</div>
-                            <div class="message-content">
-                                行，注意安全。听说是个高中生，这种案子最让人揪心了
-                            </div>
-                        </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                是啊，才17岁，正是花一样的年纪
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            收到！谢谢冯姐！辛苦了！
                         </div>
                     </div>
                 </div>
-    
-                <!-- 冯姐聊天 -->
-                <div class="chat-content" id="fengjie-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">财务-冯姐</div>
+            </div>
+
+            <!-- 西西聊天 -->
+            <div class="chat-content" id="xixi-chat">
+                <div class="chat-header">
+                    <div class="chat-title">发小-西西</div>
+                </div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年10月20日 晚上9:45</div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            西西生日快乐！给你订的蛋糕应该下午送到了，希望你喜欢芒果口味的！
+                        </div>
                     </div>
                     
-                    <div class="messages-container">
-                        <div class="message-time">11月10日 16:20</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #ee5a24;">冯</div>
-                            <div class="message-content">
-                                小岳，上个月的报销单有点问题，有个发票日期不对，麻烦重新提供一下
-                            </div>
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #d1c4e9;">🌸</div>
+                        <div class="message-content">
+                            月月！蛋糕收到了！超级好吃！谢谢你还记得我喜欢芒果，感动哭😭
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                好的冯姐，我马上找找，找到了发你
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月4日 晚上9:20</div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            西西，这周末有空聚聚吗？好久没见了，想跟你聊聊近况
                         </div>
-                        
-                        <div class="message-time">11月25日 14:30</div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                冯姐，请问这个月的工资大概什么时候发？
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #d1c4e9;">🌸</div>
+                        <div class="message-content">
+                            啊这周末要赶项目进度😭我们公司最近接了个大单，估计得加班。下周行吗？
                         </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #ee5a24;">冯</div>
-                            <div class="message-content">
-                                正常是每月10号，这个月因为系统升级，可能要推迟两三天
-                            </div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月9日 晚上10:55</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #d1c4e9;">🌸</div>
+                        <div class="message-content">
+                            月月月月！你看《喜剧大会第二季》了吗！我的天啊超级好看！我昨天一口气看完，今天又二刷了！
                         </div>
-                        
-                        <div class="message-time">今天 10:15</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #ee5a24;">冯</div>
-                            <div class="message-content">
-                                小岳，这个月工资已经发放了，请查收银行账户。<br>
-                                <br>
-                                【工资明细】<br>
-                                基本工资：¥8,500<br>
-                                岗位津贴：¥1,200<br>
-                                绩效奖金：¥1,800<br>
-                                加班补贴：¥650<br>
-                                应发合计：¥12,150<br>
-                                社保公积金：¥1,840<br>
-                                个税：¥210<br>
-                                实发工资：<strong>¥10,100</strong><br>
-                                <br>
-                                工资条电子版已发送到你邮箱。
-                            </div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            还没呢！最近工作太忙了，听你这么说我周末一定要抽时间看看！
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                收到！谢谢冯姐！辛苦了！
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
-                        </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #ee5a24;">冯</div>
-                            <div class="message-content">
-                                不客气！对了，上个月的出差报销单我收到了，下周一前会处理完成。
-                            </div>
-                        </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                好的，麻烦冯姐了！
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #d1c4e9;">🌸</div>
+                        <div class="message-content">
+                            一定要看！里面的喜剧段子太精彩了，演员演技都在线，我笑到肚子疼。你们警察工作也太辛苦了，注意休息啊
                         </div>
                     </div>
                 </div>
-    
-                <!-- 西西聊天 -->
-                <div class="chat-content" id="xixi-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">发小-西西</div>
+            </div>
+
+            <!-- 妈妈聊天 -->
+            <div class="chat-content" id="mama-chat">
+                <div class="chat-header">
+                    <div class="chat-title">妈妈</div>
+                </div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年10月22日 晚上7:40</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
+                        <div class="message-content">
+                            月月，你爸爸的老腰疼又犯了，这周末能抽空回来看看吗？他想你了
+                        </div>
                     </div>
                     
-                    <div class="messages-container">
-                        <div class="message-time">11月15日 21:30</div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                西西，生日快乐！礼物寄到你公司了，注意查收哦
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            啊严重吗？我这周末看看值班表，尽量调班回去
                         </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #9b59b6;">西</div>
-                            <div class="message-content">
-                                谢谢月月！礼物收到了，超喜欢！你最近怎么样？
-                            </div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月3日 上午9:10</div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            妈，我给爸买的红外理疗仪和膏药快递应该今天到，注意接听快递电话
                         </div>
-                        
-                        <div class="message-time">11月28日 20:45</div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                西西，这周末有空吗？好久没见了
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
+                        <div class="message-content">
+                            收到了，你爸说那个理疗仪用着舒服，让你别总花钱买这些东西
                         </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #9b59b6;">西</div>
-                            <div class="message-content">
-                                这周末可能要加班，项目赶进度😭 下周怎么样？
-                            </div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月9日 晚上8:20</div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
+                        <div class="message-content">
+                            月月，最近看你朋友圈照片脸色不太好，是不是太累了？我感觉自己身体也有点疲惫，正打算买点维生素和钙片补充一下。你也注意补充营养
                         </div>
-                        
-                        <div class="message-time">昨天 22:30</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #9b59b6;">西</div>
-                            <div class="message-content">
-                                啊啊啊今天加班到十点！互联网公司简直不是人呆的😭
-                            </div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content">
+                            妈我没事，就是最近案子多点。你和我爸才要多注意身体，维生素我周末买了给你们寄回去
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                这么晚！你最近也太拼了吧，注意身体啊
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
-                        </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #9b59b6;">西</div>
-                            <div class="message-content">
-                                没办法，项目deadline就在眼前。你呢？最近怎么样？
-                            </div>
-                        </div>
-                        
-                        <div class="message-time">今天 07:30</div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                我还好，刚转正了。不过今天一早就出警了，明德中学有学生坠楼
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
-                        </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #9b59b6;">西</div>
-                            <div class="message-content">
-                                天啊...听起来很严重。那你注意安全，别太累了
-                            </div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
+                        <div class="message-content">
+                            别寄了，我们自己去买。你爸说这周末炖鸡汤，让你一定回来吃饭
                         </div>
                     </div>
                 </div>
-    
-                <!-- 妈妈聊天 -->
-                <div class="chat-content" id="mama-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">妈妈</div>
+            </div>
+
+            <!-- 家庭群聊天 -->
+            <div class="chat-content" id="jiating-chat">
+                <div class="chat-header">
+                    <div class="chat-title">幸福一家人(4)</div>
+                </div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年10月25日 晚上8:30</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #3498db;">弟</div>
+                        <div class="message-content" data-sender="弟弟岳腾">
+                            爸妈，我下个月15号放假，打算带点我们学校的特产回来，爸爱吃的酱板鸭和妈喜欢的桂花糕
+                        </div>
                     </div>
                     
-                    <div class="messages-container">
-                        <div class="message-time">11月18日 19:20</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
-                            <div class="message-content">
-                                月月，你爸最近腰疼又犯了，这周末能回来看看吗？
-                            </div>
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
+                        <div class="message-content" data-sender="妈妈">
+                            别带太多，路上拿不动。安全第一
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                啊？严不严重？我看看排班表，尽量回去
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message sent group-message">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content" data-sender="岳月">
+                            阿腾！给我带点你们学校小卖部的辣条！我馋好久了！
                         </div>
-                        
-                        <div class="message-time">11月22日 08:15</div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                妈，我给爸买的膏药寄回去了，注意收快递
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月6日 晚上7:45</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #2ecc71;">爸</div>
+                        <div class="message-content" data-sender="爸爸">
+                            月月，听你妈说还有半个多月你实习期就满了？转正感觉怎么样，紧张吗？
                         </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
-                            <div class="message-content">
-                                收到了，你爸说好用，让你别老花钱
-                            </div>
+                    </div>
+                    
+                    <div class="message sent group-message">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content" data-sender="岳月">
+                            爸，说实话有点紧张，但更多的是兴奋！终于要成为正式警员了
                         </div>
-                        
-                        <div class="message-time">昨天 20:45</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
-                            <div class="message-content">
-                                月月，天气冷了，我给你寄了件羽绒服，注意查收快递
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #2ecc71;">爸</div>
+                        <div class="message-content" data-sender="爸爸">
+                            别紧张，你从小就细心认真，肯定能做好。注意劳逸结合，别太拼
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                谢谢妈！我自己买了厚衣服的，你别老是花钱
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月9日 晚上7:15</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #2ecc71;">爸</div>
+                        <div class="message-content" data-sender="爸爸">
+                            这周末能回来吗？你妈说要给你做你最爱吃的糖醋排骨和清蒸鲈鱼
                         </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
-                            <div class="message-content">
-                                你买的那几件不保暖。对了，你爸说这周末回来吃饭，我给你做红烧肉
-                            </div>
+                    </div>
+                    
+                    <div class="message sent group-message">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content" data-sender="岳月">
+                            还不确定呢，这周末可能要值班备勤
                         </div>
-                        
-                        <div class="message-time">今天 07:20</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
-                            <div class="message-content">
-                                月月，起来了吗？记得吃早餐，别又空着肚子去上班
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
+                        <div class="message-content" data-sender="妈妈">
+                            上周也说值班，你爸特意去买了最新鲜的排骨，结果你没回来
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                妈，我已经在路上了。今天有紧急任务，一早就得出警
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #3498db;">弟</div>
+                        <div class="message-content" data-sender="弟弟岳腾">
+                            妈，姐姐工作特殊要理解。姐，注意休息，转正倒计时加油！
                         </div>
                     </div>
                 </div>
-    
-                <!-- 家庭群聊天 -->
-                <div class="chat-content" id="jiating-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">一家人(4)</div>
+            </div>
+
+            <!-- 二队工作群 -->
+            <div class="chat-content" id="erdui-chat">
+                <div class="chat-header">
+                    <div class="chat-title">刑侦二队(9)</div>
+                </div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年10月20日 下午3:15</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #c8e6c9;">🍀</div>
+                        <div class="message-content" data-sender="赵晓琳">
+                            提醒各位，明天上午的案情分析会改到9点开始，请大家提前准备好材料
+                        </div>
                     </div>
                     
-                    <div class="messages-container">
-                        <div class="message-time">11月10日 20:15</div>
-                        
-                        <div class="message received group-message" data-sender="弟弟">
-                            <div class="message-avatar" style="background-color: #3498db;">弟</div>
-                            <div class="message-content">
-                                爸妈，我下个月放假回来，给你们带点学校附近好吃的
-                            </div>
+                    <div class="message sent group-message">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content" data-sender="岳月">
+                            收到
                         </div>
-                        
-                        <div class="message received group-message" data-sender="妈妈">
-                            <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
-                            <div class="message-content">
-                                别带太多东西，路上累
-                            </div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月6日 上午9:45</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content" data-sender="张建国">
+                            近期辖区内侵财类案件呈上升趋势，各巡逻组加强夜间巡查力度，特别关注老旧小区
                         </div>
-                        
-                        <div class="message sent group-message" data-sender="我">
-                            <div class="message-content">
-                                阿腾，给我带点好吃的！
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #f0f4c3;">🌻</div>
+                        <div class="message-content" data-sender="可以不打折">
+                            收到！今晚我带第三组加强西片区巡逻，保证让犯罪分子无机可乘！
                         </div>
-                        
-                        <div class="message-time">11月25日 19:10</div>
-                        
-                        <div class="message received group-message" data-sender="爸爸">
-                            <div class="message-avatar" style="background-color: #2ecc71;">爸</div>
-                            <div class="message-content">
-                                月月最近忙不忙？注意休息
-                            </div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月9日 晚上10:05</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #f39c12;">李</div>
+                        <div class="message-content" data-sender="李卫国">
+                            明天周一例会照常8点半开始，请各小组准备好上周工作总结和本周计划
                         </div>
-                        
-                        <div class="message sent group-message" data-sender="我">
-                            <div class="message-content">
-                                还好，爸，最近在跟几个案子
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月10日 下午4:20</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #dcedc8;">🍃</div>
+                        <div class="message-content" data-sender="倦鸟奔赴不落霞">
+                            今日工作重点已发群文件，包括巡逻路线调整和重点监控区域。大家有问题随时问我，我会尽快解答！
                         </div>
-                        
-                        <div class="message-time">昨天 19:30</div>
-                        
-                        <div class="message received group-message" data-sender="爸爸">
-                            <div class="message-avatar" style="background-color: #2ecc71;">爸</div>
-                            <div class="message-content">
-                                这周末回来吃饭吗？
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content" data-sender="张建国">
+                            表扬一下"倦鸟奔赴不落霞"同志，工作认真负责，总是耐心解答同事疑问，这种互助精神值得大家学习！
                         </div>
-                        
-                        <div class="message sent group-message" data-sender="我">
-                            <div class="message-content">
-                                还不确定呢，这周末可能要值班
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月11日 清晨6:25</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #f0f4c3;">🌻</div>
+                        <div class="message-content" data-sender="可以不打折">
+                            紧急通知：今晨例会取消。滨江新城烂尾楼工地发现可疑情况，全体人员立即前往现场，6:45前集合完毕！
                         </div>
-                        
-                        <div class="message received group-message" data-sender="妈妈">
-                            <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
-                            <div class="message-content">
-                                上周也说值班，你爸特意去买了你爱吃的虾
-                            </div>
+                    </div>
+                    
+                    <div class="message sent group-message">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content" data-sender="岳月">
+                            收到，正在路上
                         </div>
-                        
-                        <div class="message received group-message" data-sender="弟弟">
-                            <div class="message-avatar" style="background-color: #3498db;">弟</div>
-                            <div class="message-content">
-                                妈，姐姐工作忙理解一下。姐姐，注意休息
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #dcedc8;">🍃</div>
+                        <div class="message-content" data-sender="倦鸟奔赴不落霞">
+                            我也出发了，需要我带勘查箱还是其他设备？
                         </div>
-                        
-                        <div class="message sent group-message" data-sender="我">
-                            <div class="message-content">
-                                知道了好阿腾。爸妈，我尽量抽时间回去
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
-                        </div>
-                        
-                        <div class="message-time">今天 07:35</div>
-                        
-                        <div class="message received group-message" data-sender="妈妈">
-                            <div class="message-avatar" style="background-color: #e74c3c;">妈</div>
-                            <div class="message-content">
-                                月月，天气冷了，我给你寄了件羽绒服，注意查收快递
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #f0f4c3;">🌻</div>
+                        <div class="message-content" data-sender="可以不打折">
+                            技术设备科已经先行出发，大家先到现场协助封锁和初步排查。可以不打折冲在一线，哪里有案子哪里就有我们！
                         </div>
                     </div>
                 </div>
-    
-                <!-- 二队群聊天 -->
-                <div class="chat-content" id="erdui-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">二队(10)</div>
+            </div>
+
+            <!-- 案情交流总群 -->
+            <div class="chat-content" id="zongqun-chat">
+                <div class="chat-header">
+                    <div class="chat-title">明德路各大案情交流总群(212)</div>
+                </div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年10月22日 下午2:30</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #34495e;">案</div>
+                        <div class="message-content" data-sender="分局指挥中心">
+                            @全体成员：下周四下午2点召开全局案情分析交流会，请各队骨干准时参加
+                        </div>
                     </div>
                     
-                    <div class="messages-container">
-                        <div class="message-time">11月18日 15:30</div>
-                        
-                        <div class="message received group-message" data-sender="赵姐">
-                            <div class="message-avatar" style="background-color: #8e44ad;">赵</div>
-                            <div class="message-content">
-                                提醒一下，明天下午的案情分析会提前到2点
-                            </div>
+                    <div class="message-time">2025年11月5日 上午11:45</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #34495e;">案</div>
+                        <div class="message-content" data-sender="分局技术科">
+                            近期案件现场勘查中发现一些共性特征，已整理成分析报告发至群文件，请大家参考学习
                         </div>
-                        
-                        <div class="message sent group-message" data-sender="我">
-                            <div class="message-content">
-                                收到
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月8日 下午3:20</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #b3e5fc;">🐬</div>
+                        <div class="message-content" data-sender="梅香咸鱼了">
+                            上个月系列盗窃案的结案报告我已经整理完毕，包括案件侦破全过程和关键节点分析，已上传群文件供大家参考
                         </div>
-                        
-                        <div class="message-time">11月25日 09:20</div>
-                        
-                        <div class="message received group-message" data-sender="张队">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                大家注意，最近辖区内盗窃案增多，加强巡逻
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #34495e;">案</div>
+                        <div class="message-content" data-sender="分局领导">
+                            特别表扬"梅香咸鱼了"同志，每起案件结束后都认真梳理总结，形成完整分析报告，这种严谨细致的工作态度值得全分局学习！
                         </div>
-                        
-                        <div class="message received group-message" data-sender="王哥">
-                            <div class="message-avatar" style="background-color: #3498db;">王</div>
-                            <div class="message-content">
-                                收到，已经安排夜班加强巡逻了
-                            </div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月10日 晚上11:25</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #34495e;">案</div>
+                        <div class="message-content" data-sender="张副局长">
+                            原定明天的案情交流大会因故延期，具体时间另行通知
                         </div>
-                        
-                        <div class="message-time">昨天 22:15</div>
-                        
-                        <div class="message received group-message" data-sender="李哥">
-                            <div class="message-avatar" style="background-color: #f39c12;">李</div>
-                            <div class="message-content">
-                                明天早上8点准时开周会，请大家提前10分钟到
-                            </div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月11日 清晨6:30</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #34495e;">案</div>
+                        <div class="message-content" data-sender="指挥中心">
+                            @全体成员：紧急警情！滨江新城烂尾楼工地发现疑似刑事案件，请刑侦二队、技术科、法医室立即前往现场勘查。其他单位做好备勤准备
                         </div>
-                        
-                        <div class="message received group-message" data-sender="王哥">
-                            <div class="message-avatar" style="background-color: #3498db;">王</div>
-                            <div class="message-content">
-                                收到
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #7f8c8d;">李</div>
+                        <div class="message-content" data-sender="技术科-李工">
+                            技术科勘查车已出发，携带全套勘查设备，预计12分钟后抵达
                         </div>
-                        
-                        <div class="message sent group-message" data-sender="我">
-                            <div class="message-content">
-                                收到
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #f0f4c3;">🌻</div>
+                        <div class="message-content" data-sender="可以不打折">
+                            刑侦二队全员响应！我们已经分三组从不同方向赶往现场，保证第一时间控制现场！
                         </div>
-                        
-                        <div class="message-time">今天 07:40</div>
-                        
-                        <div class="message received group-message" data-sender="李哥">
-                            <div class="message-avatar" style="background-color: #f39c12;">李</div>
-                            <div class="message-content">
-                                紧急通知：周会取消。明德中学发生坠楼案，所有人员8:30在明德中学现场集合
-                            </div>
-                        </div>
-                        
-                        <div class="message sent group-message" data-sender="我">
-                            <div class="message-content">
-                                收到，马上出发
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #34495e;">案</div>
+                        <div class="message-content" data-sender="分局领导">
+                            "可以不打折"同志这种闻警即动、冲锋在前的精神，充分体现了我们公安干警的战斗力和责任感！
                         </div>
                     </div>
                 </div>
-    
-                <!-- 总群聊天 -->
-                <div class="chat-content" id="zongqun-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">总群(102)</div>
+            </div>
+
+            <!-- 专案组 -->
+            <div class="chat-content" id="zhuangan-chat">
+                <div class="chat-header">
+                    <div class="chat-title">滨江专案组(5)</div>
+                </div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年11月11日 清晨6:32</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content" data-sender="张宏刚（警号：051287）">
+                            经分局党委批准，现成立滨江新城案件专案组，由我担任组长。所有相关信息在此群沟通，注意保密纪律
+                        </div>
                     </div>
                     
-                    <div class="messages-container">
-                        <div class="message-time">11月20日 14:15</div>
-                        
-                        <div class="message received group-message" data-sender="局办公室">
-                            <div class="message-avatar" style="background-color: #34495e;">局</div>
-                            <div class="message-content">
-                                @所有人：下周三下午2点全局大会，请准时参加
-                            </div>
+                    <div class="message-time">2025年11月11日 清晨6:35</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #e74c3c;">赵</div>
+                        <div class="message-content" data-sender="赵盈嫚（警号：FJ0512）">
+                            法医室已出动，携带全套检验设备，预计18分钟后到达现场
                         </div>
-                        
-                        <div class="message-time">11月29日 11:30</div>
-                        
-                        <div class="message received group-message" data-sender="政工科">
-                            <div class="message-avatar" style="background-color: #34495e;">政</div>
-                            <div class="message-content">
-                                提醒：年度考核表请在12月5日前提交
-                            </div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月11日 清晨6:38</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content" data-sender="张宏刚（警号：051287）">
+                            现场情况如何？工地保安凌晨4点报警称发现异常，初步判断可能有涉案痕迹
                         </div>
-                        
-                        <div class="message-time">昨天 23:10</div>
-                        
-                        <div class="message received group-message" data-sender="张主任">
-                            <div class="message-avatar" style="background-color: #34495e;">张</div>
-                            <div class="message-content">
-                                @所有人：明天全局大会因故推迟，具体时间另行通知
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #3498db;">陈</div>
+                        <div class="message-content" data-sender="陈亚菲（警号：051296）">
+                            我和技术科曹康马上到，正在联系工地负责人获取监控权限
                         </div>
-                        
-                        <div class="message-time">今天 07:35</div>
-                        
-                        <div class="message received group-message" data-sender="局办公室">
-                            <div class="message-avatar" style="background-color: #34495e;">局</div>
-                            <div class="message-content">
-                                @所有人：紧急通知！明德中学发生学生坠楼事件，请二队、技术科、法医等相关人员立即前往现场。其他人员随时待命
-                            </div>
+                    </div>
+                    
+                    <div class="message sent group-message">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content" data-sender="岳月（警号：051383）">
+                            我和赵姐在一起，预计6:50前抵达，我们先对接现场保安了解详细情况
                         </div>
-                        
-                        <div class="message received group-message" data-sender="技术科老李">
-                            <div class="message-avatar" style="background-color: #7f8c8d;">李</div>
-                            <div class="message-content">
-                                技术科已出发，预计10分钟后到达
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #7f8c8d;">曹</div>
+                        <div class="message-content" data-sender="曹康（警号：051302）">
+                            现场初步勘查已经开始，发现多处需要提取的痕迹物证，已做标记保护。我这边需要岳月协助记录勘查过程
+                        </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content" data-sender="张宏刚（警号：051287）">
+                            所有人到达后先协助技术科保护现场，特别是外围警戒。现场勘查记录要详细完整
+                        </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #c8e6c9;">🍀</div>
+                        <div class="message-content" data-sender="赵晓琳">
+                            工地开发商和施工方谁负责联系？需要调取近期所有出入记录和施工日志
+                        </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #2e86de;">张</div>
+                        <div class="message-content" data-sender="张宏刚（警号：051287）">
+                            岳月、陈亚菲，你们俩到现场后重点与工地负责人对接，了解近期异常情况，排查可疑人员
+                        </div>
+                    </div>
+                    
+                    <div class="message sent group-message">
+                        <div class="message-avatar" class="my-avatar"></div>
+                        <div class="message-content" data-sender="岳月（警号：051383）">
+                            明白！我们重点了解工地近期人员出入、监控覆盖、保安巡逻情况，排查可疑点
+                        </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #3498db;">陈</div>
+                        <div class="message-content" data-sender="陈亚菲（警号：051296）">
+                            收到。我会和岳月分工合作，我负责询问负责人和保安，岳月负责现场勘查记录
                         </div>
                     </div>
                 </div>
-    
-                <!-- 案件群聊天 -->
-                <div class="chat-content" id="mingde-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">明德中学坠楼案(5)</div>
-                    </div>
-                    
-                    <div class="messages-container">
-                        <div class="message-time">今天 07:40</div>
-                        
-                        <div class="message received group-message" data-sender="张队">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                已建立本群专门沟通明德中学坠楼案。所有相关警员在此群交流
-                            </div>
-                        </div>
-                        
-                        <div class="message-time">今天 07:45</div>
-                        
-                        <div class="message received group-message" data-sender="法医刘">
-                            <div class="message-avatar" style="background-color: #e74c3c;">刘</div>
-                            <div class="message-content">
-                                法医已出发，预计15分钟后到达
-                            </div>
-                        </div>
-                        
-                        <div class="message-time">今天 07:50</div>
-                        
-                        <div class="message received group-message" data-sender="张队">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                所有人都到了吗？学校这边已经清场，但家属情绪激动
-                            </div>
-                        </div>
-                        
-                        <div class="message received group-message" data-sender="李哥">
-                            <div class="message-avatar" style="background-color: #f39c12;">李</div>
-                            <div class="message-content">
-                                我和小刘马上到
-                            </div>
-                        </div>
-                        
-                        <div class="message sent group-message" data-sender="我">
-                            <div class="message-content">
-                                我和赵姐在路上，8:10左右到
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
-                        </div>
-                        
-                        <div class="message received group-message" data-sender="技术科">
-                            <div class="message-avatar" style="background-color: #34495e;">技</div>
-                            <div class="message-content">
-                                技术科已开始勘查现场
-                            </div>
-                        </div>
-                        
-                        <div class="message received group-message" data-sender="张队">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                好。现场初步判断是从4楼坠落，但具体情况要等法医和勘查结果。大家到了先保护好现场，别让记者靠近
-                            </div>
-                        </div>
-                        
-                        <div class="message received group-message" data-sender="赵姐">
-                            <div class="message-avatar" style="background-color: #8e44ad;">赵</div>
-                            <div class="message-content">
-                                校方那边谁去对接？
-                            </div>
-                        </div>
-                        
-                        <div class="message received group-message" data-sender="张队">
-                            <div class="message-avatar" style="background-color: #2e86de;">张</div>
-                            <div class="message-content">
-                                小岳，你和赵姐到了以后，先去和学校领导沟通一下。先了解学生基本情况
-                            </div>
-                        </div>
-                        
-                        <div class="message sent group-message" data-sender="我">
-                            <div class="message-content">
-                                收到！我们先了解学生基本情况、人际关系，看有没有异常
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
-                        </div>
-                    </div>
+            </div>
+
+            <!-- 猫猫粉丝群 -->
+            <div class="chat-content" id="maomao-chat">
+                <div class="chat-header">
+                    <div class="chat-title">猫猫粉丝群(89)</div>
                 </div>
-    
-                <!-- 王哥聊天 -->
-                <div class="chat-content" id="wangge-chat">
-                    <div class="chat-header">
-                        <div class="chat-title">受害人家属-王哥</div>
+                
+                <div class="messages-container">
+                    <div class="message-time">2025年11月5日 晚上9:15</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="霖霖霖der游戏笔记">
+                            你们玩猫猫老师的网页解谜游戏《明德中学学生坠楼案》了吗？最近好火啊
+                        </div>
                     </div>
                     
-                    <div class="messages-container">
-                        <div class="message-time">11月20日 09:30</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #27ae60;">王</div>
-                            <div class="message-content">
-                                岳警官你好，我是王明的哥哥，想了解一下案件的进展
-                            </div>
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="Hassium不会输">
+                            玩了玩了！昨晚熬夜通关的！玩的体验很流畅几乎不会卡壳！但是那个银行流水有次数限制把我吓到了，还好第三次试成功了
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                王哥你好，嫌疑人已经被批捕了，案件正在审理中
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月6日 下午2:30</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="非沉思录">
+                            这个网页解谜游戏好好玩！游戏特别美，逻辑设计和页面什么的都有种抚平大脑褶皱的感觉
                         </div>
-                        
-                        <div class="message-time">11月25日 15:45</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #27ae60;">王</div>
-                            <div class="message-content">
-                                岳警官，我弟弟的医药费单据都整理好了，什么时候交给你？
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="钱从四面八方来">
+                            真的吗？被安利到了，今晚就玩！猫猫老师的游戏品质一直在线
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                下周一到局里交给我就行，我帮你整理提交
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月8日 晚上8:45</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="荔西西">
+                            我也通关了！剧情太精彩了，一路玩下来都很顺畅！
                         </div>
-                        
-                        <div class="message-time">11月28日 16:20</div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #27ae60;">王</div>
-                            <div class="message-content">
-                                岳警官，我是上次那个抢劫案受害人的哥哥。我弟弟的手术很成功，医生说恢复得很好。
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="momo">
+                            打完了，特别为受害者伤心难过，最后真的是超级愤怒！
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                太好了！听到这个消息我真高兴！王先生现在情绪怎么样？
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月9日 下午3:20</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="我应在江湖鱿鱿">
+                            玩完了，期待新作，据说元旦之后会上《滨江案》。说起来好巧，我们这也有个明德中学，感觉次元都破了。
                         </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #27ae60;">王</div>
-                            <div class="message-content">
-                                他好多了，特别感谢你们这么快抓到凶手。我们全家都很感激你，要不是你坚持追查，可能就让那家伙跑了。
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="萝卜头">
+                            真的吗！太期待了！猫猫老师的网页解谜游戏从没让我失望过。这次的做的好好！好喜欢有逻辑性的破案，故事叙事也很到位！
                         </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                这是我们应该做的。看到王先生能恢复，我们也很欣慰。法律一定会严惩罪犯的！
-                            </div>
-                            <div class="message-avatar" style="background-color: #07c160;">我</div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月10日 晚上10:10</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="赶上了末班车">
+                            刚通关，来晚了！玩得很开心，游戏里的推理环节设计得太巧妙了，没有什么特别大的阻力
                         </div>
-                        
-                        <div class="message received">
-                            <div class="message-avatar" style="background-color: #27ae60;">王</div>
-                            <div class="message-content">
-                                真的谢谢你！我弟弟说等他出院了，一定要亲自谢谢你。你是我们家的恩人！
-                            </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="映雪清和">
+                            同感！
+                        </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="Hiraeth">
+                            游戏很有意思！求个思维导图~
+                        </div>
+                    </div>
+                    
+                    <div class="message-time">2025年11月11日 凌晨1:30</div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="cenci">
+                            半夜通关的来报道！感觉这个作品逻辑性挺好的，给个提示就能一路顺下去！建议猫猫老师可以提升一下密码难度，其他没什么问题！
+                        </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="樱桃姐姐">
+                            我也是！调查完成，期待续作
+                        </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="执念产生心蘑">
+                            心理咨询室的关键词有点难触发，不过感谢太太的劳动，让我爽之爽之
+                        </div>
+                    </div>
+                    
+                    <div class="message received group-message">
+                        <div class="message-avatar" style="background-color: #ff9ff3;">🐱</div>
+                        <div class="message-content" data-sender="哄哄">
+                            找到了两个时间线bug，剩下的还蛮顺的，老师做的不错哈哈
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
     <script>
-        // 切换聊天
+        // 简化切换聊天函数
         function switchChat(chatId) {
+            console.log('切换到聊天:', chatId);
+            
             // 隐藏所有聊天窗口
-            document.querySelectorAll('.chat-content').forEach(el => {
-                el.classList.remove('active');
+            const allChatContents = document.querySelectorAll('.chat-content');
+            allChatContents.forEach(chat => {
+                chat.classList.remove('active');
             });
             
             // 显示选中的聊天窗口
-            document.getElementById(chatId + '-chat').classList.add('active');
+            const targetChat = document.getElementById(chatId + '-chat');
+            if (targetChat) {
+                targetChat.classList.add('active');
+                console.log('成功激活聊天窗口:', chatId + '-chat');
+            } else {
+                console.error('找不到聊天窗口:', chatId + '-chat');
+            }
             
-            // 更新聊天列表选中状态
-            document.querySelectorAll('.chat-item').forEach(el => {
-                el.classList.remove('active');
+            // 更新左侧列表的选中状态
+            const allChatItems = document.querySelectorAll('.chat-item');
+            allChatItems.forEach(item => {
+                item.classList.remove('active');
             });
-            event.currentTarget.classList.add('active');
             
-            // 清空未读标记
-            const unreadEl = event.currentTarget.querySelector('.unread-count');
-            if (unreadEl) {
-                unreadEl.remove();
+            const activeItem = document.querySelector(`.chat-item[data-chat-id="${chatId}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
             }
             
             // 滚动到底部
             setTimeout(() => {
-                const container = document.querySelector(`#${chatId}-chat .messages-container`);
+                const container = targetChat?.querySelector('.messages-container');
                 if (container) {
                     container.scrollTop = container.scrollHeight;
                 }
-            }, 50);
+            }, 100);
         }
 
-        // 关闭微信窗口
-        function closeWechat() {
-            // 返回到桌面页面
-            window.location.href = 'desk.html';
-        }
-
-        // 初始化时滚动到底部
+        // 初始化事件监听
         document.addEventListener('DOMContentLoaded', function() {
-            const activeContainer = document.querySelector('.chat-content.active .messages-container');
+            console.log('页面加载完成，初始化聊天功能');
+            
+            // 为所有聊天项绑定点击事件
+            const chatItems = document.querySelectorAll('.chat-item');
+            chatItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const chatId = this.getAttribute('data-chat-id');
+                    console.log('点击了聊天项:', chatId);
+                    switchChat(chatId);
+                    
+                    // 移除未读标记
+                    const unreadEl = this.querySelector('.unread-count');
+                    if (unreadEl) {
+                        unreadEl.remove();
+                    }
+                });
+            });
+            
+            // 确保初始状态正确
+            const activeChat = document.querySelector('.chat-content.active');
+            console.log('初始激活的聊天窗口:', activeChat?.id);
+            
+            // 初始滚动到底部
+            const activeContainer = activeChat?.querySelector('.messages-container');
             if (activeContainer) {
                 activeContainer.scrollTop = activeContainer.scrollHeight;
             }
-            
-            // 禁用整个背景的点击事件
-            const desktopFrame = document.getElementById('desktopFrame');
-            if (desktopFrame) {
-                desktopFrame.style.pointerEvents = 'none';
-            }
         });
+
+        // 关闭微信窗口
+        function closeWechat() {
+            window.location.href = 'desk.html';
+        }
     </script>
 </body>
 </html>

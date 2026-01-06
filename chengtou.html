@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青州城投内部通讯录（泄露版）</title>
+    <style>
+        :root {
+            --primary-color: #1a472a;
+            --secondary-color: #2d6a4f;
+            --accent-color: #d62828;
+            --light-color: #f8f9fa;
+            --dark-color: #081c15;
+            --border-color: #dee2e6;
+            --warning-color: #ffba08;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "SimHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background-color: #0a1c14;
+            color: #e8f5e9;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: radial-gradient(circle at 20% 30%, rgba(45, 106, 79, 0.2) 0%, transparent 20%),
+                              radial-gradient(circle at 80% 70%, rgba(218, 40, 40, 0.1) 0%, transparent 20%);
+        }
+        
+        /* 页面标题 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+        }
+        
+        .page-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(214, 40, 40, 0.5);
+        }
+        
+        .page-subtitle {
+            font-size: 18px;
+            opacity: 0.8;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        
+        .leaked-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            box-shadow: 0 0 15px rgba(214, 40, 40, 0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 15px rgba(214, 40, 40, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(214, 40, 40, 0.8); }
+            100% { box-shadow: 0 0 15px rgba(214, 40, 40, 0.5); }
+        }
+        
+        /* 警告信息 */
+        .warning-container {
+            background-color: rgba(214, 40, 40, 0.1);
+            border: 2px solid var(--accent-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .warning-icon {
+            font-size: 24px;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+        
+        .warning-text {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .highlight {
+            color: #ff9999;
+            font-weight: bold;
+        }
+        
+        /* 通讯录容器 */
+        .directory-container {
+            background-color: rgba(26, 71, 42, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            border: 2px solid var(--secondary-color);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        
+        .directory-container::before {
+            content: "CONFIDENTIAL";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            color: rgba(255, 255, 255, 0.05);
+            font-weight: bold;
+            letter-spacing: 10px;
+            white-space: nowrap;
+            z-index: 0;
+        }
+        
+        .directory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .directory-title {
+            font-size: 24px;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .contact-search {
+            padding: 12px 20px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 5px;
+            width: 300px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .contact-search::placeholder {
+            color: #aaa;
+        }
+        
+        /* 通讯录表格 */
+        .directory-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .directory-table th {
+            background-color: rgba(45, 106, 79, 0.9);
+            color: white;
+            padding: 18px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        .directory-table td {
+            padding: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .directory-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .directory-table tr:hover {
+            background-color: rgba(45, 106, 79, 0.3);
+        }
+        
+        .highlight-red {
+            background-color: rgba(214, 40, 40, 0.3) !important;
+            color: #ff9999;
+            font-weight: bold;
+            position: relative;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .highlight-red::after {
+            content: '⚠️';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+        }
+        
+        .sensitive-info {
+            color: #ff9999;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .sensitive-info::after {
+            content: '[已脱敏]';
+            font-size: 12px;
+            color: #aaa;
+            margin-left: 5px;
+            font-weight: normal;
+        }
+        
+        /* 备忘录样式 */
+        .memo-container {
+            background-color: rgba(26, 71, 42, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px solid var(--warning-color);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        
+        .memo-container::before {
+            content: "MEMO";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            color: rgba(255, 255, 255, 0.05);
+            font-weight: bold;
+            letter-spacing: 10px;
+            white-space: nowrap;
+            z-index: 0;
+        }
+        
+        .memo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 186, 8, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .memo-title {
+            font-size: 22px;
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+        
+        .memo-author {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .memo-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #e8f5e9;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .memo-highlight {
+            color: var(--accent-color);
+            font-weight: bold;
+            text-decoration: underline;
+            background-color: rgba(214, 40, 40, 0.2);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        /* 按钮样式 */
+        .action-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .action-button:hover {
+            background-color: #b02020;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(214, 40, 40, 0.4);
+        }
+        
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .directory-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .contact-search {
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .directory-table {
+                font-size: 14px;
+            }
+            
+            .directory-table th, 
+            .directory-table td {
+                padding: 12px 8px;
+            }
+        }
+        
+        /* 打印样式 */
+        @media print {
+            body {
+                background-color: white;
+                color: black;
+            }
+            
+            .directory-container, .memo-container {
+                background-color: white;
+                border: 1px solid #ccc;
+            }
+            
+            .action-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面头部 -->
+    <header class="page-header">
+        <h1 class="page-title">青州市城市建设投资有限公司</h1>
+        <div class="page-subtitle">内部通讯录（泄露版）</div>
+        <div class="leaked-badge">机密泄露</div>
+    </header>
+    
+    <!-- 警告信息 -->
+    <div class="warning-container">
+        <div class="warning-icon">⚠️</div>
+        <div class="warning-text">
+            <p><span class="highlight">警告：</span>此文件包含敏感的内部通讯录信息，由匿名内部人士泄露。该信息涉及公司高管个人隐私，<span class="highlight">严禁传播或用于非法目的</span>。公司已启动内部调查，追究信息泄露责任。</p>
+            <p>泄露时间：2025年10月30日 | 泄露来源：未知 | 文件版本：v2.1</p>
+        </div>
+    </div>
+    
+    <!-- 内部通讯录 -->
+    <div class="directory-container">
+        <div class="directory-header">
+            <div>
+                <span class="directory-title">高管及中层管理人员通讯录</span>
+            </div>
+            <div>
+                <input type="text" class="contact-search" placeholder="搜索姓名、部门或职务..." onkeyup="filterContacts()" id="contactSearch">
+            </div>
+        </div>
+        
+        <table class="directory-table" id="contactTable">
+            <thead>
+                <tr>
+                    <th width="15%">姓名</th>
+                    <th width="20%">职务</th>
+                    <th width="15%">办公室电话</th>
+                    <th width="15%">手机号码</th>
+                    <th width="20%">电子邮箱</th>
+                    <th width="15%">办公室位置</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="highlight-red">沈梦</td>
+                    <td>党委委员、副总经理</td>
+                    <td>0571-88880001</td>
+                    <td class="sensitive-info">138****8888</td>
+                    <td>shenmeng@qzcgt.com</td>
+                    <td>总部大厦18楼1806室</td>
+                </tr>
+                <tr>
+                    <td>吴启明</td>
+                    <td>党委书记、董事长</td>
+                    <td>0571-88880000</td>
+                    <td class="sensitive-info">139****0000</td>
+                    <td>wuqiming@qzcgt.com</td>
+                    <td>总部大厦19楼1901室</td>
+                </tr>
+                <tr>
+                    <td>郑建国</td>
+                    <td>党委副书记、总经理</td>
+                    <td>0571-88880002</td>
+                    <td class="sensitive-info">139****0002</td>
+                    <td>zhengjianguo@qzcgt.com</td>
+                    <td>总部大厦19楼1902室</td>
+                </tr>
+                <tr>
+                    <td>周建华</td>
+                    <td>党委委员、副总经理</td>
+                    <td>0571-88880003</td>
+                    <td class="sensitive-info">138****0003</td>
+                    <td>zhoujianhua@qzcgt.com</td>
+                    <td>总部大厦18楼1808室</td>
+                </tr>
+                <tr>
+                    <td>林晓峰</td>
+                    <td>财务部部长</td>
+                    <td>0571-88880010</td>
+                    <td class="sensitive-info">138****0010</td>
+                    <td>linxiaofeng@qzcgt.com</td>
+                    <td>总部大厦17楼1705室</td>
+                </tr>
+                <tr>
+                    <td>王海涛</td>
+                    <td>投资发展部部长</td>
+                    <td>0571-88880011</td>
+                    <td class="sensitive-info">138****0011</td>
+                    <td>wanghaitao@qzcgt.com</td>
+                    <td>总部大厦17楼1706室</td>
+                </tr>
+                <tr>
+                    <td>张慧娟</td>
+                    <td>工程管理部部长</td>
+                    <td>0571-88880012</td>
+                    <td class="sensitive-info">138****0012</td>
+                    <td>zhanghuijuan@qzcgt.com</td>
+                    <td>总部大厦16楼1608室</td>
+                </tr>
+                <tr>
+                    <td>陈志远</td>
+                    <td>融资部部长</td>
+                    <td>0571-88880013</td>
+                    <td class="sensitive-info">138****0013</td>
+                    <td>chenzhiyuan@qzcgt.com</td>
+                    <td>总部大厦16楼1609室</td>
+                </tr>
+                <tr>
+                    <td>黄伟明</td>
+                    <td>人力资源部部长</td>
+                    <td>0571-88880014</td>
+                    <td class="sensitive-info">138****0014</td>
+                    <td>huangweiming@qzcgt.com</td>
+                    <td>总部大厦15楼1503室</td>
+                </tr>
+                <tr>
+                    <td>徐静</td>
+                    <td>审计部部长</td>
+                    <td>0571-88880015</td>
+                    <td class="sensitive-info">138****0015</td>
+                    <td>xujing@qzcgt.com</td>
+                    <td>总部大厦15楼1505室</td>
+                </tr>
+                <tr>
+                    <td>方文斌</td>
+                    <td>法务部部长</td>
+                    <td>0571-88880016</td>
+                    <td class="sensitive-info">138****0016</td>
+                    <td>fangwenbin@qzcgt.com</td>
+                    <td>总部大厦15楼1507室</td>
+                </tr>
+                <tr>
+                    <td>陆天明</td>
+                    <td>战略规划部部长</td>
+                    <td>0571-88880017</td>
+                    <td class="sensitive-info">138****0017</td>
+                    <td>lutianming@qzcgt.com</td>
+                    <td>总部大厦14楼1402室</td>
+                </tr>
+                <tr>
+                    <td>杨丽华</td>
+                    <td>党群工作部部长</td>
+                    <td>0571-88880018</td>
+                    <td class="sensitive-info">138****0018</td>
+                    <td>yanglihua@qzcgt.com</td>
+                    <td>总部大厦14楼1405室</td>
+                </tr>
+                <tr>
+                    <td>刘振宇</td>
+                    <td>办公室主任</td>
+                    <td>0571-88880019</td>
+                    <td class="sensitive-info">138****0019</td>
+                    <td>liuzhenyu@qzcgt.com</td>
+                    <td>总部大厦14楼1401室</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 25px; font-size: 14px; color: #aaa; font-style: italic; position: relative; z-index: 1;">
+            <p>注：此通讯录为2025年10月内部泄露版本。手机号码部分数字已隐去以保护隐私。标红条目表示在内部审计备忘录中被特别标记。</p>
+            <p>最后更新：2025年10月30日 | 记录条目：15人 | 文件大小：2.3MB</p>
+        </div>
+    </div>
+    
+    <!-- 江川的备忘录 -->
+    <div class="memo-container">
+        <div class="memo-header">
+            <div class="memo-title">江川的个人备忘录（审计记录）</div>
+            <div class="memo-author">记录人：江川（审计部副主任） | 日期：2025年10月28日 | 保密等级：绝密</div>
+        </div>
+        <div class="memo-content">
+            <p><strong>审计发现摘要：</strong>滨江新城项目资金审计过程中发现多处异常，资金流向存在可疑点。需重点关注以下人员及相关事项：</p>
+            
+            <ul style="margin-left: 20px; margin-top: 10px; margin-bottom: 15px;">
+                <li><span class="memo-highlight">沈梦（副总经理）</span>：负责项目融资和资金调配，与多家承包商关系异常密切。2025年1-9月期间，<span class="memo-highlight">沈梦</span>个人账户收到多笔来源不明的大额转账，累计金额达280万元。</li>
+                <li>王海涛（投资发展部部长）：负责项目招标和供应商选择。审计发现三家项目分包商的实际控制人均为王海涛亲属。</li>
+                <li>陈志远（融资部部长）：负责项目贷款和资金筹措。与星耀集团融资部门往来频繁，存在利益输送嫌疑。</li>
+            </ul>
+            
+            <p><strong>特别关注：</strong><span class="memo-highlight">沈梦</span>与星耀集团高管赵翔宇、刘明哲有频繁私下会面记录。2025年6月30日（星耀集团周年庆），<span class="memo-highlight">沈梦</span>与赵翔宇在滨江新城项目指挥部密谈2小时，谈话内容未记录。</p>
+            
+            <p><strong>已收集证据：</strong></p>
+            <ol style="margin-left: 20px; margin-top: 10px; margin-bottom: 15px;">
+                <li><span class="memo-highlight">沈梦</span>个人银行流水异常记录（2025.01-2025.09）</li>
+                <li>滨江新城项目分包商关联关系图（显示与王海涛亲属关系）</li>
+                <li><span class="memo-highlight">沈梦</span>与星耀集团高管会面监控录像（部分片段）</li>
+                <li>项目资金异常流转路径图（涉及多层空壳公司）</li>
+            </ol>
+            
+            <p><strong>下一步行动建议：</strong></p>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li>申请对<span class="memo-highlight">沈梦</span>、王海涛、陈志远三人进行离任审计</li>
+                <li>提请纪委介入，调查<span class="memo-highlight">沈梦</span>与星耀集团的资金往来</li>
+                <li>冻结滨江新城项目部分异常资金流动</li>
+                <li>对相关分包商进行资质复核和财务审计</li>
+            </ol>
+            
+            <p style="margin-top: 20px; padding: 10px; background-color: rgba(214, 40, 40, 0.2); border-left: 3px solid var(--accent-color);">
+                <strong>重要提醒：</strong>此事涉及公司高层和外部企业，调查需绝对保密。此备忘录为唯一纸质记录，阅后务必销毁电子版本。已向市纪委匿名举报，举报编号：QZJW202510280063。
+            </p>
+            
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="action-button" onclick="downloadMemo()">下载备忘录</button>
+                <button class="action-button" onclick="printPage()" style="margin-left: 10px; background-color: var(--secondary-color);">打印此页</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <div class="footer">
+        <p>© 2025 青州市城市建设投资有限公司内部文件 | 此页面仅用于内部审计记录 | 严禁外传</p>
+        <p>地址：青州市天云区明德路8号青州城投大厦 | 邮编：123456 | 审计部内部编号：IA-2025-10-063</p>
+    </div>
+
+    <script>
+        // 通讯录搜索功能
+        function filterContacts() {
+            const input = document.getElementById('contactSearch');
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById('contactTable');
+            const tr = table.getElementsByTagName('tr');
+            
+            // 从第二行开始（跳过表头）
+            for (let i = 1; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName('td');
+                let shouldShow = false;
+                
+                // 检查每一列
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            shouldShow = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (shouldShow) {
+                    tr[i].style.display = '';
+                    // 添加显示动画
+                    tr[i].style.opacity = '0';
+                    tr[i].style.transform = 'translateY(10px)';
+                    setTimeout(() => {
+                        tr[i].style.transition = 'opacity 0.3s, transform 0.3s';
+                        tr[i].style.opacity = '1';
+                        tr[i].style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+        
+        // 下载备忘录功能
+        function downloadMemo() {
+            alert('正在生成备忘录PDF文件...\n文件名：江川审计备忘录_20251028.pdf\n文件大小：约1.8MB\n下载将自动开始。');
+            // 实际应用中这里会生成PDF文件供下载
+        }
+        
+        // 打印页面
+        function printPage() {
+            window.print();
+        }
+        
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为通讯录表格添加动画
+            const contactRows = document.querySelectorAll('.directory-table tbody tr');
+            contactRows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    row.style.transition = `opacity 0.5s ease ${index * 0.05}s, transform 0.5s ease ${index * 0.05}s`;
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateY(0)';
+                }, 300);
+            });
+            
+            // 突出显示沈梦的行（闪烁效果）
+            const shenmengRow = document.querySelector('.highlight-red').parentElement;
+            let blinkCount = 0;
+            const blinkInterval = setInterval(() => {
+                if (blinkCount < 3) {
+                    shenmengRow.style.backgroundColor = blinkCount % 2 === 0 ? 'rgba(214, 40, 40, 0.5)' : 'rgba(214, 40, 40, 0.3)';
+                    blinkCount++;
+                } else {
+                    clearInterval(blinkInterval);
+                    shenmengRow.style.backgroundColor = '';
+                }
+            }, 500);
+            
+            // 添加点击行显示详情功能
+            contactRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const name = this.cells[0].textContent;
+                    const position = this.cells[1].textContent;
+                    alert(`选中联系人：${name}\n职务：${position}\n\n（实际应用中这里会显示完整联系方式）`);
+                });
+            });
+            
+            // 自动聚焦搜索框
+            setTimeout(() => {
+                document.getElementById('contactSearch').focus();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

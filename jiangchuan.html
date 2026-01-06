@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>江川档案 - 深蓝前沿工程师信息</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2d6fc5;
+            --accent-color: #e53e3e;
+            --tech-color: #3182ce;
+            --light-color: #f8f9fa;
+            --dark-color: #1a202c;
+            --border-color: #e2e8f0;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --gradient-tech: linear-gradient(135deg, #1a365d 0%, #2d6fc5 100%);
+            --gradient-card: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            background-color: #f0f4f8;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: var(--gradient-card);
+        }
+        
+        /* 顶部导航栏 */
+        .browser-header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .address-bar {
+            flex-grow: 1;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 0 15px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            margin-left: 15px;
+        }
+        
+        .address-bar input {
+            border: none;
+            background: none;
+            flex-grow: 1;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-primary);
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        /* 档案卡片 */
+        .profile-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .card-header {
+            background: var(--gradient-tech);
+            padding: 25px 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        
+        .profile-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .profile-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 400;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .tech-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            padding: 2px 10px;
+            font-size: 12px;
+            margin-left: 10px;
+            vertical-align: middle;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        /* 基本信息网格 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .status-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        /* 内容区块 */
+        .content-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background-color: var(--tech-color);
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+        
+        .section-content {
+            font-size: 15px;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+        
+        .section-content p {
+            margin-bottom: 15px;
+        }
+        
+        /* 时间线 */
+        .timeline-container {
+            margin-top: 20px;
+            border-left: 2px solid var(--tech-color);
+            padding-left: 25px;
+            margin-left: 5px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid var(--tech-color);
+        }
+        
+        .timeline-date {
+            font-weight: 700;
+            color: var(--tech-color);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-content {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        /* 社交情绪分析 */
+        .sentiment-analysis {
+            background-color: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .sentiment-title {
+            font-weight: 600;
+            color: #c53030;
+            margin-bottom: 10px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sentiment-title::before {
+            content: '⚠️';
+            margin-right: 8px;
+        }
+        
+        .sentiment-content {
+            font-size: 14px;
+            color: #742a2a;
+            line-height: 1.6;
+        }
+        
+        /* 技术栈展示 */
+        .tech-stack-container {
+            margin-top: 15px;
+        }
+        
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .tech-tag-item {
+            background-color: #e6f2ff;
+            color: var(--tech-color);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        /* 财务异常提醒 */
+        .finance-alert {
+            background-color: #fff8e1;
+            border: 1px solid #ffecb5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .finance-title {
+            font-weight: 600;
+            color: #e65100;
+            margin-bottom: 10px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .finance-title::before {
+            content: '💸';
+            margin-right: 8px;
+        }
+        
+        .finance-content {
+            font-size: 14px;
+            color: #5d4037;
+            line-height: 1.6;
+        }
+        
+        /* 简洁列表 */
+        .simple-list {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .simple-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .simple-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--tech-color);
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        /* 社交帖子卡片 */
+        .social-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .post-item {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+        
+        .post-item:hover {
+            border-color: var(--tech-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .post-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        
+        .post-content {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-style: italic;
+        }
+        
+        .post-mood {
+            display: inline-block;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        
+        .mood-anxious {
+            background-color: #fff5f5;
+            color: #e53e3e;
+        }
+        
+        .mood-metaphor {
+            background-color: #fff8e1;
+            color: #d69e2e;
+        }
+        
+        /* 返回按钮 */
+        .back-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .back-button:hover {
+            background-color: white;
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+            
+            .card-header {
+                padding: 20px;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .browser-header {
+                padding: 10px 15px;
+            }
+            
+            .address-bar {
+                margin-left: 10px;
+            }
+            
+            .social-posts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="browser-header">
+        <div class="address-bar">
+            <span style="color: var(--text-secondary); margin-right: 8px;">📁</span>
+            <input type="text" value="档案系统 / 深蓝前沿员工档案 / 江川个人档案" id="addressInput" readonly>
+        </div>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="main-container">
+        <!-- 档案卡片 -->
+        <div class="profile-card">
+            <div class="card-header">
+                <h1 class="profile-title">江川个人档案</h1>
+                <div class="profile-subtitle">星耀集团 · 深蓝前沿科技 · 高级算法工程师 <span class="tech-tag">技术骨干</span></div>
+            </div>
+            
+            <div class="card-body">
+                <!-- 基本信息 -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">姓名</div>
+                        <div class="info-value">江川</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">性别</div>
+                        <div class="info-value">男</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">年龄</div>
+                        <div class="info-value">28岁</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">工号</div>
+                        <div class="info-value">SL-T-202001</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">出生日期</div>
+                        <div class="info-value">1997年5月18日</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">入职时间</div>
+                        <div class="info-value">2020年1月28日</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">职位</div>
+                        <div class="info-value">高级算法工程师</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">所属部门</div>
+                        <div class="info-value">深蓝前沿科技·算法研发部</div>
+                    </div>
+                </div>
+                
+                <!-- 工作经历 -->
+                <div class="content-section">
+                    <h2 class="section-title">工作经历</h2>
+                    <div class="section-content">
+                        <p>江川于2020年1月入职星耀集团旗下科技子公司"深蓝前沿"，担任算法工程师。凭借出色的技术能力和创新思维，在2023年晋升为高级算法工程师。</p>
+                        
+                        <p><strong>技术专长：</strong>主要从事机器学习算法优化、数据分析和智慧城市项目核心算法研发工作。在"方舟计划"项目中担任重要角色。</p>
+                        
+                        <p><strong>工作表现：</strong>前三年表现突出，多次获得季度优秀员工奖。但从2024年下半年开始，工作状态出现明显波动，情绪化表现增多。</p>
+                        
+                        <div class="timeline-container">
+                            <div class="timeline-item">
+                                <div class="timeline-date">2020年1月</div>
+                                <div class="timeline-content">入职深蓝前沿科技，担任算法工程师</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021年6月</div>
+                                <div class="timeline-content">参与智慧城市"方舟计划"一期项目</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2022年3月</div>
+                                <div class="timeline-content">获得"年度技术创新奖"</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023年7月</div>
+                                <div class="timeline-content">晋升为高级算法工程师</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024年9月</div>
+                                <div class="timeline-content">参与"方舟计划"二期核心算法研发</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2025年11月11日</div>
+                                <div class="timeline-content">于滨江新城烂尾楼区被发现身亡</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 技术能力 -->
+                <div class="content-section">
+                    <h2 class="section-title">技术能力</h2>
+                    <div class="section-content">
+                        <p>江川在算法研发领域具备扎实的专业能力，主要技术栈包括：</p>
+                        
+                        <div class="tech-stack-container">
+                            <div class="tech-tags">
+                                <span class="tech-tag-item">机器学习</span>
+                                <span class="tech-tag-item">Python</span>
+                                <span class="tech-tag-item">TensorFlow</span>
+                                <span class="tech-tag-item">PyTorch</span>
+                                <span class="tech-tag-item">数据挖掘</span>
+                                <span class="tech-tag-item">SQL</span>
+                                <span class="tech-tag-item">Linux</span>
+                                <span class="tech-tag-item">Docker</span>
+                                <span class="tech-tag-item">算法优化</span>
+                                <span class="tech-tag-item">大数据处理</span>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 15px;"><strong>项目贡献：</strong>在"方舟计划"项目中负责核心算法模块的研发工作，特别是在城市交通流量预测和异常行为检测算法方面有重要贡献。</p>
+                        
+                        <p><strong>同事评价（算法研发部主管吕芳珍）：</strong>"江川是个技术天才，代码简洁高效，对算法有独到见解。但最近半年变得沉默寡言，常发现他在工位上发呆。"</p>
+                    </div>
+                </div>
+                
+                <!-- 社交媒体情绪分析 -->
+                <div class="content-section">
+                    <h2 class="section-title">社交媒体情绪分析</h2>
+                    <div class="section-content">
+                        <p>通过对江川社交媒体账号（微博、知乎、技术社区）近半年的内容分析，发现明显的情绪波动和隐喻性言论：</p>
+                        
+                        <div class="sentiment-analysis">
+                            <div class="sentiment-title">情绪状态警告</div>
+                            <div class="sentiment-content">
+                                <p>从2025年3月开始，江川的社交媒体言论显示：</p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li><strong>焦虑情绪加剧：</strong>多次提及"压力巨大"、"失眠严重"</li>
+                                    <li><strong>隐喻性表达：</strong>频繁使用"黑暗中的灯塔"、"风暴来临"等隐喻</li>
+                                    <li><strong>工作相关：</strong>提到"看到了不该看的东西"、"数据背后的真相令人恐惧"</li>
+                                    <li><strong>孤立感：</strong>多次表达"无人倾诉"、"独自承受"的感受</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="social-posts">
+                            <div class="post-item">
+                                <div class="post-date">2025年7月15日 01:23</div>
+                                <div class="post-content">"有些数据一旦看过，就再也回不去了。'方舟'的阴影比想象中更大。"</div>
+                                <div class="post-mood mood-metaphor">隐喻表达</div>
+                            </div>
+                            
+                            <div class="post-item">
+                                <div class="post-date">2025年8月22日 22:47</div>
+                                <div class="post-content">"连续失眠第三周。总觉得有人在监视，是幻觉还是现实？"</div>
+                                <div class="post-mood mood-anxious">高度焦虑</div>
+                            </div>
+                            
+                            <div class="post-item">
+                                <div class="post-date">2025年9月5日 19:15</div>
+                                <div class="post-content">"'牧羊人'会来吗？还是我已经成为迷途的羔羊？"</div>
+                                <div class="post-mood mood-metaphor">神秘隐喻</div>
+                            </div>
+                            
+                            <div class="post-item">
+                                <div class="post-date">2025年9月28日 03:12</div>
+                                <div class="post-content">"备份已完成。如果我不在了，数据会说话。"</div>
+                                <div class="post-mood mood-anxious">危险预兆</div>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 15px;"><strong>心理分析：</strong>上述内容显示江川在遇害前处于严重的心理压力和焦虑状态，可能接触到了某些敏感信息或面临威胁。</p>
+                    </div>
+                </div>
+                
+                <!-- 财务异常 -->
+                <div class="content-section">
+                    <h2 class="section-title">财务状况分析</h2>
+                    <div class="section-content">
+                        <p>通过银行流水和财务记录分析，发现江川近六个月的财务状况存在异常：</p>
+                        
+                        <div class="finance-alert">
+                            <div class="finance-title">财务异常警告</div>
+                            <div class="finance-content">
+                                <p><strong>异常发现：</strong>近六个月有多笔来自海外空壳公司的大额汇款，总额约120万元人民币，与其正常工资收入严重不符。</p>
+                                
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li><strong>汇款公司：</strong>BVI、开曼群岛注册的离岸公司</li>
+                                    <li><strong>汇款频率：</strong>每月1-2笔，金额10-30万元不等</li>
+                                    <li><strong>收款账户：</strong>江川个人账户，非工资账户</li>
+                                    <li><strong>时间跨度：</strong>2025年4月-2025年9月</li>
+                                </ul>
+                                
+                                <p style="margin-top: 10px;"><strong>异常消费：</strong>收到汇款后，江川有异常大额消费记录，包括购买加密货币、高端电子产品等。</p>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 15px;"><strong>财务分析：</strong>这些海外汇款与江川的工资水平和工作性质不匹配，可能涉及商业机密交易、技术泄密或其他非法收入。</p>
+                        
+                        <p><strong>调查发现：</strong>同时发现江川有一个<strong>秘密邮箱</strong>账户（encrypted_data@protonmail.com），该邮箱与多个加密通信节点有关联。</p>
+                    </div>
+                </div>
+                
+                <!-- 综合评价 -->
+                <div class="content-section">
+                    <h2 class="section-title">综合评价</h2>
+                    <div class="section-content">
+                        <p>江川作为一个年轻的技术骨干，表现出以下特征：</p>
+                        
+                        <ul class="simple-list">
+                            <li><strong>技术能力突出：</strong>在算法研发方面有独特天赋，是"方舟计划"核心成员</li>
+                            <li><strong>近期情绪异常：</strong>遇害前半年出现严重焦虑和心理压力</li>
+                            <li><strong>财务状况异常：</strong>有来源不明的海外大额汇款</li>
+                            <li><strong>行为模式改变：</strong>从开朗外向转为沉默孤僻，社交媒体言论充满隐喻</li>
+                        </ul>
+                        
+                        <p style="margin-top: 15px;"><strong>同事回忆（算法工程师李晨）：</strong>"江川以前很阳光，经常组织同事聚餐。但最近半年变得很奇怪，经常一个人对着电脑发呆，问他也不说。他最后一次跟我说话是9月底，说'如果哪天我不在了，记得去我那个不常用的<strong>邮箱</strong>看看。'"</p>
+                        
+                        <p><strong>调查发现：</strong>江川的工位电脑和私人电脑均被专业手法清理过，但技术人员从云端备份中发现了一些加密文件片段，其中包括"方舟计划异常数据报告.pdf.enc"等敏感文件名。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 返回按钮 -->
+        <div class="back-container">
+            <a href="evidence.html" class="back-button">
+                ← 返回证据检索系统
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 页面交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 页面加载动画
+            const profileCard = document.querySelector('.profile-card');
+            profileCard.style.opacity = '0';
+            profileCard.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                profileCard.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                profileCard.style.opacity = '1';
+                profileCard.style.transform = 'translateY(0)';
+            }, 100);
+            
+            // 时间线动画
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 300 + index * 100);
+            });
+            
+            // 技术标签动画
+            const techTags = document.querySelectorAll('.tech-tag-item');
+            techTags.forEach((tag, index) => {
+                tag.style.opacity = '0';
+                tag.style.transform = 'scale(0.8)';
+                
+                setTimeout(() => {
+                    tag.style.transition = `opacity 0.3s ease ${index * 0.05}s, transform 0.3s ease ${index * 0.05}s`;
+                    tag.style.opacity = '1';
+                    tag.style.transform = 'scale(1)';
+                }, 600 + index * 50);
+            });
+            
+            // 社交帖子动画
+            const postItems = document.querySelectorAll('.post-item');
+            postItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 800 + index * 100);
+            });
+            
+            // 警告框动画
+            const alertBoxes = document.querySelectorAll('.sentiment-analysis, .finance-alert');
+            alertBoxes.forEach((box, index) => {
+                box.style.opacity = '0';
+                box.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    box.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
+                    box.style.opacity = '1';
+                    box.style.transform = 'scale(1)';
+                }, 1000 + index * 200);
+            });
+            
+            // 悬停效果增强
+            const infoItems = document.querySelectorAll('.info-item');
+            infoItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    item.style.transform = 'translateX(5px)';
+                    item.style.transition = 'transform 0.3s ease';
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    item.style.transform = 'translateX(0)';
+                });
+            });
+        });
+        
+        // 模拟数据加载效果
+        window.onload = function() {
+            const loadingElements = document.querySelectorAll('.info-value, .section-content p');
+            loadingElements.forEach(el => {
+                const originalText = el.textContent;
+                el.textContent = '';
+                
+                let i = 0;
+                const typeWriter = () => {
+                    if (i < originalText.length) {
+                        el.textContent += originalText.charAt(i);
+                        i++;
+                        setTimeout(typeWriter, 10);
+                    }
+                };
+                
+                // 延迟开始打字效果
+                setTimeout(typeWriter, 500);
+            });
+        };
+    </script>
+</body>
+</html>
