@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青州市公安局 - 机密调查系统 | 牧羊人档案</title>
+    <style>
+        :root {
+            --police-blue: #1a365d;
+            --police-dark: #2d3748;
+            --police-red: #c53030;
+            --police-gray: #718096;
+            --police-light: #f7fafc;
+            --police-border: #e2e8f0;
+            --shepherd-green: #2d5a27;
+            --shepherd-dark: #1a3c14;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background-color: #0a0f1a;
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 20% 30%, #1a3c14 0%, transparent 20%),
+                              radial-gradient(circle at 80% 70%, #2d5a27 0%, transparent 20%),
+                              linear-gradient(to bottom, #0a0f1a 0%, #111827 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 扫描线效果 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 2px;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+        
+        /* 登录界面 */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .login-box {
+            background-color: rgba(26, 58, 20, 0.85);
+            border: 1px solid rgba(45, 90, 39, 0.8);
+            border-radius: 8px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 0 30px rgba(45, 90, 39, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(45, 90, 39, 0.8), transparent);
+            animation: scanLine 3s linear infinite;
+        }
+        
+        @keyframes scanLine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .login-title h1 {
+            color: #e2e8f0;
+            font-size: 28px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .login-subtitle {
+            color: #a0aec0;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        
+        .password-hint {
+            background-color: rgba(26, 58, 20, 0.6);
+            border-left: 3px solid var(--police-red);
+            padding: 12px 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #e2e8f0;
+        }
+        
+        .password-input-area {
+            margin-bottom: 25px;
+        }
+        
+        .password-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0aec0;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 14px 20px;
+            background-color: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(45, 90, 39, 0.5);
+            border-radius: 4px;
+            color: #e2e8f0;
+            font-size: 16px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: var(--police-red);
+            box-shadow: 0 0 10px rgba(197, 48, 48, 0.3);
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 14px 20px;
+            background-color: var(--police-red);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        
+        .login-button:hover {
+            background-color: #e53e3e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(197, 48, 48, 0.4);
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #718096;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        
+        /* 内容界面 - 初始隐藏 */
+        .content-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* 头部 */
+        .shepherd-header {
+            background-color: rgba(26, 58, 20, 0.9);
+            border-bottom: 2px solid var(--police-red);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            flex-wrap: wrap;
+        }
+        
+        .shepherd-title {
+            font-size: 24px;
+            color: #e2e8f0;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .shepherd-subtitle {
+            font-size: 16px;
+            color: #a0aec0;
+            margin-top: 5px;
+        }
+        
+        .access-level {
+            background-color: var(--police-red);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        /* 档案内容 */
+        .archive-content {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-radius: 0 0 5px 5px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(45, 90, 39, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .archive-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--police-red), transparent);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: var(--shepherd-green);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(45, 90, 39, 0.5);
+            position: relative;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background-color: var(--police-red);
+        }
+        
+        /* 邮件展示 */
+        .email-container {
+            margin-bottom: 40px;
+        }
+        
+        .email-item {
+            background-color: rgba(26, 58, 20, 0.3);
+            border: 1px solid rgba(45, 90, 39, 0.3);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .email-item:hover {
+            border-color: var(--police-red);
+            box-shadow: 0 5px 15px rgba(26, 58, 20, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .email-header {
+            background-color: rgba(26, 58, 20, 0.5);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(45, 90, 39, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .email-sender {
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        
+        .email-recipient {
+            color: #a0aec0;
+            font-size: 14px;
+        }
+        
+        .email-date {
+            color: #a0aec0;
+            font-size: 14px;
+        }
+        
+        .email-body {
+            padding: 20px;
+            line-height: 1.8;
+        }
+        
+        .email-subject {
+            font-weight: bold;
+            color: var(--police-red);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .email-content {
+            color: #cbd5e0;
+            white-space: pre-line;
+        }
+        
+        .key-evidence {
+            background-color: rgba(197, 48, 48, 0.1);
+            border-left: 3px solid var(--police-red);
+            padding: 15px 20px;
+            margin: 15px 0;
+            color: #e2e8f0;
+        }
+        
+        /* 时间线 */
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+        
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--shepherd-green);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--shepherd-dark);
+            border: 3px solid var(--shepherd-green);
+        }
+        
+        .timeline-time {
+            font-weight: bold;
+            color: var(--shepherd-green);
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        
+        .timeline-content {
+            font-size: 14px;
+            color: #cbd5e0;
+        }
+        
+        /* 分析区 */
+        .analysis-area {
+            background-color: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(45, 90, 39, 0.5);
+            border-radius: 5px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .analysis-title {
+            color: var(--police-red);
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        /* 页脚 */
+        .shepherd-footer {
+            background-color: rgba(26, 58, 20, 0.9);
+            color: #a0aec0;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 5px;
+            margin-top: 40px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .content-container {
+                padding: 15px;
+            }
+            
+            .archive-content {
+                padding: 20px 15px;
+            }
+            
+            .email-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+        
+        /* 解密成功动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        /* 密码错误动画 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-title">
+                <h1>牧羊人档案</h1>
+                <div class="login-subtitle">青州市公安局 · 最高机密调查系统</div>
+            </div>
+            
+            <div class="password-hint">
+                提示：还记得我让你去查的林峰吗？输入5位英文字符
+            </div>
+            
+            <div class="password-input-area">
+                <label class="password-label">访问密码：</label>
+                <input type="password" id="passwordInput" class="password-input" placeholder="请输入5位英文字符" maxlength="5" autocomplete="off">
+            </div>
+            
+            <button id="loginButton" class="login-button">解密访问</button>
+            
+            <div class="login-footer">
+                警告：未经授权的访问将触发警报系统并记录IP地址<br>
+                访问级别：Omega · 需要局长级授权
+            </div>
+        </div>
+    </div>
+    
+    <!-- 内容界面 -->
+    <div class="content-container" id="contentContainer">
+        <!-- 头部 -->
+        <header class="shepherd-header">
+            <div class="header-content">
+                <div>
+                    <div class="shepherd-title">牧羊人档案 · 内部通信记录</div>
+                    <div class="shepherd-subtitle">赵翔宇与"园丁"的加密通信 · 最高机密</div>
+                </div>
+                <div class="access-level">访问级别：Omega</div>
+            </div>
+        </header>
+        
+        <!-- 档案内容 -->
+        <main class="archive-content">
+            <!-- 概述 -->
+            <div class="section-title">一、通信概述</div>
+            <div class="record-content">
+                <p>本档案记录了星耀集团董事长赵翔宇与代号"园丁"的高层人物之间的加密通信记录。"园丁"身份未知，但通信内容显示其拥有远超赵翔宇的职权和资源，能够提供"保护"并指示具体行动。</p>
+                <p>通信时间跨度从2020年7月至2025年11月，内容涉及对江川、林纾等关键人物的"处理"指令，以及"方舟计划"相关事宜的掩盖工作。</p>
+                
+                <div class="key-evidence">
+                    <strong>核心发现：</strong>赵翔宇并非幕后主使，而是执行者。"园丁"才是真正的指挥者，其身份可能涉及省级甚至更高级别官员。
+                </div>
+            </div>
+            
+            <!-- 通信记录 -->
+            <div class="section-title">二、加密邮件通信记录</div>
+            <div class="email-container">
+                <!-- 处理江川的邮件 -->
+                <div class="email-item">
+                    <div class="email-header">
+                        <div>
+                            <div class="email-sender">发件人：园丁 (gardener@securemail.加密通道)</div>
+                            <div class="email-recipient">收件人：赵翔宇 (zhaojingwei@qzpolice.gov.cn)</div>
+                        </div>
+                        <div class="email-date">发送时间：2025年10月25日 23:47:12</div>
+                    </div>
+                    <div class="email-body">
+                        <div class="email-subject">主题：紧急处理事项</div>
+                        <div class="email-content">
+                            翔宇：
+                            
+                            江川已经接触到了太多核心信息，他的调查方向越来越接近真相。根据我们之前的评估，他必须在你局内部处理掉，不能留到外部。
+                            
+                            清理工具在会所密室，用完处理掉，<strong>小心监控</strong>。记得用老方法，伪装成意外。时间节点必须在11月8日之前完成，之后会有省级巡视组进驻，不能留下任何痕迹。
+                            
+                            完成后向我汇报，我会确保后续的保护措施。你的晋升材料已经在准备了，处理好这件事，市局局长的位置就是你的。
+                            
+                            注意安全。
+                            
+                            - 园丁
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 处理林纾的邮件 -->
+                <div class="email-item">
+                    <div class="email-header">
+                        <div>
+                            <div class="email-sender">发件人：园丁 (gardener@securemail.加密通道)</div>
+                            <div class="email-recipient">收件人：赵翔宇 (zhaojingwei@qzpolice.gov.cn)</div>
+                        </div>
+                        <div class="email-date">发送时间：2020年7月10日 21:15:33</div>
+                    </div>
+                    <div class="email-body">
+                        <div class="email-subject">主题：审计局的问题</div>
+                        <div class="email-content">
+                            小赵：
+                            
+                            林纾的审计工作已经触及了方舟计划的核心区域，她手上掌握的证据如果公开，会引发灾难性后果。根据上级指示，必须在她将材料移交前处理掉。
+                            
+                            清理工具在会所密室，用完处理掉，小心监控。她的车辆已经安装了追踪器，会在7月14日晚上出现在市审计局停车场。记住，要伪装成携款潜逃的假象，现场要留下她"慌乱中掉落"的工牌。
+                            
+                            这件事必须在13日之前完成部署执行。完成后将她的电子设备全部销毁，但要在她家中留下一些"准备出国"的痕迹。
+                            
+                            我会协调媒体和上级部门，确保案件定性为"携带资料潜逃"。你的保护不会有问题。
+                            
+                            - 园丁
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 其他相关邮件 -->
+                <div class="email-item">
+                    <div class="email-header">
+                        <div>
+                            <div class="email-sender">发件人：赵翔宇 (zhaojingwei@qzpolice.gov.cn)</div>
+                            <div class="email-recipient">收件人：园丁 (gardener@securemail.加密通道)</div>
+                        </div>
+                        <div class="email-date">发送时间：2025年11月10日 23:22:05</div>
+                    </div>
+                    <div class="email-body">
+                        <div class="email-subject">主题：任务完成确认</div>
+                        <div class="email-content">
+                            园丁：
+                            
+                            江川已在今日晚上处理完毕，现场监控已处理。
+                            
+                            会所密室的工具已按指示销毁，参与人员已安排休假。
+                            
+                            请确认后续保护措施，巡视组下周进驻，我需要确保所有环节安全。
+                            
+                            赵翔宇
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="email-item">
+                    <div class="email-header">
+                        <div>
+                            <div class="email-sender">发件人：园丁 (gardener@securemail.加密通道)</div>
+                            <div class="email-recipient">收件人：赵翔宇 (zhaojingwei@qzpolice.gov.cn)</div>
+                        </div>
+                        <div class="email-date">发送时间：2020年7月15日 08:30:17</div>
+                    </div>
+                    <div class="email-body">
+                        <div class="email-subject">主题：后续安排</div>
+                        <div class="email-content">
+                            翔宇：
+                            
+                            林纾的事已经按计划定性，省厅那边我已经打好招呼，案件会快速结案。媒体通稿已经准备好，今天下午就会发布"审计局干部携密潜逃"的消息。
+                            
+                            她弟弟那边要盯紧，如果有异动就及时处理。她父亲是个老实人，不太可能闹出大事，但还是要监控。
+                            
+                            方舟计划的核心文件已经全部替换，审计痕迹已经清除。你做得很干净，晋升流程已经启动，三个月内会有结果。
+                            
+                            记住，我们都是一条船上的人，保护好彼此就是保护好自己。
+                            
+                            - 园丁
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 时间线 -->
+            <div class="section-title">三、关键时间线</div>
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-time">2020年7月10日</div>
+                    <div class="timeline-content">"园丁"向赵翔宇发送邮件，指示处理林纾，要求7月13日前完成部署</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">2020年7月14日</div>
+                    <div class="timeline-content">林纾失踪，现场留下工牌，车辆消失</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">2020年7月15日</div>
+                    <div class="timeline-content">案件被定性为"携带资料潜逃"，"园丁"确认后续安排</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">2025年10月25日</div>
+                    <div class="timeline-content">"园丁"指示赵翔宇处理江川，要求在11月8日前完成</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">2025年11月11日</div>
+                    <div class="timeline-content">赵翔宇确认江川"处理完毕"。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">2025年11月18日</div>
+                    <div class="timeline-content">林纾失踪案重启调查，发现赵翔宇与"园丁"的通信</div>
+                </div>
+            </div>
+            
+            <!-- 分析 -->
+            <div class="analysis-area">
+                <div class="analysis-title">四、案件关联分析</div>
+                <div class="record-content">
+                    <p><strong>1. 案件关联性：</strong>江川和林纾的案件看似独立，实则都与"方舟计划"的调查有关。江川在调查明德中学案件时，可能发现了林纾失踪案的线索，从而成为被清除的目标。</p>
+                                        
+                    <p><strong>2. "园丁"身份分析：</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>能够指挥市公安局副局长赵翔宇</li>
+                            <li>能够影响省级巡视组和媒体</li>
+                            <li>能够提供"保护"和晋升承诺</li>
+                            <li>可能涉及省级或更高级别官员</li>
+                        </ul>
+                    </p>
+                    
+                    <div class="key-evidence" style="margin-top: 20px;">
+                        <strong>核心线索：</strong>"会所密室"是关键物证所在地。找到这个密室，就能找到作案工具和可能留下的生物证据。需要调查赵翔宇常去的会所，特别是他有专属权限的区域。
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- 页脚 -->
+        <footer class="shepherd-footer">
+            <div>
+                <p>青州市公安局 · 特别调查组 · 牧羊人档案</p>
+                <p style="color: #718096; font-size: 12px; margin-top: 10px;">
+                    档案编号：SHEPHERD-20251118-001 · 解密时间：2025年11月18日 21:47<br>
+                    警告：本档案内容涉及高级别腐败与谋杀，仅限专案组成员查阅
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            const loginButton = document.getElementById('loginButton');
+            const loginContainer = document.querySelector('.login-container');
+            const contentContainer = document.getElementById('contentContainer');
+            
+            // 登录按钮点击事件
+            loginButton.addEventListener('click', function() {
+                const password = passwordInput.value.trim().toLowerCase(); // 不区分大小写
+                
+                if (password === 'raven') {
+                    // 密码正确
+                    loginContainer.style.opacity = '0';
+                    loginContainer.style.transition = 'opacity 0.5s ease';
+                    
+                    setTimeout(() => {
+                        loginContainer.style.display = 'none';
+                        contentContainer.style.display = 'block';
+                        
+                        // 添加淡入效果
+                        contentContainer.style.opacity = '0';
+                        setTimeout(() => {
+                            contentContainer.style.transition = 'opacity 0.8s ease';
+                            contentContainer.style.opacity = '1';
+                            contentContainer.classList.add('fade-in');
+                        }, 100);
+                        
+                        // 添加扫描线效果
+                        document.body.style.animation = 'none';
+                        
+                        // 触发邮件项的逐个显示动画
+                        const emailItems = document.querySelectorAll('.email-item');
+                        emailItems.forEach((item, index) => {
+                            item.style.opacity = '0';
+                            item.style.transform = 'translateY(20px)';
+                            
+                            setTimeout(() => {
+                                item.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
+                                item.style.opacity = '1';
+                                item.style.transform = 'translateY(0)';
+                            }, 300);
+                        });
+                    }, 500);
+                    
+                } else {
+                    // 密码错误
+                    passwordInput.classList.add('shake');
+                    passwordInput.style.borderColor = '#c53030';
+                    passwordInput.style.backgroundColor = 'rgba(197, 48, 48, 0.1)';
+                    
+                    setTimeout(() => {
+                        passwordInput.classList.remove('shake');
+                        passwordInput.style.borderColor = 'rgba(45, 90, 39, 0.5)';
+                        passwordInput.style.backgroundColor = 'rgba(15, 23, 42, 0.7)';
+                    }, 500);
+                    
+                    // 清空输入框
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            });
+            
+            // 按回车键也可以触发登录
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginButton.click();
+                }
+            });
+            
+            // 初始聚焦到密码输入框
+            passwordInput.focus();
+            
+            // 添加一些动态效果
+            const scanLine = document.createElement('div');
+            scanLine.style.position = 'fixed';
+            scanLine.style.top = '0';
+            scanLine.style.left = '0';
+            scanLine.style.width = '100%';
+            scanLine.style.height = '2px';
+            scanLine.style.background = 'linear-gradient(90deg, transparent, rgba(45, 90, 39, 0.8), transparent)';
+            scanLine.style.zIndex = '1';
+            scanLine.style.pointerEvents = 'none';
+            document.body.appendChild(scanLine);
+            
+            // 扫描线动画
+            let scanPos = -100;
+            function animateScanLine() {
+                scanPos += 0.5;
+                if (scanPos > 100) scanPos = -100;
+                scanLine.style.transform = `translateX(${scanPos}%)`;
+                requestAnimationFrame(animateScanLine);
+            }
+            animateScanLine();
+            
+            // 随机闪烁效果
+            function randomFlicker() {
+                const flicker = document.createElement('div');
+                flicker.style.position = 'fixed';
+                flicker.style.top = Math.random() * 100 + 'vh';
+                flicker.style.left = Math.random() * 100 + 'vw';
+                flicker.style.width = Math.random() * 100 + 'px';
+                flicker.style.height = '1px';
+                flicker.style.background = 'rgba(45, 90, 39, 0.3)';
+                flicker.style.zIndex = '1';
+                flicker.style.pointerEvents = 'none';
+                flicker.style.opacity = '0';
+                flicker.style.transition = 'opacity 0.2s ease';
+                document.body.appendChild(flicker);
+                
+                setTimeout(() => {
+                    flicker.style.opacity = '1';
+                    setTimeout(() => {
+                        flicker.style.opacity = '0';
+                        setTimeout(() => {
+                            document.body.removeChild(flicker);
+                        }, 200);
+                    }, 100);
+                }, 10);
+                
+                setTimeout(randomFlicker, Math.random() * 3000 + 1000);
+            }
+            randomFlicker();
+        });
+    </script>
+</body>
+</html>
